@@ -10,7 +10,7 @@ def calculate_distance(vehicle_x, vehicle_y, landmark_x, landmark_y):
 # Function to compute the MAP objective for a given vehicle position
 def compute_map_objective(vehicle_position, landmarks_x, landmarks_y, measurements, sigma_x, sigma_y, sigma_noise):
     vehicle_x, vehicle_y = vehicle_position
-    # Prior probability based on vehicle position (Gaussian distribution)
+    # Prior probability based on vehicle position
     prior = (vehicle_x ** 2 / sigma_x ** 2) + (vehicle_y ** 2 / sigma_y ** 2)
     likelihood = 0
     # Compute likelihood by summing over all landmarks

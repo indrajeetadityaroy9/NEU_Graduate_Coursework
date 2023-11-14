@@ -31,6 +31,7 @@ def generateData(N):
     x, labels = generateDataFromGMM(N, gmmParameters)
     return x
 
+
 def generateDataFromGMM(N, gmmParameters):
     #    Generates N vector samples from the specified mixture of Gaussians
     #    Returns samples and their component labels

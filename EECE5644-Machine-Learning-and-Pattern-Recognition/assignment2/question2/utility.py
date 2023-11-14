@@ -9,14 +9,14 @@ def cubic_feature_transform(X):
 
     # Applying cubic transformations: square, cross-product, and cube terms
     phi_X = np.vstack([
-        X,  # Original features
-        X_1 ** 2,  # Square of the first feature
-        X_1 * X_2,  # Cross-product of the two features
-        X_2 ** 2,  # Square of the second feature
-        X_1 ** 2 * X_2,  # Interaction term (first feature squared times second feature)
-        X_1 * X_2 ** 2,  # Interaction term (first feature times second feature squared)
-        X_1 ** 3,  # Cube of the first feature
-        X_2 ** 3  # Cube of the second feature
+        X,  # Original features w_1 x_1
+        X_1 ** 2,  # Square of the first feature w_3 x_1^2
+        X_1 * X_2,  # Cross-product of the two features w_4 x_1 x_2
+        X_2 ** 2,  # Square of the second feature w_5 x_2^2
+        X_1 ** 2 * X_2,  # First feature squared times second feature w_7 x_1^2 x_2
+        X_1 * X_2 ** 2,  # First feature times second feature squared w_8 x_1 x_2^2
+        X_1 ** 3,  # Cube of the first feature  w_6 x_1^3
+        X_2 ** 3  # Cube of the second feature w_9 x_2^3
     ])
 
     return phi_X  # Return the transformed feature matrix
