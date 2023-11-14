@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 
-from question2.utility import generateData, countOptimalGaussians
-from question2.visualization import plot1, plot2, plot3
+from utility import generateData, countOptimalGaussians
+from visualization import plot1, plot2, plot3
 
 
 def main():
