@@ -42,15 +42,16 @@ def apply_system_dynamics_with_noise(C, state, action, noise):
     return next_state
 
 
-def compute_reward(s, a, s_prime):
+def compute_reward(s, action, s_prime):
     # Calculate the reward from the state s_prime
-    reward_from_state = 5 * np.sum(s_prime)
-    # Subtract the cost of action
-    action_cost = np.sum(a)
-    # Adjust the reward for action a2 and a3
-    if (a == actions[1]).all() or (a == actions[2]).all():  # Corresponds to a2 and a3
-        action_cost += 1  # Adding 1 because we will subtract it later
-    # Total reward
+    reward_from_state = 5 * (s_prime[0] + s_prime[1] + s_prime[2] + s_prime[3])
+    # Define the cost of each action
+    action_costs = [0, 1, 1, 0]  # Costs for a1, a2, a3, a4
+    # Determine the index of the action in the actions list
+    action_index = next((i for i, act in enumerate(actions) if np.array_equal(action, act)), None)
+    # Get the cost of the action
+    action_cost = action_costs[action_index]
+    # Calculate total reward
     total_reward = reward_from_state - action_cost
     return total_reward
 
