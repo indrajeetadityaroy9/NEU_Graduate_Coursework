@@ -263,9 +263,6 @@ class Maze:
         plt.show()
 
     def draw_policy_arrows(self):
-        import numpy as np
-        import matplotlib.pyplot as plt
-
         # Convert the policy into a 2D array matching the maze's layout
         policy_matrix = np.array(self.policy).reshape((self.rows, self.cols))
         # Extract the number of rows and columns from the policy matrix
