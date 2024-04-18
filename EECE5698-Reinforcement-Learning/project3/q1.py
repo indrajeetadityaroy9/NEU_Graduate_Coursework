@@ -167,7 +167,7 @@ def plot_and_compute_average_accumulated_rewards(rewards_across_runs):
     return cumulative_average_rewards
 
 
-#q_learning_averaged_rewards = run_Q_learning()
-#sarsa_learning_averaged_rewards = run_SARSA_learning()
+q_learning_averaged_rewards = run_Q_learning()
+sarsa_learning_averaged_rewards = run_SARSA_learning()
 ac_learning_averaged_rewards = run_AC_learning()
-#plot_comparison_of_algorithms(q_learning_averaged_rewards, sarsa_learning_averaged_rewards, ac_learning_averaged_rewards)
+plot_comparison_of_algorithms(q_learning_averaged_rewards, sarsa_learning_averaged_rewards, ac_learning_averaged_rewards)
