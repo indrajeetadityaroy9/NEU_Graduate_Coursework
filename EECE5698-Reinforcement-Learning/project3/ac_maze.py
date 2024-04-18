@@ -104,9 +104,9 @@ class Maze:
         return (nx, ny), self.compute_reward(state[0], state[1], nx, ny)
 
     def select_stochastic_action(self, action_taken, state):
-        ulimit = 1 - self.p
+        limit = 1 - self.p
         decider = np.random.uniform()
-        if decider < ulimit:
+        if decider < limit:
             return action_taken
         else:
             action_list = [i for i in range(self.action_space_size) if
