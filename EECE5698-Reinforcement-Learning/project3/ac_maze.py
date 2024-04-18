@@ -4,8 +4,7 @@ from matplotlib.patches import Rectangle
 
 
 class Maze:
-    def __init__(self, rows, cols, actions, p, start_position, goal_position, oil_positions, bump_positions,
-                 wall_positions, oil_reward, bump_reward, goal_reward, action_reward):
+    def __init__(self, rows, cols, actions, p, start_position, goal_position, oil_positions, bump_positions, wall_positions, oil_reward, bump_reward, goal_reward, action_reward):
         # Set the number of rows and columns for the grid environment
         self.rows, self.cols = rows, cols
         # Set the starting position for the agent
@@ -138,8 +137,7 @@ class Maze:
                 action, action_index = self.actor_critic_step(H_matrix, state, temperature)  # Exploit best action
                 chosen_action_index = self.select_stochastic_action(action_index, state)
                 next_state, reward = self.execute_action(state, chosen_action_index)
-                self.update_policy_with_traces(H_matrix, V_matrix, state, action_index, reward, next_state, alpha, beta,
-                                               gamma, lambda_)
+                self.update_policy_with_traces(H_matrix, V_matrix, state, action_index, reward, next_state, alpha, beta, gamma, lambda_)
 
                 state = next_state  # Update state to next state
                 in_episode_total += reward
