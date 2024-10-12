@@ -1,0 +1,29 @@
+import argparse
+import torch.optim as optim
+import torch.nn as nn
+from models.model import CNNClassifier
+from utility.data_loader import  load_dataset
+from utility.model_trainer import train_model
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Train CNN on different datasets")
+    parser.add_argument('command', choices=['train'], help="Command to execute")
+    parser.add_argument('--dataset', choices=['mnist', 'cifar'], required=True, help="Dataset to use: mnist or cifar")
+    parser.add_argument('--epochs', type=int, default=500, help="Number of training epochs")
+    parser.add_argument('--batch_size', type=int, default=64, help="Batch size")
+    parser.add_argument('--log_interval', type=int, default=50, help="Interval to log training/testing status")
+
+    args = parser.parse_args()
+
+    # Load dataset
+    train_loader, test_loader, input_channels = load_dataset(args.dataset, args.batch_size)
+
+    # Initialize model, loss function, and optimizer
+    model = CNNClassifier(input_channels=input_channels)
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
+
+    # Call the training function
+    if args.command == 'train':
+        train_model(model, train_loader, test_loader, criterion, optimizer, epochs=args.epochs,
+                    log_interval=args.log_interval)
