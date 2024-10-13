@@ -74,12 +74,11 @@ def train_model(model, train_loader, test_loader, criterion, optimizer, schedule
         test_loss /= len(test_loader)
         test_acc = 100. * correct / total
 
-        if epoch % 50 == 0 or epoch == epochs:
-            print(f"{epoch}/{epochs:<5} | {train_loss:<10.4f} | {train_acc:<12.4f} | {test_loss:<10.4f} | {test_acc:<10.4f}")
+        print(f"{epoch}/{epochs:<5} | {train_loss:<10.4f} | {train_acc:<12.4f} | {test_loss:<10.4f} | {test_acc:<10.4f}")
 
         scheduler.step()
 
         if epoch == epochs:
-            model_path = "./model/model.ckpt"
+            model_path = ".model_state_dict.pth"
             torch.save(model.state_dict(), model_path)
-            print(f"Model saved in file: {model_path}")
+            print(f"Model weights saved in file: {model_path}")
