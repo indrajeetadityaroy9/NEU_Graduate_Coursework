@@ -13,7 +13,7 @@ def conv_block(in_channels, out_channels, kernel_size=3, stride=1, padding=1, po
     return nn.Sequential(*layers)
 
 
-class Model(nn.Module):
+class CNNClassifier(nn.Module):
     def __init__(self, in_channels, num_classes):
         super().__init__()
 
