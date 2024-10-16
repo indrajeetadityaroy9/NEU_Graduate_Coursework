@@ -28,30 +28,47 @@ test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=Fa
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
+
+        # Convolutional layers
         self.conv1 = nn.Conv2d(1, 32, kernel_size=5, stride=1, padding=2)
         self.bn1 = nn.BatchNorm2d(32)
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)
         self.bn2 = nn.BatchNorm2d(64)
         self.conv3 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
         self.bn3 = nn.BatchNorm2d(128)
-        self.fc1 = nn.Linear(128 * 3 * 3, 256)
+
+        # Adaptive pooling to ensure a consistent output size regardless of input dimensions
+        self.adaptive_pool = nn.AdaptiveAvgPool2d((4, 4))  # Fixed output size of 4x4 for any input
+
+        # Fully connected layers (after adaptive pooling, size will be 128 * 4 * 4 = 2048)
+        self.fc1 = nn.Linear(128 * 4 * 4, 256)  # Fixed size after adaptive pooling
         self.fc2 = nn.Linear(256, 128)
         self.fc3 = nn.Linear(128, 10)
+
         self.dropout = nn.Dropout(0.5)
 
     def forward(self, x):
+        # Convolutional layers with ReLU and BatchNorm
         x = F.relu(self.bn1(self.conv1(x)))
         x = F.max_pool2d(x, 2)
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.max_pool2d(x, 2)
         x = F.relu(self.bn3(self.conv3(x)))
         x = F.max_pool2d(x, 2)
-        x = x.view(-1, 128 * 3 * 3)
+
+        # Adaptive pooling to ensure the output feature map is always 4x4
+        x = self.adaptive_pool(x)
+
+        # Flatten the output for fully connected layers
+        x = x.view(x.size(0), -1)
+
+        # Fully connected layers with dropout
         x = F.relu(self.fc1(x))
         x = self.dropout(x)
         x = F.relu(self.fc2(x))
         x = self.dropout(x)
         x = self.fc3(x)
+
         return x
 
 
@@ -85,44 +102,84 @@ def validate(model, test_loader, criterion, device):
 
 # Modified training function to output all metrics (train loss, train acc, val loss, val acc) on one line
 def train_with_plateau_scheduler(model, train_loader, test_loader, criterion, optimizer, scheduler, device):
-    for epoch in range(10):
-        model.train()  # Set model to training mode
-        running_loss = 0.0
-        running_corrects = 0
-        total_samples = 0
+    epochs = 10
+    # Print header for the results
+    print(f"{'Loop':>6}{'Train Loss':>15}{'Train Acc %':>20}{'Test Loss':>20}{'Test Acc %':>20}")
 
-        # Wrap the training loader in tqdm to create a progress bar for each epoch
-        with tqdm(train_loader, unit="batch") as tepoch:
-            tepoch.set_description(f"Epoch [{epoch + 1}/10]")  # Set progress bar description
-            for images, labels in tepoch:
-                images, labels = images.to(device), labels.to(device)
+    for epoch in range(epochs):
+        model.train()
+        total_correct = 0
+        total_samples = 0
+        running_loss = 0.0
+
+        # Training loop with tqdm progress bar
+        with tqdm(train_loader, unit="batch", leave=False) as train_epoch:
+            train_epoch.set_description(f"Epoch [{epoch + 1}/{epochs}] - Training")
+            for batch_idx, (inputs, labels) in enumerate(train_epoch):
+                inputs, labels = inputs.to(device), labels.to(device)
                 total_samples += labels.size(0)
 
                 # Forward pass
-                outputs = model(images)
+                outputs = model(inputs)
                 loss = criterion(outputs, labels)
 
-                # Backward and optimize
+                # Backward pass and optimization
                 optimizer.zero_grad()
                 loss.backward()
+
+                # Optional: Gradient clipping
+                nn.utils.clip_grad_value_(model.parameters(), 0.1)
                 optimizer.step()
 
+                # Track running loss and correct predictions
                 running_loss += loss.item()
-                running_corrects += (torch.max(outputs, 1)[1] == labels).sum().item()
+                total_correct += (torch.max(outputs, 1)[1] == labels).sum().item()
 
-                # Update progress bar with running loss and accuracy
-                tepoch.set_postfix(loss=running_loss / total_samples, acc=running_corrects / total_samples)
+                # Update progress bar
+                train_epoch.set_postfix({
+                    'Loss': running_loss / (batch_idx + 1),
+                    'Accuracy': 100. * total_correct / total_samples
+                })
 
-        # Calculate training metrics
         train_loss = running_loss / len(train_loader)
-        train_acc = running_corrects / total_samples
+        train_acc = 100. * total_correct / total_samples
 
-        # Validate on the test set and step the scheduler based on validation loss
-        val_loss, val_acc = validate(model, test_loader, criterion, device)
+        # Validation phase
+        model.eval()
+        val_loss = 0.0
+        correct = 0
+        total = 0
+
+        with tqdm(test_loader, unit="batch", leave=False) as test_bar:
+            test_bar.set_description(f"Epoch [{epoch + 1}/{epochs}] - Testing")
+            with torch.no_grad():
+                for batch_idx, (inputs, labels) in enumerate(test_bar):
+                    inputs, labels = inputs.to(device), labels.to(device)
+
+                    # Forward pass
+                    outputs = model(inputs)
+                    loss = criterion(outputs, labels)
+                    val_loss += loss.item()
+
+                    # Track correct predictions
+                    _, predicted = torch.max(outputs, 1)
+                    total += labels.size(0)
+                    correct += (predicted == labels).sum().item()
+
+                    # Update progress bar
+                    test_bar.set_postfix({
+                        'Loss': val_loss / (batch_idx + 1),
+                        'Accuracy': 100. * correct / total
+                    })
+
+        val_loss /= len(test_loader)
+        val_acc = 100. * correct / total
+
+        # Print epoch summary
+        print(f"{epoch:>2}/{epochs:<1}{train_loss:>15f}{train_acc:>20f}{val_loss:>20f}{val_acc:>20f}")
+
+        # Scheduler step (depends on the type of scheduler)
         scheduler.step(val_loss)
-
-        print(f"Epoch [{epoch + 1}/10], Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}, "
-              f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}")
 
 
 # Function to predict for a batch of images in a directory

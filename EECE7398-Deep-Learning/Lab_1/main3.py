@@ -13,7 +13,28 @@ import os
 import torch
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from tqdm import tqdm
+from PIL import Image
+import os
+import matplotlib.pyplot as plt
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from tqdm import tqdm
+from PIL import Image
+import os
+import matplotlib.pyplot as plt
 
 # -------------------- Model Architecture --------------------
 
@@ -260,17 +281,6 @@ def load_saved_model(model_class, num_classes, in_channels, model_dir, dataset_n
 
     # Load the saved model's state_dict
     state_dict = torch.load(model_path, map_location=device)
-
-    # Remap the keys based on the dataset name (mnist or cifar)
-    remapped_state_dict = {}
-    if dataset_name == "mnist":
-        for key in state_dict:
-            new_key = key.replace("conv1_mnist", "conv1").replace("classifier_mnist", "classifier")
-            remapped_state_dict[new_key] = state_dict[key]
-    elif dataset_name == "cifar":
-        for key in state_dict:
-            new_key = key.replace("conv1_cifar", "conv1").replace("classifier_cifar", "classifier")
-            remapped_state_dict[new_key] = state_dict[key]
 
     # Initialize the model and load the remapped state_dict
     model = model_class(in_channels=in_channels, num_classes=num_classes)
