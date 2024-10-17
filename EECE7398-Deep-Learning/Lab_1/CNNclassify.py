@@ -52,7 +52,6 @@ class CNNClassifier(nn.Module):
 
     def forward(self, x, dataset_name):
         if dataset_name == 'mnist':
-            # Simpler forward pass for MNIST
             x = F.relu(self.bn1(self.conv1(x)))
             x = F.max_pool2d(x, 2)
             x = F.relu(self.bn2(self.conv2(x)))
@@ -222,60 +221,45 @@ def load_dataset(dataset_name, batch_size, means, stds):
 
 # -------------------- Image Utilities --------------------
 def preprocess_image(image_path, dataset_name, mean=None, std=None):
-    # Load and preprocess an image based on the dataset type (MNIST or CIFAR-10)
-    if dataset_name == 'mnist':
-        # Load the image in grayscale
-        image = Image.open(image_path).convert("L")  # Convert to grayscale
 
-        # Check the background brightness (assume most of the background should be the pixel majority)
+    if dataset_name == 'mnist':
+        image = Image.open(image_path).convert("L")
         image_np = np.array(image)
         mean_brightness = image_np.mean()
 
-        # Invert the image if the background is bright (closer to white)
         if mean_brightness > 127:
             image = ImageOps.invert(image)
 
-        # Define MNIST-specific transforms
         transform = transforms.Compose([
-            transforms.Resize((28, 28)),  # Ensure it's 28x28
+            transforms.Resize((28, 28)),
             transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,))  # MNIST normalization
+            transforms.Normalize((mean,), (std,))
         ])
     elif dataset_name == 'cifar':
-        # Load the image and apply CIFAR-10 transformations
+
         image = Image.open(image_path)
 
-        # Ensure image is RGB format
         if image.mode != 'RGB':
             image = image.convert("RGB")
 
-        # Define CIFAR-specific transforms
         transform = transforms.Compose([
-            transforms.Resize((32, 32)),  # Ensure it's 32x32
+            transforms.Resize((32, 32)),
             transforms.ToTensor(),
-            transforms.Normalize(mean=mean, std=std)  # CIFAR-10 normalization
+            transforms.Normalize(mean, std)
         ])
-    else:
-        raise ValueError(f"Unsupported dataset: {dataset_name}")
 
-    # Apply the transformations
-    image = transform(image).unsqueeze(0)  # Add batch dimension (1, C, H, W)
-
+    image = transform(image).unsqueeze(0)
     return image
 
 
 # -------------------- Inference --------------------
 def test_single_image(model, image_path, device, dataset_name, mean, std, dataset_labels):
-    # Use the preprocess_image function to load and preprocess the image
     image = preprocess_image(image_path, dataset_name, mean, std).to(device)
 
-    # Set the model to evaluation mode and make predictions
     model.eval()
     with torch.no_grad():
-        # Get the output from the first convolutional layer
         conv1_output = model.conv1(image)
 
-        # Make the prediction
         output = model(image, dataset_name)
         _, predicted = torch.max(output, 1)
         predicted_class_idx = predicted.item()
@@ -311,10 +295,8 @@ def load_saved_model(model_class, num_classes, in_channels, model_dir, dataset_n
     model_filename = f"{dataset_name}_trained_model.pth"
     model_path = os.path.join(model_dir, model_filename)
 
-    # Load the saved model's state_dict
     state_dict = torch.load(model_path, map_location=device)
 
-    # Initialize the model and load the state_dict
     model = model_class(in_channels=in_channels, num_classes=num_classes, dataset_name=dataset_name)
     model.load_state_dict(state_dict)
     model.to(device)
@@ -363,10 +345,8 @@ def main():
             sys.exit(1)
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        # Determine which dataset to use
         dataset = 'mnist' if args.mnist else 'cifar'
 
-        # Set batch size and get dataset info
         batch_size = 64
         input_channels, num_classes, means, stds = get_dataset_info(dataset)
         train_loader, test_loader = load_dataset(dataset, batch_size, means, stds)
@@ -377,13 +357,11 @@ def main():
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0005)
         scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, verbose=False)
 
-        # Set the number of epochs depending on the dataset
         if dataset == 'mnist':
             num_epochs = 10
         else:
             num_epochs = 50
 
-        # Train the model with the specified number of epochs
         train_model(model, train_loader, test_loader, criterion, optimizer, scheduler, device, num_epochs, dataset)
 
     # Test command
@@ -402,10 +380,7 @@ def main():
 
         for img_file in args.image_file:
             image_path = img_file
-
             predicted_label = test_single_image(model, image_path, device, dataset, means, stds, dataset_labels)
-
-            # Print the predicted label
             print(f"Prediction result: {predicted_label}")
 
 
