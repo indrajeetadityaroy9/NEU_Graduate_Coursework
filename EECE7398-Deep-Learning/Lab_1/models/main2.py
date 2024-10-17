@@ -26,7 +26,7 @@ def calculate_accuracy(preds, labels):
 
 def train_model(model, train_loader, test_loader, criterion, optimizer, scheduler, device, epochs, dataset_name):
     best_acc = 0.0
-    model_dir = "model"
+    model_dir = "../model"
 
     if not os.path.exists(model_dir):
         os.makedirs(model_dir)
@@ -366,13 +366,13 @@ def dynamic_test_classification(model_class, num_classes_mnist, num_classes_cifa
     print("Loaded model layers:", model.state_dict().keys())  # Debugging step: print model layers
 
     mnist_image_tensor = preprocess_image(image_path, 'mnist').to(device)
-    visualize_first_conv_layer(model, mnist_image_tensor, device, 'mnist', 'mnist_conv_output.png', task='mnist')
+    visualize_first_conv_layer(model, mnist_image_tensor, device, 'mnist', '../mnist_conv_output.png', task='mnist')
     mnist_pred_class = classify_image(model, mnist_image_tensor, device, task='mnist')
     mnist_label = get_mnist_label(mnist_pred_class)
     print(f"The MNIST model predicted class: {mnist_pred_class} (Label: {mnist_label})")
 
     cifar_image_tensor = preprocess_image(image_path, 'cifar').to(device)
-    visualize_first_conv_layer(model, cifar_image_tensor, device, 'cifar', 'cifar_conv_output.png', task='cifar')
+    visualize_first_conv_layer(model, cifar_image_tensor, device, 'cifar', '../cifar_conv_output.png', task='cifar')
     cifar_pred_class = classify_image(model, cifar_image_tensor, device, task='cifar')
     cifar_label = get_cifar_label(cifar_pred_class)
     print(f"The CIFAR-10 model predicted class: {cifar_pred_class} (Label: {cifar_label})")
@@ -411,7 +411,7 @@ def test_on_mnist_images(model, device):
 
 def test_on_external_image(image_path, model, device):
     mnist_pred_class, cifar_pred_class, mnist_label, cifar_label = dynamic_test_classification(
-        MultiTaskCNN, num_classes_mnist=10, num_classes_cifar=10, model_dir='model', image_path=image_path,
+        MultiTaskCNN, num_classes_mnist=10, num_classes_cifar=10, model_dir='../model', image_path=image_path,
         device=device
     )
     print(f"The MNIST model predicted class: {mnist_pred_class} (Label: {mnist_label})")
@@ -472,7 +472,7 @@ def main():
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         model = MultiTaskCNN(num_classes_mnist=10, num_classes_cifar=10)
-        model_dir = "model"
+        model_dir = "../model"
         model = load_saved_model(MultiTaskCNN, num_classes_mnist=10, num_classes_cifar=10, model_dir=model_dir,
                                  device=device)
 

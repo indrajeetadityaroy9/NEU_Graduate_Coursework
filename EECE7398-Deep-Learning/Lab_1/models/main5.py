@@ -293,7 +293,7 @@ if __name__ == '__main__':
     train_with_plateau_scheduler(model, train_loader, test_loader, criterion, optimizer, scheduler, device)
 
     # Specify the directory to save images
-    output_dir = './saved_images'
+    output_dir = '../saved_images'
     save_images_from_dataset('cifar', output_dir, num_images=10)  # Save 10 CIFAR-10 images
 
     # Call the main function to predict labels for all saved images in the directory

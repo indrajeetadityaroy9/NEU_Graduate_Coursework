@@ -264,5 +264,5 @@ if __name__ == '__main__':
     main(model, image_directory, device)
 
     example_image = os.path.join(image_directory,
-                                 '/Users/indrajeetadityaroy/Desktop/EECE7398/Lab_1/mnist_pngs/mnist_7_label_9.png')  # Replace with an actual image file
-    visualize_first_conv_layer(model, example_image, device, output_file="CONV_rslt_mnist.png")
+                                 '/mnist_pngs/mnist_7_label_9.png')  # Replace with an actual image file
+    visualize_first_conv_layer(model, example_image, device, output_file="../CONV_rslt_mnist.png")
