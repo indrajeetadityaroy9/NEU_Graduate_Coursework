@@ -294,17 +294,22 @@ def visualize_first_conv_layer(conv1_output, dataset_name):
 def load_saved_model(model_class, num_classes, in_channels, model_dir, dataset_name, device):
     model_filename = f"{dataset_name}_trained_model.pth"
     model_path = os.path.join(model_dir, model_filename)
-
-    state_dict = torch.load(model_path, map_location=device)
-
     model = model_class(in_channels=in_channels, num_classes=num_classes, dataset_name=dataset_name)
-    model.load_state_dict(state_dict)
+    model.load_state_dict(torch.load(model_path, map_location=device))
     model.to(device)
     model.eval()
     return model
 
 
 # -------------------- CLI --------------------
+
+def determine_dataset(image_path):
+    image = Image.open(image_path)
+
+    if image.mode == 'RGB':
+        return 'cifar'
+    elif image.mode == 'L':  # Grayscale image
+        return 'mnist'
 
 def main():
     epilog = """Usage examples:
@@ -324,8 +329,8 @@ def main():
 
     # Training parser
     train_parser = subparsers.add_parser('train', help="Train the model")
-    train_parser.add_argument('--mnist', action='store_true', help="Use the MNIST dataset for training")
-    train_parser.add_argument('--cifar', action='store_true', help="Use the CIFAR-10 dataset for training")
+    train_parser.add_argument('--mnist', action='store_true', help="Train the CNN using the MNIST dataset.")
+    train_parser.add_argument('--cifar', action='store_true', help="Train the CNN using the CIFAR-10 dataset.")
 
     # Testing parser
     test_parser = subparsers.add_parser('test', help="Test the model")
