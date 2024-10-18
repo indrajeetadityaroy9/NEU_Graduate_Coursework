@@ -13,6 +13,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau  # Learning rate schedule
 # torchvision
 from torchvision import datasets, transforms  # Datasets and data utilities
 # Image processing
+import pytesseract
 from PIL import Image, ImageOps  # Image processing
 # Visualization
 import matplotlib.pyplot as plt
@@ -162,7 +163,8 @@ def train_model(model, train_loader, test_loader, criterion, optimizer, schedule
             best_acc = val_acc
             torch.save(model.state_dict(), best_model_path)
 
-    print(f"Model trained on the {dataset_name} dataset with best test accuracy: {best_acc:.2f}% saved in file: {best_model_path}.")
+    print(
+        f"Model trained on the {dataset_name} dataset with best test accuracy: {best_acc:.2f}% saved in file: {best_model_path}.")
 
 
 # -------------------- Dataset Utilities --------------------
@@ -221,7 +223,6 @@ def load_dataset(dataset_name, batch_size, means, stds):
 
 # -------------------- Image Utilities --------------------
 def preprocess_image(image_path, dataset_name, mean=None, std=None):
-
     if dataset_name == 'mnist':
         image = Image.open(image_path).convert("L")
         image_np = np.array(image)
@@ -289,7 +290,7 @@ def visualize_first_conv_layer(conv1_output, dataset_name):
     plt.close()
 
 
-# -------------------- Model utilities --------------------
+# -------------------- Inference utilities --------------------
 
 def load_saved_model(model_class, num_classes, in_channels, model_dir, dataset_name, device):
     model_filename = f"{dataset_name}_trained_model.pth"
@@ -301,15 +302,29 @@ def load_saved_model(model_class, num_classes, in_channels, model_dir, dataset_n
     return model
 
 
-# -------------------- CLI --------------------
+def contains_digits(image_path):
+    image = Image.open(image_path).convert("L")  # Convert to grayscale
 
-def determine_dataset(image_path):
-    image = Image.open(image_path)
+    # Use pytesseract to extract text from the image
+    text = pytesseract.image_to_string(image, config='digits')
 
-    if image.mode == 'RGB':
-        return 'cifar'
-    elif image.mode == 'L':  # Grayscale image
+    print(text)
+
+    # Check if the extracted text contains digits
+    if any(char.isdigit() for char in text):
+        return True
+    return False
+
+
+def determine_model_to_load(image_path):
+    # Use OCR to detect digits
+    if contains_digits(image_path):
         return 'mnist'
+    else:
+        return 'cifar'
+
+
+# -------------------- CLI --------------------
 
 def main():
     epilog = """Usage examples:
@@ -374,14 +389,12 @@ def main():
         model_dir = "model"
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        dataset = 'cifar'
-        input_channels, num_classes, means, stds, dataset_labels = get_dataset_info(dataset)
-        model = load_saved_model(CNNClassifier, num_classes, input_channels, model_dir, dataset, device)
-
         for img_file in args.image_file:
-            image_path = img_file
-            predicted_label = test_single_image(model, image_path, device, dataset, means, stds, dataset_labels)
-            print(f"Prediction result: {predicted_label}")
+            dataset = determine_model_to_load(img_file)
+            #input_channels, num_classes, means, stds, dataset_labels = get_dataset_info(dataset)
+            #model = load_saved_model(CNNClassifier, num_classes, input_channels, model_dir, dataset, device)
+            #predicted_label = test_single_image(model, img_file, device, dataset, means, stds, dataset_labels)
+            #print(f"Prediction result: {predicted_label}")
 
 
 if __name__ == '__main__':
