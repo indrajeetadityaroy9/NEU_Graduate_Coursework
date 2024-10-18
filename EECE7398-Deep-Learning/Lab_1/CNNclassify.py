@@ -162,7 +162,7 @@ def train_model(model, train_loader, test_loader, criterion, optimizer, schedule
             best_acc = val_acc
             torch.save(model.state_dict(), best_model_path)
 
-    print(f"Model trained on {dataset_name} with best test accuracy: {best_acc:.2f}% saved in file: {best_model_path}.")
+    print(f"Model trained on the {dataset_name} dataset with best test accuracy: {best_acc:.2f}% saved in file: {best_model_path}.")
 
 
 # -------------------- Dataset Utilities --------------------
@@ -285,7 +285,7 @@ def visualize_first_conv_layer(conv1_output, dataset_name):
 
     output_filename = f"CONV_rslt_{dataset_name}.png"
     plt.tight_layout()
-    plt.savefig(output_filename, dpi=300)
+    plt.savefig(output_filename, dpi=200)
     plt.close()
 
 
@@ -348,19 +348,14 @@ def main():
         dataset = 'mnist' if args.mnist else 'cifar'
 
         batch_size = 64
-        input_channels, num_classes, means, stds = get_dataset_info(dataset)
+        input_channels, num_classes, means, stds, dataset_labels = get_dataset_info(dataset)
         train_loader, test_loader = load_dataset(dataset, batch_size, means, stds)
 
-        # Initialize the model, loss function, optimizer, and learning rate scheduler
         model = CNNClassifier(in_channels=input_channels, num_classes=num_classes, dataset_name=dataset).to(device)
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0005)
         scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, verbose=False)
-
-        if dataset == 'mnist':
-            num_epochs = 10
-        else:
-            num_epochs = 50
+        num_epochs = 10 if dataset == 'mnist' else 50
 
         train_model(model, train_loader, test_loader, criterion, optimizer, scheduler, device, num_epochs, dataset)
 
@@ -374,7 +369,7 @@ def main():
         model_dir = "model"
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        dataset = 'mnist'
+        dataset = 'cifar'
         input_channels, num_classes, means, stds, dataset_labels = get_dataset_info(dataset)
         model = load_saved_model(CNNClassifier, num_classes, input_channels, model_dir, dataset, device)
 
