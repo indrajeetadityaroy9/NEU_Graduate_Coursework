@@ -96,14 +96,14 @@ class CNNClassifier(nn.Module):
 
 
 # -------------------- Model Training --------------------
-def train_model(model, training_data_loader, testing_data_loader, loss_func, optimizer, lr_scheduler, device, num_epochs, dataset):
+def train_model(model, train_data_loader, test_data_loader, loss_func, optimizer, lr_scheduler, device, num_epochs, dataset):
     """
     Trains model on a specified dataset
 
     Parameters:
         - model: Model to be trained
-        - training_data_loader (DataLoader): DataLoader for the training dataset
-        - testing_data_loader (DataLoader): DataLoader for the testing/validation dataset
+        - train_data_loader (DataLoader): DataLoader for the training dataset
+        - test_data_loader (DataLoader): DataLoader for the testing/validation dataset
         - loss_func: Loss function used to compute model error
         - optimizer: Optimizer used for gradient descent
         - lr_scheduler: Learning rate scheduler to adjust learning rate during training
@@ -126,7 +126,7 @@ def train_model(model, training_data_loader, testing_data_loader, loss_func, opt
     # Track the best test accuracy
     best_test_accuracy = 0.0
 
-    print(f"{'Epoch':>6}{'Train Loss':>15}{'Train Accuracy %':>20}{'Test Loss':>20}{'Test Accuracy %':>20}")
+    print(f"{'Epoch':>6}{'Train Loss':>15}{'Train Acc %':>20}{'Test Loss':>20}{'Test Acc %':>20}")
     # Training loop for each epoch
     for epoch in range(num_epochs):
         model.train()  # Set model to training mode
@@ -135,7 +135,7 @@ def train_model(model, training_data_loader, testing_data_loader, loss_func, opt
         accumulated_train_loss = 0.0  # Accumulate loss for averaging
 
         # Iterate through training batches
-        with tqdm(training_data_loader, unit="batch", leave=False) as train_progress:
+        with tqdm(train_data_loader, unit="batch", leave=False) as train_progress:
             train_progress.set_description(f"Epoch [{epoch + 1}/{num_epochs}] - Training")
             for batch_idx, (input_images, labels) in enumerate(train_progress):
                 input_images, labels = input_images.to(device), labels.to(device)
@@ -162,7 +162,7 @@ def train_model(model, training_data_loader, testing_data_loader, loss_func, opt
                 })
 
         # Calculate final training loss and accuracy for epoch
-        average_train_loss = accumulated_train_loss / len(training_data_loader)
+        average_train_loss = accumulated_train_loss / len(train_data_loader)
         train_accuracy = 100. * running_correct_predictions / running_total_samples
 
         # Set the model to evaluation mode
@@ -172,7 +172,7 @@ def train_model(model, training_data_loader, testing_data_loader, loss_func, opt
         total_test_samples = 0  # Track total samples in the test set
 
         # Evaluate model on test data
-        with tqdm(testing_data_loader, unit="batch", leave=False) as test_progress:
+        with tqdm(test_data_loader, unit="batch", leave=False) as test_progress:
             test_progress.set_description(f"Epoch [{epoch + 1}/{num_epochs}] - Testing")
             with torch.no_grad():  # Disable gradient calculation for evaluation
                 for batch_idx, (input_images, labels) in enumerate(test_progress):
@@ -193,7 +193,7 @@ def train_model(model, training_data_loader, testing_data_loader, loss_func, opt
                     })
 
         # Calculate final test loss and accuracy for epoch
-        average_test_loss = test_loss / len(testing_data_loader)
+        average_test_loss = test_loss / len(test_data_loader)
         test_accuracy = 100. * correct_test_predictions / total_test_samples
 
         print(f"{epoch:>2}/{num_epochs:<1}{average_train_loss:>15f}{train_accuracy:>20f}{average_test_loss:>20f}{test_accuracy:>20f}") if \
@@ -214,7 +214,7 @@ def train_model(model, training_data_loader, testing_data_loader, loss_func, opt
 def get_dataset_info(dataset):
     """
     Retrieves dataset information such as number of input channels, number of classes,
-    dataset-specific mean and standard deviation for normalization, and class labels
+    mean and standard deviation for normalization, and class labels
 
     Parameters:
         - dataset (str): Dataset for which to retrieve the information
@@ -224,22 +224,22 @@ def get_dataset_info(dataset):
         - num_classes (int): Number of target classes (10 for MNIST and CIFAR-10)
         - means (float or tuple): Mean values for normalization
         - stds (float or tuple):  Standard deviation values for normalization
-        - labels (list): Class labels corresponding to the dataset
+        - labels (list): Dataset class labels
     """
     if dataset == 'cifar':
         cifar_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transforms.ToTensor())
-        labels = cifar_dataset.classes  # Class labels for CIFAR-10
+        labels = cifar_dataset.classes  # Class labels
         input_channels = cifar_dataset[0][0].shape[0]  # Number of input channels (3 for RGB)
-        num_classes = len(cifar_dataset.classes)  # Number of classes for CIFAR-10
+        num_classes = len(cifar_dataset.classes)  # Number of classes
         means = (cifar_dataset.data / 255.0).mean(axis=(0, 1, 2))  # Compute mean for normalization
         stds = (cifar_dataset.data / 255.0).std(axis=(0, 1, 2))  # Compute standard deviation for normalization
         return input_channels, num_classes, means, stds, labels
 
     elif dataset == 'mnist':
         mnist_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transforms.ToTensor())
-        labels = mnist_dataset.classes  # Class labels for MNIST
+        labels = mnist_dataset.classes  # Class labels
         input_channels = 1  # Number of input channels (1 for grayscale)
-        num_classes = len(mnist_dataset.classes)  # Number of classes for MNIST
+        num_classes = len(mnist_dataset.classes)  # Number of classes
         means = (mnist_dataset.data / 255.0).mean()  # Compute mean for normalization
         stds = (mnist_dataset.data / 255.0).std()  # Compute standard deviation for normalization
         return input_channels, num_classes, means, stds, labels
@@ -261,11 +261,11 @@ def load_dataset(dataset, batch_size, means, stds):
     """
     if dataset == 'cifar':
         # Transformations for CIFAR-10 images:
-        # 1. Randomly flip the image horizontally to introduce features from both orientations, helping the model generalize better
-        # 2. Randomly crop the image with padding to simulate translations, helping model generalization to varied object positions
+        # 1. Randomly flip the image horizontally to introduce features from both orientations, helping model generalize better
+        # 2. Randomly crop the image with padding to introduce varied object positions, helping model generalize better
         # 3. Randomly adjust brightness, contrast, saturation, and hue to help the model adapt to lighting and color variations
-        # 4. Convert the image to Pytorch tensor
-        # 5. Normalize the image using the mean and standard deviation
+        # 4. Convert image to pytorch tensor
+        # 5. Normalize image using the mean and standard deviation
         transform_train = transforms.Compose([
             transforms.RandomHorizontalFlip(),
             transforms.RandomCrop(32, padding=4),
@@ -273,37 +273,37 @@ def load_dataset(dataset, batch_size, means, stds):
             transforms.ToTensor(),
             transforms.Normalize(mean=means, std=stds)
         ])
-        # 1. Convert the image to a Pytorch tensor
-        # 2. Normalize the image using the mean and standard deviation
+        # 1. Convert image to pytorch tensor
+        # 2. Normalize image using the mean and standard deviation
         transform_test = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(mean=means, std=stds)
         ])
-        # Load CIFAR-10 datasets with transformation pipeline applied
+        # Load datasets with transformation pipeline applied
         train_dataset = datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
         test_dataset = datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
     elif dataset == 'mnist':
         # Transformation for MNIST images
-        # 1. Convert the image to a Pytorch tensor
-        # 2. Normalize the image using the mean and standard deviation
+        # 1. Convert image to pytorch tensor
+        # 2. Normalize image using the mean and standard deviation
         transform_train = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(mean=(means,), std=(stds,))
         ])
-        # 1. Convert the image to a Pytorch tensor
-        # 2. Normalize the image using the mean and standard deviation
+        # 1. Convert image to pytorch tensor
+        # 2. Normalize image using the mean and standard deviation
         transform_test = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(mean=(means,), std=(stds,))
         ])
 
-        # Load MNIST datasets with transformation pipeline applied
+        # Load datasets with transformation pipeline applied
         train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform_train)
         test_dataset = datasets.MNIST(root='./data', train=False, download=True, transform=transform_test)
 
-    # Load datasets into PyTorch DataLoader for batching and shuffling
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=4)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, pin_memory=True, num_workers=4)
+    # Load datasets into pytorch DataLoader for batching and shuffling
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, pin_memory=True, num_workers=2)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, pin_memory=True, num_workers=2)
     return train_loader, test_loader
 
 
@@ -323,9 +323,9 @@ def preprocess_image(input_image, dataset, means, stds):
         - torch.Tensor: The preprocessed image tensor ready for input into the model
     """
     if dataset == 'mnist':
-        # For MNIST, convert the image to grayscale
+        # Convert the image to grayscale
         image = Image.open(input_image).convert("L")
-        # Convert the image to inspect brightness
+        # Convert the image to np array to inspect brightness
         # MNIST images have black backgrounds and white digits
         image_np = np.array(image)
         # Calculate the mean brightness to determine if the image needs inversion
@@ -334,24 +334,24 @@ def preprocess_image(input_image, dataset, means, stds):
         if mean_brightness > 127:
             image = ImageOps.invert(image)
         # Transformation for MNIST images
-        # 1. Resize the image to 28x28 pixels (standard MNIST size)
-        # 2. Convert the image to a Pytorch tensor
-        # 3. Normalize the image using the mean and std
+        # 1. Resize image to 28x28 pixels (standard MNIST size)
+        # 2. Convert image to pytorch tensor
+        # 3. Normalize image using the mean and std
         transform = transforms.Compose([
             transforms.Resize((28, 28)),
             transforms.ToTensor(),
             transforms.Normalize((means,), (stds,))
         ])
     elif dataset == 'cifar':
-        # For CIFAR-10, convert the image to RGB
+        # Convert the image to RGB
         image = Image.open(input_image)
         # If the image has an alpha channel (like png files), convert it to RGB by removing the alpha
         if image.mode != 'RGB':
             image = image.convert("RGB")
         # Transformation for CIFAR-10 images:
-        # 1. Resize the image to 32x32 pixels (standard CIFAR-10 size)
-        # 2. Convert the image to a PyTorch tensor
-        # 3. Normalize the image using the CIFAR-10 mean and std
+        # 1. Resize image to 32x32 pixels (standard CIFAR-10 size)
+        # 2. Convert image to pytorch tensor
+        # 3. Normalize image using the mean and std
         transform = transforms.Compose([
             transforms.Resize((32, 32)),
             transforms.ToTensor(),
@@ -364,7 +364,7 @@ def preprocess_image(input_image, dataset, means, stds):
 
 
 # -------------------- Inference --------------------
-def classify_image(model, input_image, device, dataset_name, mean, std, dataset_labels):
+def classify_image(model, input_image, device, dataset, mean, std, dataset_labels):
     """
     Perform inference on a single image to classify it using the trained model, and visualize the feature maps from the first
     convolutional layer
@@ -383,22 +383,22 @@ def classify_image(model, input_image, device, dataset_name, mean, std, dataset_
        """
 
     # Preprocess input image: Resize, normalize, and convert to tensor
-    image = preprocess_image(input_image, dataset_name, mean, std).to(device)
+    image = preprocess_image(input_image, dataset, mean, std).to(device)
 
-    # Set model to evaluation mode to disable dropout and other training-specific layers
+    # Set model to evaluation mode
     model.eval()
     # Perform inference without tracking gradients
     with torch.no_grad():
         # Pass image through the first convolutional layer to extract feature maps
-        conv1_output = model.conv1(image)
+        conv1_output = model.C1(image)
         # Forward pass
-        output = model(image, dataset_name)
-        # Extract predicted class index
+        output = model(image, dataset)
+        # Predicted class index
         _, predicted = torch.max(output, 1)
         predicted_class_idx = predicted.item()
     # Visualize feature maps of first convolutional layer
-    visualize_first_conv_layer(conv1_output, dataset_name)
-    # Return predicted class label
+    visualize_first_conv_layer(conv1_output, dataset)
+    # predicted class label
     return dataset_labels[predicted_class_idx]
 
 
@@ -412,14 +412,14 @@ def visualize_first_conv_layer(conv1_output, dataset):
         - dataset (str): Dataset the model is trained on
 
     Returns:
-        - None. Saves a PNG file with visualized feature maps.
+        - None. Saves file with visualized feature maps
     """
 
     # Move the tensor to CPU for visualization in matplotlib
     conv1_output = conv1_output.cpu()
     # Number of filters (channels) in the first convolutional layer
     num_filters = conv1_output.shape[1]
-    # Grid of subplots (4 rows x 8 columns) to display 32 feature maps
+    # Grid of subplots to display 32 feature maps
     fig, axes = plt.subplots(4, 8, figsize=(14, 8), dpi=300)
 
     for i in range(num_filters):
@@ -435,7 +435,6 @@ def visualize_first_conv_layer(conv1_output, dataset):
 
     output_filename = f"CONV_rslt_{dataset}.png"
     plt.tight_layout()
-    # Save the entire figure as an image file with 200 DPI for high resolution
     plt.savefig(output_filename, dpi=200)
     plt.close()
 
@@ -452,21 +451,26 @@ def load_saved_model(model_class, num_classes, in_channels, model_directory, dat
         - in_channels (int): Number of input channels (1 for MNIST, 3 for CIFAR-10).
         - model_directory (str): Directory where the saved model is stored.
         - dataset (str): Dataset the model is trained on.
-        - device: Device (CPU or GPU) on which to load model on for inference.
+        - device: Device (CPU/GPU) on which to load model on for inference.
 
         Returns:
-            torch.nn.Module: The trained model loaded with its saved state, ready for inference.
+            torch.nn.Module: The trained model loaded with saved state, ready for inference.
         """
-    # Construct path for the saved model
+    # Construct path for saved model
     model_filename = f"{dataset}_trained_model.pth"
     model_path = os.path.join(model_directory, model_filename)
-    # Initialize the model with the parameters
-    model = model_class(in_channels=in_channels, num_classes=num_classes, dataset_name=dataset)
-    # Load the model's saved state (weights and biases)
+
+    # Check if model file exists
+    if not os.path.exists(model_path):
+        return None
+
+    # Initialize model with the parameters
+    model = model_class(in_channels, num_classes, dataset)
+    # Load model saved state (weights and biases)
     model.load_state_dict(torch.load(model_path, map_location=device))
-    # Move the model to the specified device (CPU/GPU)
+    # Move model to the specified device (CPU/GPU)
     model.to(device)
-    # Set the model to evaluation mode
+    # Set model to evaluation mode
     model.eval()
     return model
 
@@ -484,9 +488,9 @@ def main():
     # Set up the argument parser for CLI commands
     parser = argparse.ArgumentParser(
         usage='python3 CNNclassify.py [-h] {train,test,save} ...',
-        formatter_class=argparse.RawTextHelpFormatter,  # Formats the help message
-        add_help=False,  # Disables the default help message
-        epilog=epilog  # Adds the usage examples as epilog
+        formatter_class=argparse.RawTextHelpFormatter,
+        add_help=False,
+        epilog=epilog
     )
 
     # Create subparsers for train and test commands
@@ -529,10 +533,9 @@ def main():
         train_loader, test_loader = load_dataset(dataset, batch_size, means, stds)
         # Initialize the CNN model with appropriate input channels and number of classes
         model = CNNClassifier(input_channels, num_classes, dataset).to(device)
-        # Set up the loss function and optimizer for training
+        # Set up the loss function, optimizer and learning rate scheduler for training
         loss_fn = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0005)
-        # Learning rate scheduler to reduce the learning rate on plateau
         scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, verbose=False)
         # Set the number of training epochs (10 for MNIST, 50 for CIFAR-10)
         num_epochs = 10 if dataset == 'mnist' else 50
@@ -557,15 +560,17 @@ def main():
             for dataset in datasets:
                 # Get dataset-specific details (channels, classes, mean, std, labels)
                 input_channels, num_classes, means, stds, dataset_labels = get_dataset_info(dataset)
-                # Load the saved model for the current dataset (CIFAR or MNIST)
+                # Load the saved model for the current dataset
                 model = load_saved_model(CNNClassifier, num_classes, input_channels, model_dir, dataset, device)
-                # Perform inference on the image and get the predicted label
-                predicted_label = classify_image(model, img_file, device, dataset, means, stds, dataset_labels)
-                # Print prediction result depending on the dataset
-                if dataset == 'mnist':
-                    print(f"Prediction result by model trained on MNIST dataset: {predicted_label}")
-                elif dataset == 'cifar':
-                    print(f"Prediction result by model trained on CIFAR-10 dataset: {predicted_label}")
+                if model is not None:
+                    # Perform inference on the image and get the predicted label
+                    predicted_label = classify_image(model, img_file, device, dataset, means, stds, dataset_labels)
+                    if dataset == 'mnist':
+                        print(f"Prediction result by model trained on MNIST dataset: {predicted_label}")
+                    elif dataset == 'cifar':
+                        print(f"Prediction result by model trained on CIFAR-10 dataset: {predicted_label}")
+                else:
+                    print(f"Error: Could not load model for {dataset} dataset.")
 
 
 if __name__ == '__main__':
