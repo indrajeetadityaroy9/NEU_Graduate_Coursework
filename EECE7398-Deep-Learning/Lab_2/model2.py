@@ -1,12 +1,13 @@
 import re
 import html
-from underthesea import sent_tokenize, text_normalize, word_tokenize
+from underthesea import sent_tokenize, text_normalize, word_tokenize, pos_tag
 from nltk.tokenize import sent_tokenize as en_sent_tokenize
 from nltk.tokenize import RegexpTokenizer
 
 import re
 import html
 from underthesea import sent_tokenize, text_normalize, word_tokenize
+from vietnam_number import w2n
 
 
 def preprocess_text_vietnamese(text):
@@ -34,7 +35,7 @@ def preprocess_text_vietnamese(text):
     text = re.sub(r'<[^>]+>', '', text)
 
     # Step 6: Remove timestamps
-    timestamp_pattern = r'\d+\s+(?:\d{2}\s*[:]\s*\d{2}\s*[:]\s*\d{2},\d{3})\s*-->\s*(?:\d{2}\s*[:]\s*\d{2}\s*[:]\s*\d{2},\d{3})'
+    timestamp_pattern = r'\d+\s+(?:\d{2}[:]\d{2}[:]\d{2},\d{3})\s*-->\s*(?:\d{2}[:]\d{2}[:]\d{2},\d{3})'
     text = re.sub(timestamp_pattern, '', text)
 
     # Step 7: Remove extra spaces and clean up whitespace
@@ -42,14 +43,15 @@ def preprocess_text_vietnamese(text):
 
     # Step 8: Replace '$' with 'đô la'
     text = re.sub(r'\$', ' đô la', text)
-
     text = re.sub(r'\bUSD\b', 'đô la', text)
-
-    # Step 9: Replace 'dollars' with 'đô la'
     text = re.sub(r'\bdollars\b', 'đô la', text, flags=re.IGNORECASE)
 
-    # **New Step 10: Remove commas within numbers**
+    # Step 9: Remove commas within numbers
     text = re.sub(r'(?<=\d),(?=\d)', '', text)
+
+    # Step 10: Convert numerals using context-aware function
+    text = convert_vietnamese_number_words_to_digits(text)
+    print(text)
 
     # Step 11: Fix spacing around punctuation
     text = fix_punctuation_spacing(text)
@@ -66,10 +68,79 @@ def preprocess_text_vietnamese(text):
     return tokenized_sentences
 
 
+def convert_vietnamese_number_words_to_digits(text):
+    import re
+    from underthesea import pos_tag
+    from vietnam_number import w2n
+
+    # Split the text into sentences
+    sentences = re.split(r'(?<=[.!?]) +', text)
+    processed_text = ''
+
+    # Set of Vietnamese number words
+    number_words = {
+        'không', 'một', 'mốt', 'hai', 'ba', 'bốn', 'tư', 'năm', 'lăm',
+        'sáu', 'bảy', 'tám', 'chín', 'mười', 'mươi', 'trăm',
+        'nghìn', 'ngàn', 'triệu', 'tỷ', 'linh', 'lẻ'
+    }
+
+    for sentence in sentences:
+        pos_tags = pos_tag(sentence)
+        new_tokens = []
+        i = 0
+        while i < len(pos_tags):
+            token, tag = pos_tags[i]
+
+            # Split multi-word tokens into individual words
+            token_words = token.split()
+            lower_token_words = [word.lower() for word in token_words]
+
+            # Handle 'phần trăm' (percent)
+            if 'phần' in lower_token_words and 'trăm' in lower_token_words:
+                new_tokens.append('%')
+                i += 1
+                continue
+
+            # Check if the first word is a number word
+            if lower_token_words[0] in number_words or (lower_token_words[0] == 'năm' and tag == 'M'):
+                numeral_tokens = token_words
+                i += 1
+                # Collect following tokens that are number words
+                while i < len(pos_tags):
+                    next_token, next_tag = pos_tags[i]
+                    next_token_words = next_token.split()
+                    lower_next_token_words = [word.lower() for word in next_token_words]
+
+                    if all(word in number_words for word in lower_next_token_words) or (
+                            lower_next_token_words[0] == 'năm' and next_tag == 'M'):
+                        numeral_tokens.extend(next_token_words)
+                        i += 1
+                    else:
+                        break
+
+                numeral_phrase = ' '.join(numeral_tokens).lower()
+                try:
+                    number = w2n(numeral_phrase)
+                    new_tokens.append(str(number))
+                except ValueError:
+                    # If conversion fails, keep the original tokens
+                    new_tokens.extend(numeral_tokens)
+            else:
+                new_tokens.extend(token_words)
+                i += 1
+
+        processed_sentence = ' '.join(new_tokens)
+        processed_text += processed_sentence + ' '
+
+    # Clean up extra spaces and return the processed text
+    processed_text = re.sub(r'\s+', ' ', processed_text).strip()
+    return processed_text
+
+
 def fix_punctuation_spacing(text):
     # Remove spaces before punctuation
     text = re.sub(r'\s+([.,!?;:"\'’“”])', r'\1', text)
-    # Ensure space after punctuation if not present
+    # Ensure space after punctuation
     text = re.sub(r'([.,!?;:"\'’“”])(\w)', r'\1 \2', text)
     return text
 
@@ -132,7 +203,7 @@ def preprocess_text_english(text):
 
 
 # Example usage
-text_vi = 'Và ta có ở đây -- Mọi người có thấy 25 ô tròn màu tím bên trái bạn , và 25 , coi như là ô màu vàng bên phải ?'
+text_vi = 'Nhà báo Misha Glenny đã dành vài năm điều tra các mạng lưới tội phạm có tổ chức trên khắp thế giới , mà người ta ước tính đã phát triển lên tới 15 % nền kinh tế toàn cầu .Từ mafia Nga cho đến các nhóm tội phạm thuốc phiện khổng lồ , nguồn tin của ông không bao gồm các quan chức hành luật , tình báo mà còn từ trong giới tội phạm .'
 text_en = 'One hundred twenty-five girls will not be married when they &apos;re 12 years old .'
 
 processed_vi = preprocess_text_vietnamese(text_vi)
