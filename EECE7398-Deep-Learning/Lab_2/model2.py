@@ -101,18 +101,17 @@ def convert_vietnamese_number_words_to_digits(text):
                 i += 1
                 continue
 
-            # Check if the first word is a number word
-            if lower_token_words[0] in number_words or (lower_token_words[0] == 'năm' and tag == 'M'):
+            # Check if the first word is a number word and tagged as 'M'
+            if lower_token_words[0] in number_words and tag == 'M':
                 numeral_tokens = token_words
                 i += 1
-                # Collect following tokens that are number words
+                # Collect following tokens that are number words and tagged as 'M'
                 while i < len(pos_tags):
                     next_token, next_tag = pos_tags[i]
                     next_token_words = next_token.split()
                     lower_next_token_words = [word.lower() for word in next_token_words]
 
-                    if all(word in number_words for word in lower_next_token_words) or (
-                            lower_next_token_words[0] == 'năm' and next_tag == 'M'):
+                    if all(word in number_words for word in lower_next_token_words) and next_tag == 'M':
                         numeral_tokens.extend(next_token_words)
                         i += 1
                     else:
@@ -135,6 +134,7 @@ def convert_vietnamese_number_words_to_digits(text):
     # Clean up extra spaces and return the processed text
     processed_text = re.sub(r'\s+', ' ', processed_text).strip()
     return processed_text
+
 
 
 def fix_punctuation_spacing(text):
@@ -201,9 +201,11 @@ def preprocess_text_english(text):
 
     return tokenized_sentences
 
-
-# Example usage
-text_vi = 'Nhà báo Misha Glenny đã dành vài năm điều tra các mạng lưới tội phạm có tổ chức trên khắp thế giới , mà người ta ước tính đã phát triển lên tới 15 % nền kinh tế toàn cầu .Từ mafia Nga cho đến các nhóm tội phạm thuốc phiện khổng lồ , nguồn tin của ông không bao gồm các quan chức hành luật , tình báo mà còn từ trong giới tội phạm .'
+text_vi = '''Một lần nữa , như đối với Mongolia , Trung Quốc không hề xâm chiếm Nga . Trung Quốc chỉ cho thuê nước Nga .
+Tôi gọi điều này là hiện tượng toàn cầu hoá theo kiểu Trung Hoa .
+Bây giờ đây có thể là bản đồ khu vực trong vòng 10 đến 20 năm tới .
+Nhưng từ từ đã . Bản đồ này đã 700 năm tuổi .
+Đây là bản đồ của Triều Đại Nhà Nguyên , dưới sự lãnh đại của Kubla Khan , cháu nội của Genghis Khan .'''
 text_en = 'One hundred twenty-five girls will not be married when they &apos;re 12 years old .'
 
 processed_vi = preprocess_text_vietnamese(text_vi)
