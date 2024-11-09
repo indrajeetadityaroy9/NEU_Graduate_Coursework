@@ -1,11 +1,7 @@
 import re
 import html
-from transformers import AutoTokenizer, AutoModel, AutoModelForSeq2SeqLM
-import torch
-
-# Load PhoBERT tokenizer and model
-tokenizer = AutoTokenizer.from_pretrained("huynguyen208/marian-finetuned-kde4-en-to-vi-190322")
-
+from pyvi import ViTokenizer, ViPosTagger
+from vietnam_number import w2n  # Ensure this package is installed: pip install vietnam_number
 
 def preprocess_text_vietnamese(text):
     # Step 1: Fix double-encoded entities
@@ -49,10 +45,144 @@ def preprocess_text_vietnamese(text):
     # Step 10: Remove dots used as thousands separators
     text = remove_dots_in_numbers(text)
 
+    # Step 11: Replace standalone large number words with their numeric equivalents
+    text = replace_large_number_words_vietnamese(text)
+
+    # Step 12: Convert Vietnamese number words to digits
+    text = convert_vietnamese_number_words_to_digits(text)
+
     # Step 13: Fix spacing around punctuation
     text = fix_punctuation_spacing(text)
 
     return text
+
+
+def replace_large_number_words_vietnamese(text):
+    # Define large number words and their numeric equivalents
+    large_numbers = {
+        'nghìn tỷ': '1000000000000',  # trillion
+        'tỷ': '1000000000',           # billion
+        'triệu': '1000000',            # million
+        'nghìn': '1000',               # thousand
+    }
+
+    # Sort the keys by length in descending order to match longer phrases first
+    sorted_large_numbers = sorted(large_numbers.keys(), key=len, reverse=True)
+
+    # Function to replace standalone large number words
+    def replace_large_numbers(match):
+        word = match.group(0)
+        return large_numbers.get(word.lower(), word)
+
+    # Replace standalone large number words
+    for word in sorted_large_numbers:
+        # Use word boundaries to match standalone words
+        pattern = r'\b' + re.escape(word) + r'\b'
+        text = re.sub(pattern, replace_large_numbers, text, flags=re.IGNORECASE)
+
+    return text
+
+
+def convert_vietnamese_number_words_to_digits(text):
+    # Split the text into sentences
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    processed_text = ''
+
+    # Set of Vietnamese number words
+    number_words = {
+        'không', 'một', 'mốt', 'hai', 'ba', 'bốn', 'tư', 'năm', 'lăm',
+        'sáu', 'bảy', 'tám', 'chín', 'mười', 'mươi', 'trăm',
+        'nghìn', 'ngàn', 'triệu', 'tỷ', 'linh', 'lẻ', 'phần'
+    }
+
+    # Words that indicate 'năm' means 'year' if they follow or precede it
+    year_indicators = {'nhiều', 'mỗi', 'trong', 'vào', 'với', 'trước', 'sau', 'nay', 'đó', 'tới'}
+
+    # Keywords that may precede identifiers
+    identifier_keywords = {'chuyến bay', 'số hiệu', 'mã', 'biển số', 'số', 'kí hiệu', 'địa chỉ'}
+
+    for sentence in sentences:
+        # Tokenize and POS tag the sentence using Pyvi
+        tokens = ViTokenizer.tokenize(sentence)
+        tokens_list, tags_list = ViPosTagger.postagging(tokens)
+
+        new_tokens = []
+        i = 0
+        while i < len(tokens_list):
+            token = tokens_list[i]
+            tag = tags_list[i]
+
+            # Split multi-word tokens into individual words
+            token_words = token.replace('_', ' ').split()
+            lower_token_words = [word.lower() for word in token_words]
+
+            # Function to check if the current token is part of an identifier
+            def is_part_of_identifier(index):
+                # Check previous tokens for identifier keywords
+                for offset in range(1, 3):  # Look back up to 2 tokens
+                    if index - offset >= 0:
+                        prev_token = tokens_list[index - offset].lower().replace('_', ' ')
+                        if prev_token in identifier_keywords:
+                            return True
+                return False
+
+            # **Step A: Handle "năm" as "year" first**
+            if lower_token_words[0] == "năm" and i > 0 and tokens_list[i - 1].lower() in year_indicators:
+                # "năm" is "year", do not convert
+                new_tokens.extend(token_words)
+                i += 1
+                continue
+
+            # **Step B: Process numeral phrases**
+            if lower_token_words[0] in number_words:
+                # Check if the number is part of an identifier
+                if is_part_of_identifier(i):
+                    # Do not convert; keep as is
+                    new_tokens.extend(token_words)
+                    i += 1
+                    continue
+
+                # Collect numeral tokens
+                numeral_tokens = token_words.copy()
+                i += 1
+                # Collect following tokens that are number words
+                while i < len(tokens_list):
+                    next_token = tokens_list[i]
+                    next_token_words = next_token.replace('_', ' ').split()
+                    lower_next_token_words = [word.lower() for word in next_token_words]
+
+                    if all(word in number_words for word in lower_next_token_words):
+                        numeral_tokens.extend(next_token_words)
+                        i += 1
+                    else:
+                        break
+
+                # Normalize "ngàn" to "nghìn" for consistency
+                numeral_phrase = ' '.join(numeral_tokens).lower().replace('ngàn', 'nghìn')
+
+                try:
+                    # Convert using w2n
+                    number = w2n(numeral_phrase)
+                    new_tokens.append(str(number))
+                except ValueError:
+                    # If conversion fails, keep the original tokens
+                    # Uncomment the next line for debugging
+                    # print(f"Conversion failed for phrase: '{numeral_phrase}'")
+                    new_tokens.extend(numeral_tokens)
+            else:
+                # Handle "năm" in context of "year" (already handled above)
+                # Keep other tokens as is
+                new_tokens.extend(token_words)
+                i += 1
+
+        # Reconstruct the sentence
+        processed_sentence = ' '.join(new_tokens)
+        processed_sentence = processed_sentence.replace('_', ' ')
+        processed_text += processed_sentence + ' '
+
+    # Clean up extra spaces
+    processed_text = re.sub(r'\s+', ' ', processed_text).strip()
+    return processed_text
 
 
 def remove_dots_in_numbers(text):
@@ -79,55 +209,9 @@ def fix_punctuation_spacing(text):
     return text
 
 
-def preprocess_and_tokenize(text):
-    # Preprocess Vietnamese text
-    cleaned_text = preprocess_text_vietnamese(text)
-    # Tokenize
-    tokens = tokenizer.tokenize(cleaned_text)
-
-    # Merge subwords into complete words
-    clean_tokens = []
-    current_word = ""
-    for token in tokens:
-        if token.startswith('▁'):
-            if current_word:
-                clean_tokens.append(current_word)  # Append the current word
-            current_word = token[1:]  # Start a new word
-        else:
-            current_word += token  # Add subword to the current word
-
-    # Append the last word if any
-    if current_word:
-        clean_tokens.append(current_word)
-
-    # Separate punctuation
-    final_tokens = []
-    for token in clean_tokens:
-        # Separate punctuation at the end of each word if present
-        split_tokens = re.findall(r'\w+|[.,!?;]', token)
-        final_tokens.extend(split_tokens)
-
-    return final_tokens
-
-
-def replace_large_number_words_vietnamese(text):
-    large_numbers = {
-        'nghìn tỷ': '1000000000000',
-        'tỷ': '1000000000',
-        'triệu': '1000000',
-        'nghìn': '1000',
-    }
-
-    # Replace specific large number phrases to avoid spacing issues
-    for word, replacement in large_numbers.items():
-        pattern = rf'(\d+(\.\d+)?\s*{word})'
-        text = re.sub(pattern,
-                      lambda match: str(int(float(match.group(1).replace(word, "").strip()) * int(replacement))), text)
-
-    return text
 
 
 # Test with example
-text = "Đó là một câu hỏi đáng giá cả triệu dollar , phải không ?"
-clean_tokens = preprocess_and_tokenize(text)
-print("Clean Tokens:", clean_tokens)
+text = "nhưng để đạt tới con số 500 triệu người thì còn khó khăn hơn rất rất nhiều"
+processed_text = preprocess_text_vietnamese(text)
+print("Processed Text:", processed_text)
