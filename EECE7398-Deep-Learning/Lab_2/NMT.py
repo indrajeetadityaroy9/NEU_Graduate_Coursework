@@ -5,12 +5,27 @@ import html
 import argparse
 from torch.cuda.amp import autocast, GradScaler
 import itertools
-import subprocess
 from functools import partial
+import subprocess
+import logging
 
-# Install necessary packages
+logging.getLogger("transformers").setLevel(logging.ERROR)
+logging.getLogger("torch").setLevel(logging.ERROR)
+
+# Clear pip cache
+subprocess.run(["pip", "cache", "purge"], check=True)
+
+# Uninstall any existing installations of torch and torchtext
+subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torch", "torchtext"], check=True)
+
+# Install GPU-compatible versions of torch and torchtext
+subprocess.run([
+    sys.executable, "-m", "pip", "install", "torch==1.13.0+cu117", "torchtext==0.14.0", "-f",
+    "https://download.pytorch.org/whl/torch_stable.html"
+], check=True)
+
 subprocess.run(
-    [sys.executable, "-m", "pip", "install", "-q", "datasets", "torch", "torchtext==0.14.1", "pyvi", "nltk", "tqdm"],
+    [sys.executable, "-m", "pip", "install", "-q", "datasets", "pyvi", "nltk", "tqdm"],
     stdout=open(os.devnull, 'wb')
 )
 
@@ -45,7 +60,7 @@ class Encoder(nn.Module):
         self.embedding_layer = nn.Embedding(self.vocab_size, self.embedding_dim, padding_idx)
         # Bidirectional GRU layer that processes the embedded tokens.
         # This layer outputs both forward and backward hidden states, which allows the model to
-        # capture contextual information from both directions in the sequence.
+        # capture contextual information from both directions in the sequence
         self.bi_gru = nn.GRU(
             input_size=self.embedding_dim,
             hidden_size=self.hidden_dim,
@@ -53,18 +68,18 @@ class Encoder(nn.Module):
             bidirectional=True
         )
         # Fully connected layer to project the concatenated bidirectional hidden states
-        # into a single hidden state, with a dimensionality compatible with the decoder.
+        # into a single hidden state, with a dimensionality compatible with the decoder
         self.hidden_fc = nn.Linear(
             in_features=self.hidden_dim * 2,
             out_features=self.hidden_dim
         )
 
     def forward(self, input_tokens):
-        # Pass the input tokens through the embedding layer to obtain their dense representations.
+        # Pass the input tokens through the embedding layer to obtain their dense representations
         embedded_tokens = self.embedding_layer(input_tokens)
         # Pass the embedded tokens through the bidirectional GRU.
-        # gru_outputs contains the hidden states for each time step.
-        # gru_hidden contains the final hidden states of both directions.
+        # gru_outputs contains the hidden states for each time step
+        # gru_hidden contains the final hidden states of both directions
         gru_outputs, gru_hidden = self.bi_gru(embedded_tokens)
         # Extract the final hidden state of the forward GRU
         forward_hidden = gru_hidden[0, :, :]
@@ -138,14 +153,10 @@ class Decoder(nn.Module):
 # -------------------- Dataset Utilities --------------------
 def fix_punctuation_spacing_english(text):
     """
-        Corrects spacing issues around punctuation in English text, including contractions, possessives, and general punctuation spacing.
-
-        Args:
-            text (str): The English text to correct.
-
-        Returns:
-            str: The text with corrected punctuation spacing.
-        """
+    Corrects spacing issues around punctuation in English text, including contractions, possessives, and general punctuation spacing.
+    :param text: english text to correct
+    :return: english text with corrected punctuation spacing
+    """
     text = re.sub(r"\b(\w+)\s*'\s*([a-zA-Z])", r"\1'\2", text)  # "I' m" -> "I'm"
     text = re.sub(r"\b(\w+)\s*'\s*s\b", r"\1's", text)  # "world' s" -> "world's"
     text = re.sub(r"\b(\w+)\s*'\s*d\b", r"\1'd", text)  # "I' d" -> "I'd"
@@ -169,14 +180,10 @@ def fix_punctuation_spacing_english(text):
 
 def preprocess_text_english(text):
     """
-        Preprocesses English text by handling html entities, punctuation, spacing, and currency formatting.
-
-        Args:
-            text (str): The English text to preprocess.
-
-        Returns:
-            str: The preprocessed English text.
-        """
+    Preprocesses english text by handling html entities, punctuation, spacing, and currency formatting
+    :param text: english text to preprocess
+    :return: preprocessed English text
+    """
     # Replace HTML entities with corresponding characters
     text = re.sub(r'(&amp;\s?lt\s?;)+', '<', text, flags=re.IGNORECASE)
     text = re.sub(r'(&amp;\s?gt\s?;)+', '>', text, flags=re.IGNORECASE)
@@ -207,12 +214,8 @@ def preprocess_text_english(text):
 def replace_dollar_plural(match):
     """
     Ensures correct pluralization of 'dollar' based on the numerical value.
-
-    Args:
-        match: A regex match object containing the number as a string.
-
-    Returns:
-        str: The number followed by 'dollar' or 'dollars' as appropriate.
+    :param match: a regex match object containing the number as a string
+    :return: number followed by 'dollar' or 'dollars' as appropriate
     """
     # Extract the numerical string from the match and remove commas for parsing
     number_str = match.group(1)
@@ -221,51 +224,65 @@ def replace_dollar_plural(match):
     return f"{number_str} dollar" if number_value == 1 else f"{number_str} dollars"
 
 
-def create_dataset_from_file(file_path):
+def create_dataset_from_file(file):
+    # Dictionary to store data
     data = {'en': []}
-    with open(file_path, 'r', encoding='utf-8') as f:
+    # Open the file in read mode
+    with open(file, 'r', encoding='utf-8') as f:
+        # Iterate through each line in the file
         for line in f:
+            # Remove any leading/trailing whitespace and add line
             data['en'].append(line.strip())
+    # Convert the dictionary to a Dataset
     return Dataset.from_dict(data)
 
 
+# Set up the device to use GPU if available, otherwise default to CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model_nllb_name = "facebook/nllb-200-3.3B"
-tokenizer_nllb = AutoTokenizer.from_pretrained(model_nllb_name)
-model_nllb = AutoModelForSeq2SeqLM.from_pretrained(model_nllb_name).to(device)
+# Load the model and tokenizer from pretrained NLLB model
+nllb_model_name = "facebook/nllb-200-3.3B"
+nllb_tokenizer = AutoTokenizer.from_pretrained(nllb_model_name)
+nllb_model = AutoModelForSeq2SeqLM.from_pretrained(nllb_model_name).to(device)
+# Define the target language for translation (Vietnamese)
 tgt_language = "vie_Latn"
-tgt_language_id = tokenizer_nllb.convert_tokens_to_ids(tgt_language)
+# Get the token ID for the target language to set in the model for forced decoding
+tgt_language_id = nllb_tokenizer.convert_tokens_to_ids(tgt_language)
 
 
 def translate_batch_to_vietnamese(text_list):
-    encoded_inputs = tokenizer_nllb(
+    """
+    Translates a batch of English text strings to Vietnamese
+    :param text_list: List of text strings in English to translate
+    :return: List of translated text strings in Vietnamese
+    """
+    # Encode the input texts using the tokenizer, with padding and truncation for uniform input sizes
+    encoded_inputs = nllb_tokenizer(
         text_list, return_tensors="pt", padding=True, truncation=True
     ).to(device)
 
-    translated_tokens = model_nllb.generate(
+    # Generate translated tokens, setting the target language to Vietnamese
+    translated_tokens = nllb_model.generate(
         **encoded_inputs, forced_bos_token_id=tgt_language_id
     )
 
-    translated_texts = tokenizer_nllb.batch_decode(
+    # Decode the translated tokens back into text, skipping any special tokens
+    translated_texts = nllb_tokenizer.batch_decode(
         translated_tokens, skip_special_tokens=True
     )
+
     return translated_texts
 
 
 def preprocess_and_load_dataset(dataset, split, batch_size=32):
     """
-    Preprocesses and translates a dataset split, then overwrites the English text file and creates a Vietnamese text file.
-
-    Args:
-        dataset (DatasetDict): The dataset containing text entries to be processed and translated.
-        split (str): The dataset split to process ("train", "tst2012", or "tst2013").
-        batch_size (int): The number of samples to process in each batch.
-
-    Returns:
-        None
+    Preprocesses and translates a dataset split and creates a Vietnamese text file
+    :param dataset: Dataset containing text entries to be processed and translated
+    :param split: Dataset split to process ("train", "tst2012", or "tst2013")
+    :param batch_size: Number of samples to process in each batch
+    :return: None
     """
     # Define file paths based on the split
-    en_file = f"{split}.en.txt"  # Overwrite the existing English text file
+    en_file = f"{split}.en.txt"
     vi_file = f"{split}.vi.txt"  # Create a new Vietnamese text file
 
     with open(en_file, "w", encoding="utf-8") as f_en, open(vi_file, "w", encoding="utf-8") as f_vi:
@@ -293,25 +310,50 @@ def preprocess_and_load_dataset(dataset, split, batch_size=32):
 
 class TranslationDataset(torch.utils.data.Dataset):
     def __init__(self, src_file, tgt_file, max_seq_length):
+        """
+        Initializes the TranslationDataset with source and target sequences.
+        :param src_file: Source language file
+        :param tgt_file: Target language file.
+        :param max_seq_length: Maximum sequence length
+        """
+        # Load and process source and target sequences with a maximum length constraint
         self.src_sequences = self.load_sequences(src_file, max_seq_length)
         self.tgt_sequences = self.load_sequences(tgt_file, max_seq_length)
 
-    def load_sequences(self, file_path, max_seq_length):
+    def load_sequences(self, file, max_seq_length):
+        """
+        Loads sequences from a file and truncates them to the max sequence length.
+        :param file: File containing text data
+        :param max_seq_length: Maximum sequence length
+        :return:
+        """
         sequences = []
-        with open(file_path, 'r', encoding='utf-8') as f:
+
+        # Open the file and read line by line
+        with open(file, 'r', encoding='utf-8') as f:
             for line in f:
-                text = line.strip()
-                tokens = text.split()
+                text = line.strip()  # Remove surrounding whitespace
+                tokens = text.split()  # Split text into tokens
+                # Truncate the token list if it exceeds max_seq_length
                 if len(tokens) > max_seq_length:
                     tokens = tokens[:max_seq_length]
-                    text = ' '.join(tokens)
-                sequences.append(text)
+                    text = ' '.join(tokens)  # Rejoin tokens into a truncated sentence
+                sequences.append(text)  # Append the processed text to the sequences list
         return sequences
 
     def __getitem__(self, index):
+        """
+        Retrieves the source and target sequence at a specific index.
+        :param index: Index of the sequence pair
+        :return: Tuple containing the source and target sequences
+        """
         return self.src_sequences[index], self.tgt_sequences[index]
 
     def __len__(self):
+        """
+        Returns the number of sequence pairs in the dataset.
+        :return: Length of the dataset.
+        """
         return len(self.src_sequences)
 
 
@@ -319,13 +361,9 @@ class TranslationDataset(torch.utils.data.Dataset):
 def tokenize_text(text, lang):
     """
     Tokenizes a given text based on the specified language.
-
-    Args:
-        text (str): The input text to tokenize.
-        lang (str): The language of the text ('english' or 'vietnamese').
-
-    Returns:
-        list of str: A list of tokens extracted from the text.
+    :param text: Input text to tokenize
+    :param lang: Language of the text ('english' or 'vietnamese')
+    :return: List of tokens extracted from the text
     """
     # Convert text to lowercase for consistent tokenization
     text = text.lower()
@@ -344,14 +382,10 @@ def tokenize_text(text, lang):
 
 def tokenize_batch(texts, lang):
     """
-    Tokenizes a batch of texts in a generator style.
-
-    Args:
-        texts (list of str): A list of texts to tokenize.
-        lang (str): The language of the texts.
-
-    Yields:
-        list of str: A list of tokens for each text in the batch.
+    Tokenizes a batch of texts
+    :param texts: List of texts to tokenize
+    :param lang: Language of the texts
+    :return: List of tokens for each text in the batch
     """
     for text in texts:
         # Yield the tokens of each text for efficient batch processing
@@ -361,13 +395,9 @@ def tokenize_batch(texts, lang):
 def build_vocabulary(texts, lang):
     """
     Builds a vocabulary from a list of texts with special tokens included.
-
-    Args:
-        texts (list of str): The list of texts to build the vocabulary from.
-        lang (str): The language of the texts for tokenization.
-
-    Returns:
-        Vocab: A vocabulary object with tokens indexed, including special tokens.
+    :param texts: List of texts to build the vocabulary from
+    :param lang: Language of the texts for tokenization
+    :return: Vocabulary with tokens indexed, including special tokens
     """
     # Special tokens for padding, unknown, beginning of sentence, and end of sentence
     special_tokens = ['<pad>', '<unk>', '<bos>', '<eos>']
@@ -386,18 +416,12 @@ def collate_batch(batch, src_vocab, tgt_vocab, src_lang, tgt_lang):
     """
     Processes and batches a list of source and target text pairs, converting them to tensor indices
     with padding for uniformity.
-
-    Args:
-        batch (list of tuples): A batch of (source_text, target_text) pairs.
-        src_vocab (Vocab): Vocabulary object for the source language.
-        tgt_vocab (Vocab): Vocabulary object for the target language.
-        src_lang (str): Identifier for the source language.
-        tgt_lang (str): Identifier for the target language.
-
-    Returns:
-        tuple: A tuple containing two tensors:
-            - src_batch (Tensor): Padded tensor of source sequences with indices.
-            - tgt_batch (Tensor): Padded tensor of target sequences with indices.
+    :param batch: Batch of (source_text, target_text) pairs.
+    :param src_vocab: Vocabulary for the source language.
+    :param tgt_vocab: Vocabulary for the target language.
+    :param src_lang: Identifier for the source language
+    :param tgt_lang: Identifier for the target language
+    :return: A tuple containing Padded tensor of source and target sequences with indices
     """
     # Initialize lists to store the tokenized and indexed source and target sequences
     src_batch, tgt_batch = [], []
@@ -423,14 +447,24 @@ def collate_batch(batch, src_vocab, tgt_vocab, src_lang, tgt_lang):
 
 
 # -------------------- Model Evaluation --------------------
-def validate(data_loader, encoder, decoder, target_vocab, device=torch.device('cpu'), print_translations=False):
+def validate(data_loader, encoder, decoder, target_vocab, device, print_translations=False):
+    """
+    Validates the encoder-decoder model on a validation dataset by generating translations and calculating BLEU scores.
+    :param data_loader: DataLoader for the validation dataset
+    :param encoder: Encoder model that encodes the input sequences
+    :param decoder: Decoder model that generates translations from encoded sequences
+    :param target_vocab: Target language vocabulary for token-to-id and id-to-token conversions.
+    :param device: Device to perform validation on, such as CPU or GPU. Defaults to CPU.
+    :param print_translations: If True, prints each translated sentence. Defaults to False.
+    :return: Tuple containing average sentence-level BLEU score and corpus-level BLEU score for the validation set
+    """
     # Set the encoder and decoder to evaluation mode
     encoder.eval()
     decoder.eval()
-    # Initialize lists to store reference sentences and hypotheses for BLEU score calculation
+    # Lists to store reference and hypothesis sentences for BLEU score calculation
     references = []
     hypotheses = []
-    # Initialize variables for tracking BLEU scores
+    # Variables for tracking total sentence BLEU score and number of sentences
     total_sentence_bleu_score = 0.0
     num_sentences = 0
     # List to store translated sentences if printing is enabled
@@ -438,6 +472,7 @@ def validate(data_loader, encoder, decoder, target_vocab, device=torch.device('c
     # Smoothing function for BLEU score calculation
     smoothing = SmoothingFunction().method1
 
+    # Disable gradient calculations for validation
     with torch.no_grad():
         progress_bar = tqdm(data_loader, desc="Validation", leave=False)
         # Iterate over each batch in the validation data loader
@@ -454,7 +489,7 @@ def validate(data_loader, encoder, decoder, target_vocab, device=torch.device('c
             # Get batch size and maximum sequence length from target text
             batch_size = src_text.size(0)
             max_sequence_length = tgt_text.size(1)
-            # List to store decoded token IDs for each sentence in the batch
+            # Store decoded token IDs for each sentence in the batch
             decoded_tokens = [[] for _ in range(batch_size)]
             # Loop over each time step in the sequence
             for t in range(max_sequence_length):
@@ -462,7 +497,7 @@ def validate(data_loader, encoder, decoder, target_vocab, device=torch.device('c
                 output, decoder_hidden = decoder(decoder_input, decoder_hidden, encoder_output)
                 # Remove the extra dimension from output
                 output = output.squeeze(1)
-                # Get the token IDs with the highest probability (greedy decoding)
+                # Get the token IDs with the highest probability
                 decoder_input = output.argmax(1)
                 # Append the decoded token IDs to the list for each sentence
                 for i in range(batch_size):
@@ -472,7 +507,7 @@ def validate(data_loader, encoder, decoder, target_vocab, device=torch.device('c
             for i in range(batch_size):
                 # Get the reference sequence by excluding the <bos> token
                 reference_seq = tgt_text[i, 1:].tolist()
-                # Get the hypothesis sequence (decoded tokens)
+                # Get the hypothesis decoded tokens sequence
                 hypothesis_seq = decoded_tokens[i]
                 # Convert token IDs to tokens, ignoring padding tokens
                 reference_tokens = [target_vocab.lookup_token(token) for token in reference_seq if
@@ -487,6 +522,7 @@ def validate(data_loader, encoder, decoder, target_vocab, device=torch.device('c
                 # Append the processed reference and hypothesis to lists
                 references.append([reference_tokens])
                 hypotheses.append(hypothesis_tokens)
+
                 # Calculate sentence-level BLEU score
                 sentence_bleu_score = sentence_bleu(
                     [reference_tokens],
@@ -496,17 +532,19 @@ def validate(data_loader, encoder, decoder, target_vocab, device=torch.device('c
                 # Accumulate the total sentence BLEU score and increment the sentence count
                 total_sentence_bleu_score += sentence_bleu_score
                 num_sentences += 1
-                # If printing translations is enabled, store the translated sentence
+
+                # Store the translated sentence
                 if print_translations:
-                    # Join the hypothesis tokens into a single string
-                    translated_sentence = ' '.join(hypothesis_tokens)
-                    translated_sentence = translated_sentence.replace('_', ' ')
+                    # Join the hypothesis tokens into a single string and clean formatting
+                    translated_sentence = ' '.join(hypothesis_tokens).replace('_', ' ')
                     translated_sentences.append(translated_sentence)
+
         # Calculate the average sentence BLEU score across all sentences
         average_sentence_bleu_score = total_sentence_bleu_score / num_sentences if num_sentences > 0 else 0.0
         # Calculate the corpus-level BLEU score
         corpus_bleu_score = corpus_bleu(references, hypotheses, smoothing_function=smoothing)
 
+        # Print translated sentences
         if print_translations:
             print("\nTranslated Sentences:")
             for sentence in translated_sentences:
@@ -517,135 +555,124 @@ def validate(data_loader, encoder, decoder, target_vocab, device=torch.device('c
 
 
 # -------------------- Model Training --------------------
-def train_model(encoder, decoder, train_data_loader, val_data_loader, optimizer, loss_function, target_vocab, lr_scheduler, num_epochs, device,):
+def train_model(encoder, decoder, train_data_loader, val_data_loader, optimizer, loss_function, target_vocab,
+                lr_scheduler, num_epochs, device):
     """
     Trains the encoder and decoder models with mixed precision and gradient accumulation.
-    The tqdm progress bar now includes batch number updates.
-
-    Args:
-        encoder (nn.Module): The encoder model.
-        decoder (nn.Module): The decoder model.
-        train_data_loader (DataLoader): DataLoader for the training data.
-        val_data_loader (DataLoader): DataLoader for the validation data.
-        optimizer (Optimizer): Optimizer for updating model parameters.
-        loss_function (nn.Module): Loss function to compute the training loss.
-        target_vocab (Vocab): Vocabulary object for the target language.
-        lr_scheduler (Scheduler): Learning rate scheduler.
-        num_epochs (int): Number of training epochs.
-        device (torch.device): Device to run the training on (CPU or GPU)
+    :param encoder: The encoder model
+    :param decoder: The decoder model
+    :param train_data_loader: DataLoader for the training data
+    :param val_data_loader: DataLoader for the validation data
+    :param optimizer: Optimizer for updating model parameters
+    :param loss_function: Loss function to compute the training loss
+    :param target_vocab: Target language vocabulary for token-to-id and id-to-token conversions
+    :param lr_scheduler: Learning rate scheduler
+    :param num_epochs: Number of training epochs
+    :param device: Device to perform validation on, such as CPU or GPU. Defaults to CPU
+    :return: None
     """
     # Directory where the model will be saved
     model_directory = "model"
     if not os.path.exists(model_directory):
         os.makedirs(model_directory)
-    model_filename = f"trained_model.pth"
+    model_filename = "trained_model.pth"
     best_model_filepath = os.path.join(model_directory, model_filename)
 
     # Move encoder and decoder models to the specified device (CPU/GPU)
     encoder.to(device)
     decoder.to(device)
+
     # Keep track of the best BLEU score achieved
     best_bleu_score = 0
 
     # Initialize the GradScaler for mixed precision
     scaler = GradScaler()
 
+    # Number of steps for gradient accumulation
     accumulation_steps = 4
 
-    # Define the column headers with specified field widths for alignment
-    print(f"{'Epoch':>6} | {'Loss':>10} | {'Validation Corpus BLEU Score':>28} | {'Validation Avg Sentence BLEU Score':>34}")
+    print(
+        f"{'Epoch':>6} | {'Loss':>10} | {'Validation Corpus BLEU Score':>28} | {'Validation Avg Sentence BLEU Score':>34}")
 
     for epoch in range(num_epochs):
-        # Set the encoder and decoder to training mode
+        # Set encoder and decoder to training mode
         encoder.train()
         decoder.train()
-        # Accumulate loss over the epoch
-        epoch_loss = 0
+        epoch_loss = 0  # Accumulate loss over the epoch
 
-        # Zero the gradients before starting the epoch
-        optimizer.zero_grad()
-        # Total number of batches
-        num_batches = len(train_data_loader)
-        # Iterate over each batch in the training data loader
-        progress_bar = tqdm(enumerate(train_data_loader, 1), total=num_batches, desc=f"Epoch {epoch + 1}/{num_epochs}", leave=False)
+        optimizer.zero_grad()  # Zero the gradients at the start of each epoch
+        num_batches = len(train_data_loader)  # Total number of batches in training data
+
+        # Loop through each batch
+        progress_bar = tqdm(enumerate(train_data_loader, 1), total=num_batches, desc=f"Epoch {epoch + 1}/{num_epochs}",
+                            leave=False)
         for batch_idx, (src_text, tgt_text) in progress_bar:
-            # Move source and target tensors to the specified device
-            src_text = src_text.to(device)
-            tgt_text = tgt_text.to(device)
+            src_text = src_text.to(device)  # Move source text to device
+            tgt_text = tgt_text.to(device)  # Move target text to device
 
-            # Enable mixed precision training
+            # Mixed precision training
             with autocast():
-                # Pass the source text through the encoder to get outputs and hidden states
+                # Forward pass through encoder
                 encoder_outputs, encoder_hidden = encoder(src_text)
-                # Initialize the decoder hidden state with the encoder's final hidden state
-                decoder_hidden = encoder_hidden
-                # Get batch size and maximum target sequence length
+                decoder_hidden = encoder_hidden  # Initialize decoder hidden state with encoder's final hidden state
+
+                # Set up target sequence lengths
                 batch_size = src_text.size(0)
                 max_target_length = tgt_text.size(1)
-                # Prepare decoder inputs and targets by shifting the target sequences
-                decoder_inputs = tgt_text[:, :-1]  # Exclude the last token for inputs
-                decoder_targets = tgt_text[:, 1:]  # Exclude the first token (<bos>) for targets
-                # Flatten the decoder targets for loss computation
+
+                # Prepare inputs and targets for decoder
+                decoder_inputs = tgt_text[:, :-1]
+                decoder_targets = tgt_text[:, 1:]
                 decoder_targets_flat = decoder_targets.contiguous().view(-1)
-                # Initialize the decoder input with the first token of decoder_inputs
+
+                # Initialize the first input for decoder
                 decoder_input = decoder_inputs[:, 0]
-                # Tensor to store decoder outputs
                 decoder_outputs = torch.zeros(batch_size, max_target_length - 1, decoder.vocab_size, device=device)
-                # Loop over each time step in the target sequence
+
                 for t in range(max_target_length - 1):
-                    # Pass the decoder input through the decoder to get output probabilities and new hidden state
                     output, decoder_hidden = decoder(decoder_input, decoder_hidden, encoder_outputs)
-                    # Remove the extra dimension from output
-                    output = output.squeeze(1)
-                    # Store the output probabilities at the current time step
-                    decoder_outputs[:, t, :] = output
-                    # Set the next decoder input to the next token in the target sequence
+                    output = output.squeeze(1)  # Remove extra dimension
+                    decoder_outputs[:, t, :] = output  # Store output
+
+                    # Set up the next input to decoder
                     if t + 1 < decoder_inputs.size(1):
                         decoder_input = decoder_inputs[:, t + 1]
                     else:
-                        # If there is no next token, use the last token as the input
                         decoder_input = decoder_inputs[:, -1]
+
                 # Flatten the decoder outputs for loss computation
                 decoder_outputs_flat = decoder_outputs.view(-1, decoder.vocab_size)
-                # Compute the loss between the decoder outputs and the targets
-                loss = loss_function(decoder_outputs_flat, decoder_targets_flat)
-                # Normalize loss by accumulation steps
-                loss = loss / accumulation_steps
+                # Calculate loss
+                loss = loss_function(decoder_outputs_flat, decoder_targets_flat) / accumulation_steps
 
-            # Backpropagate the loss with gradient scaling
+            # Backward pass with gradient scaling
             scaler.scale(loss).backward()
-
-            # Accumulate the loss over the epoch (multiply back to original loss)
+            # Accumulate loss over the epoch
             epoch_loss += loss.item() * accumulation_steps
-
-            # Gradient accumulation: update weights every 'accumulation_steps' batches
+            # Gradient accumulation and optimization step
             if batch_idx % accumulation_steps == 0 or batch_idx == num_batches:
-                # Unscale gradients and clip
                 scaler.unscale_(optimizer)
                 parameters = itertools.chain(encoder.parameters(), decoder.parameters())
                 torch.nn.utils.clip_grad_norm_(parameters, max_norm=1)
-                # Update the model parameters using the optimizer
                 scaler.step(optimizer)
                 scaler.update()
-                # Zero the gradients
                 optimizer.zero_grad()
 
-            # Update progress bar with loss and batch number
+            # Update progress bar
             progress_bar.set_postfix({
                 'loss': f"{loss.item() * accumulation_steps:.4f}",
                 'batch': f"{batch_idx}/{num_batches}"
             })
 
-        # Compute the average loss for the epoch
+        # Compute average epoch loss
         avg_epoch_loss = epoch_loss / len(train_data_loader)
-        # Update the learning rate scheduler
-        lr_scheduler.step()
-        # Validate the model on the validation data to get BLEU scores
-        average_sentence_bleu, bleu_score = validate(val_data_loader, encoder, decoder, target_vocab, device)
-        # Print the epoch statistics with proper alignment
-        print(f"{epoch + 1:>6} | {avg_epoch_loss:>10.6f} | {bleu_score:>28.6f} | {average_sentence_bleu:>34.6f}")
+        lr_scheduler.step()  # Step the learning rate scheduler
+        # Validation to calculate BLEU scores
+        average_sentence_bleu_score, bleu_score = validate(val_data_loader, encoder, decoder, target_vocab, device)
 
-        # If the current BLEU score is better than the best one so far, save the model
+        print(f"{epoch + 1:>6} | {avg_epoch_loss:>10.6f} | {bleu_score:>28.6f} | {average_sentence_bleu_score:>34.6f}")
+
+        # Save model if BLEU score improves
         if bleu_score > best_bleu_score:
             best_bleu_score = bleu_score
             torch.save({'encoder': encoder.state_dict(), 'decoder': decoder.state_dict()}, best_model_filepath)
@@ -661,7 +688,7 @@ def main():
       python3 NMT.py test        Test the model
     """
 
-    # Create an argument parser for command-line interface
+    # Argument parser for CLI
     parser = argparse.ArgumentParser(
         usage='python3 NMT.py {train,test} ...',
         formatter_class=argparse.RawTextHelpFormatter,
@@ -669,56 +696,52 @@ def main():
         epilog=epilog
     )
 
-    # Add subparsers for 'train' and 'test' commands
+    # Subparsers for 'train' and 'test' commands
     subparsers = parser.add_subparsers(dest="command", help="Command to execute: train or test")
     subparsers.add_parser('train', help="Train the model")
     subparsers.add_parser('test', help="Test the model")
 
     # Parse the command-line arguments
     args = parser.parse_args()
-
-    # If no arguments or command is provided, display help and exit
     if len(sys.argv) == 1 or args.command is None:
         parser.print_help()
         sys.exit(1)
 
-    # Set hyperparameters and configurations
+    # Set hyperparameters and configs
     MAX_SEQ_LENGTH = 100  # Maximum sequence length for sentences
     BATCH_SIZE = 64  # Batch size for training
     EMBEDDING_DIM = 512  # Embedding dimension for embeddings
     HIDDEN_SIZE = 1024  # Hidden size for encoder and decoder
     NUM_EPOCHS = 10  # Number of training epochs
     LEARNING_RATE = 0.001  # Learning rate for the optimizer
-    # Select device to run the model on (GPU if available)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # Select device (GPU if available)
 
     # Define source and target languages
     src_language = 'english'
     tgt_language = 'vietnamese'
 
-    # File paths for training and testing data
+    # Files for training and testing data
     src_language_train_file = 'train.en.txt'
     src_language_tst2013_file = 'tst2013.en.txt'
     src_language_tst2012_file = 'tst2012.en.txt'
     tgt_language_train_file = 'train.vi.txt'
-
     # Paths to save or load vocabulary files
     src_vocab_path = 'model/src_vocab.pth'
     trg_vocab_path = 'model/trg_vocab.pth'
 
     if args.command == 'train':
-        # Create datasets from your existing files
+        # Load datasets from files
         train_dataset = create_dataset_from_file(src_language_train_file)
         tst2013_dataset = create_dataset_from_file(src_language_tst2013_file)
         tst2012_dataset = create_dataset_from_file(src_language_tst2012_file)
         dataset = DatasetDict({'train': train_dataset, 'tst2013': tst2013_dataset, 'tst2012': tst2012_dataset})
 
-        # Preprocess and save the datasets
+        # Preprocess and load datasets
         preprocess_and_load_dataset(dataset, 'train')
         preprocess_and_load_dataset(dataset, 'tst2013')
         preprocess_and_load_dataset(dataset, 'tst2012')
 
-        # Create a TranslationDataset for the training data
+        # Create a TranslationDataset for training data
         full_train_dataset = TranslationDataset(
             src_file=src_language_train_file,
             tgt_file=tgt_language_train_file,
@@ -728,18 +751,19 @@ def main():
         # Calculate sizes for training and validation splits
         train_split_size = int(0.9 * len(full_train_dataset))
         validation_split_size = len(full_train_dataset) - train_split_size
-        # Split the full dataset into training and validation datasets
+
+        # Split full dataset into training and validation sets
         train_dataset, validation_dataset = random_split(
             full_train_dataset,
             [train_split_size, validation_split_size],
             generator=torch.Generator().manual_seed(42)
         )
 
-        # Build vocabularies from the training data sequences
+        # Build vocabularies from training data sequences
         src_vocab = build_vocabulary(full_train_dataset.src_sequences, src_language)
         tgt_vocab = build_vocabulary(full_train_dataset.tgt_sequences, tgt_language)
 
-        # Collate function for the DataLoader
+        # Define collate function for batching data
         collate_fn = partial(
             collate_batch,
             src_vocab=src_vocab,
@@ -748,7 +772,7 @@ def main():
             tgt_lang=tgt_language
         )
 
-        # DataLoaders for the training and validation datasets
+        # DataLoaders for training and validation datasets
         train_data_loader = DataLoader(
             train_dataset,
             batch_size=BATCH_SIZE,
@@ -762,7 +786,7 @@ def main():
             collate_fn=collate_fn
         )
 
-        # Initialize the encoder and decoder models
+        # Initialize encoder and decoder models
         encoder = Encoder(
             vocab_size=len(src_vocab),
             embedding_dim=EMBEDDING_DIM,
@@ -777,13 +801,14 @@ def main():
             padding_idx=tgt_vocab['<pad>']
         ).to(device)
 
-        # Set up the optimizer with parameters from both encoder and decoder
+        # Set up optimizer with parameters from encoder and decoder
         optimizer = torch.optim.Adam(itertools.chain(encoder.parameters(), decoder.parameters()), lr=LEARNING_RATE)
-        # Define a learning rate scheduler to adjust learning rate during training
+        # Learning rate scheduler to adjust learning rate
         lr_scheduler = StepLR(optimizer, step_size=2, gamma=0.2)
-        # Define the loss function, ignoring the padding index
+        # Loss function, ignoring padding index
         loss_function = nn.CrossEntropyLoss(ignore_index=tgt_vocab['<pad>'])
 
+        # Train the model
         train_model(
             encoder=encoder,
             decoder=decoder,
@@ -797,21 +822,22 @@ def main():
             device=device
         )
 
-        # Save the vocabularies to files for future inference use for testing dataset translation
+        # Save vocabularies for future use in testing
         torch.save(src_vocab, src_vocab_path)
         torch.save(tgt_vocab, trg_vocab_path)
 
     elif args.command == 'test':
 
-        # Load vocabularies
+        # Load vocabularies if they exist
         if os.path.exists(src_vocab_path) and os.path.exists(trg_vocab_path):
             src_vocab = torch.load(src_vocab_path)
             tgt_vocab = torch.load(trg_vocab_path)
             print("Loaded vocabularies.")
         else:
-            print("Vocabulary files not found. Please run model training first to build vocabularies.")
+            print("Vocabulary files not found. Please run model training first.")
             sys.exit(1)
 
+        # Initialize encoder and decoder models
         encoder = Encoder(
             vocab_size=len(src_vocab),
             embedding_dim=EMBEDDING_DIM,
@@ -826,6 +852,7 @@ def main():
             padding_idx=tgt_vocab['<pad>']
         ).to(device)
 
+        # Load trained model if available
         best_model_filepath = 'model/trained_model.pth'
         if os.path.exists(best_model_filepath):
             checkpoint = torch.load(best_model_filepath, map_location=device)
@@ -836,7 +863,7 @@ def main():
             print(f"No trained model found at {best_model_filepath}. Please run model training first.")
             sys.exit(1)
 
-        # Prepare test datasets and data loaders for tst2013 and tst2012
+        # Test datasets for evaluation (tst2013 and tst2012)
         test_datasets = {
             'tst2013': {
                 'src_file': 'tst2013.en.txt',
@@ -848,6 +875,7 @@ def main():
             }
         }
 
+        # Loop through test datasets and evaluate
         for test_name, files in test_datasets.items():
             print(f"\nTesting on {test_name}")
             test_dataset = TranslationDataset(
@@ -856,6 +884,7 @@ def main():
                 max_seq_length=MAX_SEQ_LENGTH
             )
 
+            # Collate function for batching test data
             collate_fn = partial(
                 collate_batch,
                 src_vocab=src_vocab,
@@ -864,6 +893,7 @@ def main():
                 tgt_lang=tgt_language
             )
 
+            # DataLoader for test dataset
             test_loader = DataLoader(
                 test_dataset,
                 batch_size=BATCH_SIZE,
@@ -871,6 +901,7 @@ def main():
                 collate_fn=collate_fn
             )
 
+            # Validate the model on the test dataset
             average_sentence_bleu, corpus_bleu_score = validate(
                 test_loader,
                 encoder,
@@ -880,6 +911,7 @@ def main():
                 print_translations=True
             )
 
+            # Print BLEU scores for the test dataset
             print(f'{test_name} - Average Sentence BLEU: {average_sentence_bleu * 100:.3f}')
             print(f'{test_name} - Corpus BLEU: {corpus_bleu_score * 100:.3f}')
 
