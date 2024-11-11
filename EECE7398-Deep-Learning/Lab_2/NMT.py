@@ -1,34 +1,77 @@
 import os
 import sys
+import platform
+import subprocess
+import logging
+import warnings
+
+# Suppress logging and warnings
+logging.getLogger("transformers").setLevel(logging.ERROR)
+logging.getLogger("torch").setLevel(logging.ERROR)
+logging.getLogger("nltk").setLevel(logging.ERROR)
+os.environ["TRANSFORMERS_NO_PROGRESS_BARS"] = "1"
+os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "true"
+warnings.filterwarnings("ignore", category=UserWarning, module="transformers.tokenization_utils_base")
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
+
+def is_in_virtualenv_check():
+    # Check if the script is running inside a virtual environment
+    return hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix)
+
+
+def install_virtualenv():
+    try:
+        import virtualenv
+    except ImportError:
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--user", "-q", "virtualenv"],
+            check=True
+        )
+
+
+def setup_virtual_environment():
+    # Set up the virtual environment and install required packages
+    install_virtualenv()
+    # Virtual environment directory
+    venv_dir = 'env'
+
+    # Path to the Python executable in the virtual environment
+    if platform.system() == 'Windows':
+        python_executable = os.path.join(venv_dir, 'Scripts', 'python.exe')
+    else:
+        python_executable = os.path.join(venv_dir, 'bin', 'python')
+
+    # Check if the virtual environment already exists
+    if not os.path.exists(venv_dir):
+        # Create the virtual environment
+        subprocess.run([sys.executable, "-m", "virtualenv", venv_dir], check=True)
+
+    # Upgrade pip
+    subprocess.run([python_executable, "-m", "pip", "install", "--upgrade", "-q", "pip"], check=True)
+    # Install compatible versions of torch and torchtext
+    subprocess.run([python_executable, "-m", "pip", "install", "-q", "torch==1.13.1", "torchtext==0.14.1"],check=True)
+    # Uninstall NLTK to ensure the correct version is installed
+    subprocess.run([python_executable, "-m", "pip", "uninstall", "-y", "nltk"],check=True )
+    # Install required packages with specific versions
+    packages = ["numpy<2", "datasets", "pyvi", "nltk==3.8.1", "tqdm", "transformers"]
+    subprocess.run([python_executable, "-m", "pip", "install", "-q", "--force-reinstall"] + packages, check=True)
+    # Download NLTK data
+    subprocess.run([python_executable, "-c", "import nltk; nltk.download('punkt', quiet=True)"], check=True)
+    # Run the script inside the virtual environment
+    subprocess.run([python_executable] + sys.argv, check=True)
+    sys.exit()
+
+
+if not is_in_virtualenv_check():
+    setup_virtual_environment()
+
 import re
 import html
 import argparse
 from torch.cuda.amp import autocast, GradScaler
 import itertools
 from functools import partial
-import subprocess
-import logging
-
-logging.getLogger("transformers").setLevel(logging.ERROR)
-logging.getLogger("torch").setLevel(logging.ERROR)
-
-# Clear pip cache
-subprocess.run(["pip", "cache", "purge"], check=True)
-
-# Uninstall any existing installations of torch and torchtext
-subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torch", "torchtext"], check=True)
-
-# Install GPU-compatible versions of torch and torchtext
-subprocess.run([
-    sys.executable, "-m", "pip", "install", "torch==1.13.0+cu117", "torchtext==0.14.0", "-f",
-    "https://download.pytorch.org/whl/torch_stable.html"
-], check=True)
-
-subprocess.run(
-    [sys.executable, "-m", "pip", "install", "-q", "datasets", "pyvi", "nltk", "tqdm"],
-    stdout=open(os.devnull, 'wb')
-)
-
 import nltk
 import torch
 import torch.nn as nn
@@ -41,8 +84,6 @@ from torchtext.vocab import build_vocab_from_iterator
 from tqdm import tqdm
 from nltk.translate.bleu_score import sentence_bleu, corpus_bleu, SmoothingFunction
 from pyvi import ViTokenizer
-
-nltk.download('punkt')
 
 
 # -------------------- Model Architecture --------------------
@@ -732,14 +773,10 @@ def main():
     if args.command == 'train':
         # Load datasets from files
         train_dataset = create_dataset_from_file(src_language_train_file)
-        tst2013_dataset = create_dataset_from_file(src_language_tst2013_file)
-        tst2012_dataset = create_dataset_from_file(src_language_tst2012_file)
-        dataset = DatasetDict({'train': train_dataset, 'tst2013': tst2013_dataset, 'tst2012': tst2012_dataset})
+        dataset = DatasetDict({'train': train_dataset})
 
         # Preprocess and load datasets
         preprocess_and_load_dataset(dataset, 'train')
-        preprocess_and_load_dataset(dataset, 'tst2013')
-        preprocess_and_load_dataset(dataset, 'tst2012')
 
         # Create a TranslationDataset for training data
         full_train_dataset = TranslationDataset(
@@ -827,6 +864,11 @@ def main():
         torch.save(tgt_vocab, trg_vocab_path)
 
     elif args.command == 'test':
+        tst2013_dataset = create_dataset_from_file(src_language_tst2013_file)
+        tst2012_dataset = create_dataset_from_file(src_language_tst2012_file)
+        dataset = DatasetDict({'tst2013': tst2013_dataset, 'tst2012': tst2012_dataset})
+        preprocess_and_load_dataset(dataset, 'tst2013')
+        preprocess_and_load_dataset(dataset, 'tst2012')
 
         # Load vocabularies if they exist
         if os.path.exists(src_vocab_path) and os.path.exists(trg_vocab_path):
