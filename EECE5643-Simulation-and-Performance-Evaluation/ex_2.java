@@ -54,8 +54,7 @@ class ex_2 {
           delay    = 0.0;                       /* no delay          */
 
         departure = Double.parseDouble(st.nextToken());
-        service= departure- arrival-delay;
-        
+        service= departure - arrival - delay;
         wait         = delay + service;
         sum.delay   += delay;
         sum.wait    += wait;
