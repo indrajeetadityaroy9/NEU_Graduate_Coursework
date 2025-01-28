@@ -1,1 +1,1 @@
-# EECE5643
+# EECE5643 Simulation & Performance Evaluation
