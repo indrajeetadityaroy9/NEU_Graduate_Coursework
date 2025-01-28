@@ -91,9 +91,9 @@ class Ssq1 {
       Collections.sort(arrival_times);
       Collections.sort(departure_times);
 
-      int alphaT = countLE(arrival_times, 400);
-      int deltaT = countLE(departure_times, 400);
-      int num_jobs_at_t = alphaT - deltaT;
+      int jobs_before_t = count_jobs(arrival_times, 400);
+      int jobs_after_t = count_jobs(departure_times, 400);
+      int num_jobs_at_t = jobs_before_t - jobs_after_t;
 
       double delayed_jobs = delayed_job_count / index;
       double utilization = sum.service / departure;
@@ -103,10 +103,10 @@ class Ssq1 {
       System.out.println("   average service time .... =  " + f.format(sum.service / index));
       System.out.println("   average delay ........... =  " + f.format(sum.delay / index));
       System.out.println("   average wait ............ =  " + f.format(sum.wait / index));
-      System.out.println("   maximum delay ........... = " + max_delay);
+      System.out.println("   maximum delay ........... = " + f.format(max_delay));
       System.out.println("   number of jobs in the serivce node at t=400 = " + num_jobs_at_t);
-      System.out.println("   proportion of jobs delayed = " + String.format("%.2f%%", delayed_jobs * 100));
-      System.out.println("   service utilization = " + String.format("%.2f%%", utilization * 100));
+      System.out.println("   proportion of jobs delayed = " + f.format(delayed_jobs));
+      System.out.println("   service utilization = " + f.format(utilization));
 
     } catch (EOFException eofe) {
       System.out.println("Ssq1:" + eofe);
@@ -115,7 +115,7 @@ class Ssq1 {
     fis.close();
   }
 
-  public static int countLE(ArrayList<Double> list, double t) {
+  public static int count_jobs(ArrayList<Double> list, double t) {
     int idx = Collections.binarySearch(list, t);
     if (idx < 0) {
         idx = -idx - 1;
