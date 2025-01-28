@@ -52,7 +52,7 @@ class Ssq1_2 {
           delay    = departure - arrival;       /* delay in queue    */
         else
           delay    = 0.0;                       /* no delay          */
-          
+
         departure = Double.parseDouble(st.nextToken());
         service= departure- arrival-delay;
         
@@ -66,16 +66,15 @@ class Ssq1_2 {
       DecimalFormat f = new DecimalFormat("###0.00");
 
       double avg_service_time = sum.service / index;
+      double avg_interarrival_time = sum.interarrival / index;
       double utilization = sum.service / departure;
-      double traffic_intensity = departure/arrival*utilization;
+      double traffic_intensity = avg_service_time / avg_interarrival_time;
 
       System.out.println("\nfor " + index + " jobs");
       System.out.println("   average interarrival time =  " + f.format(sum.interarrival / index));
       System.out.println("   average service time .... =  " + f.format(sum.service / index));
       System.out.println("   average delay ........... =  " + f.format(sum.delay / index));
       System.out.println("   average wait ............ =  " + f.format(sum.wait / index));
-
-      System.out.println("   average service time = " + f.format(avg_service_time));
       System.out.println("   server utilization   = " + f.format(utilization));
       System.out.println("   traffic intensity    = " + f.format(traffic_intensity));
 
