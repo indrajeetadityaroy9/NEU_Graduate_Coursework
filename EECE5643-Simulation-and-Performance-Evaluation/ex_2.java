@@ -16,7 +16,7 @@ class Ssq1Sum {                                 /* sum of ...           */
   }
 }
 
-class Ssq1_2 {
+class ex_2 {
   static String FILENAME = "ac.dat";          /* input data file */
   static double START = 0.0;
 

@@ -1,15 +1,3 @@
-
-/* -------------------------------------------------------------------------
- * This program simulates a single-server FIFO service node using arrival
- * times and service times read from a text file.  The server is assumed
- * to be idle when the first job arrives.  All jobs are processed completely
- * so that the server is again idle at the end of the simulation.   The
- * output statistics are the average interarrival time, average service
- * time, the average delay in the queue, and the average wait in the service 
- * node.
- * ------------------------------------------------------------------------- 
- */
-
 import java.io.*;
 import java.util.*;
 import java.text.*;
@@ -28,7 +16,7 @@ class Ssq1Sum {                                 /* sum of ...           */
   }
 }
 
-class Ssq1 {
+class ex_1 {
   static String FILENAME = "Ssq1.dat";          /* input data file */
   static double START = 0.0;
 
