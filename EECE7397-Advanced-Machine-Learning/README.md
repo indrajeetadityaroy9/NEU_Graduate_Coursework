@@ -1,1 +1,1 @@
-# EECE7397
+# EECE7397 Advanced Machine Learning
