@@ -1,3 +1,5 @@
+//Ex. 1.2.2
+
 import java.io.*;
 import java.util.*;
 import java.text.*;

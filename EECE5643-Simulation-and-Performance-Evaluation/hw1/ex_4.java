@@ -1,3 +1,5 @@
+//Ex. 2.3.5
+
 import java.util.Random;
 
 public class ex_4 {
