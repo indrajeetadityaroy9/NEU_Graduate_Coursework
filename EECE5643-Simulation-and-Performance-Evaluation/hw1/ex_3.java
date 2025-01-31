@@ -5,7 +5,7 @@ public class ex_3 {
         return (int) (a + (long) ((b - a + 1) * r.nextDouble()));
     }
 
-    private static final int[] DISTRIBUTION = {
+    private static final int[] distribution = {
         1,
         2, 2,
         3, 3,
@@ -16,7 +16,7 @@ public class ex_3 {
 
     public static int loadedDieFace(Random r) {
         long roll = equilikely(1, 13, r);
-        return DISTRIBUTION[(int) roll - 1];
+        return distribution[(int) roll - 1];
     }
 
     public static double simulate(int numTrials, Random r) {
@@ -32,12 +32,12 @@ public class ex_3 {
     }
 
     public static void main(String[] args) {
+        int N = 1000000;
         long[] seeds = {1L, 42L, 2023L, 40599L, 99999L};
-        int numTrials = 1_000_000;
 
         for (long seed : seeds) {
             Random rng = new Random(seed);
-            double probability = simulate(numTrials, rng);
+            double probability = simulate(N, rng);
             System.out.printf("Seed=%d -> P(X+Y=7) = %.5f%n", seed, probability);
         }
     }
