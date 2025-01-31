@@ -80,7 +80,6 @@ class ex_2 {
     } catch (EOFException eofe) {
       System.out.println("Ssq1:" + eofe);
     }
-    // if the file opened okay, make sure we close it 
     fis.close();
   }
     
