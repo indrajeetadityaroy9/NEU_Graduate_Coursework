@@ -1,0 +1,47 @@
+import java.util.*;
+
+public class ex_2 {
+    public static void main(String[] args) {
+        int n = 1000;              // number of boxes per simulation
+        int balls = 2000;          // 2000 balls per simulation
+        int numSims = 100;         // number of independent simulations
+        
+        Rng rng = new Rng();       // Random number generator instance
+        
+        Ddh ddh = new Ddh();
+        List<DdhNode> ddhList = new ArrayList<>();
+        boolean first = true;
+        
+        for (int sim = 0; sim < numSims; sim++) {
+            long[] x = new long[n + 1];
+            for (int i = 1; i <= n; i++) {
+                x[i] = 0;
+            }
+            
+            for (int j = 1; j <= balls; j++) {
+                long i = equilikely(1, n, rng);
+                x[(int)i]++;
+            }
+
+            for (int i = 1; i <= n; i++) {
+                double data = (double) x[i];
+                if (first) {
+                    DdhNode node = new DdhNode();
+                    node.init(data);
+                    ddhList.add(node);
+                    first = false;
+                } else {
+                    ddh.insert(ddhList, data);
+                }
+            }
+        }
+
+        ddh.sort(ddhList);
+        ddh.traverse(ddhList);
+    }
+    
+    public static long equilikely(long a, long b, Rng r) {
+        return a + (long) ((b - a + 1) * r.random());
+    }
+}
+
