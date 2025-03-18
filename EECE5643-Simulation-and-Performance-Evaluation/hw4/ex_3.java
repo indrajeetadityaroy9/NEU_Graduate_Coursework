@@ -83,14 +83,23 @@ public class ex_3 {
 
     // Helper method: sample without replacement
     public static int[] sampleWithoutReplacement(int[] array, int sampleSize, Rng rng) {
-        int n = array.length;
+        final int n = array.length;
         int[] copy = Arrays.copyOf(array, n);
+
         for (int i = 0; i < sampleSize; i++) {
-            int j = i + (int)(rng.random() * (n - i));
+            int remaining = n - i;
+            int j = i + (int) (rng.random() * remaining);
             int temp = copy[i];
             copy[i] = copy[j];
             copy[j] = temp;
         }
-        return Arrays.copyOf(copy, sampleSize);
+        
+        if (sampleSize == n) {
+            return copy;
+        } else {
+            int[] result = new int[sampleSize];
+            System.arraycopy(copy, 0, result, 0, sampleSize);
+            return result;
+        }
     }
 }
