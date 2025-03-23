@@ -2,16 +2,11 @@ import java.util.*;
 
 public class ex_3 {
     public static void main(String[] args) {
-        int replications = 100000;
-        int testSize = 12;
-        int totalQuestions = 120;
-        int classIQuestions = 90;
-
-        int[] questionTypes = new int[totalQuestions];
-        for (int i = 0; i < classIQuestions; i++) {
+        int[] questionTypes = new int[120];
+        for (int i = 0; i < 90; i++) {
             questionTypes[i] = 1;
         }
-        for (int i = classIQuestions; i < totalQuestions; i++) {
+        for (int i = 90; i < 120; i++) {
             questionTypes[i] = 2;
         }
 
@@ -20,8 +15,8 @@ public class ex_3 {
         List<DdhNode> ddhList = new ArrayList<>();
         boolean first = true;
 
-        for (int i = 0; i < replications; i++) {
-            int[] selectedTypes = sampleWithoutReplacement(questionTypes, testSize, rng);
+        for (int i = 0; i < 100000; i++) {
+            int[] selectedTypes = selectQuestions(questionTypes, 12, rng);
             int totalScore = 0;
             for (int type : selectedTypes) {
                 int score = 0;
@@ -64,11 +59,11 @@ public class ex_3 {
                 passCount += node.count;
             }
         }
-        double passProbability = (double) passCount / replications;
+        double passProbability = (double) passCount / 100000;
         System.out.println("\nProbability of passing (score >= 36): " + String.format("%.3f", passProbability));
     }
 
-    public static int[] sampleWithoutReplacement(int[] array, int sampleSize, Rng rng) {
+    public static int[] selectQuestions(int[] array, int sampleSize, Rng rng) {
         final int n = array.length;
         int[] copy = Arrays.copyOf(array, n);
 
