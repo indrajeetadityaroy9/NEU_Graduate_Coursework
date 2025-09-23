@@ -1,9 +1,3 @@
-"""
-US Accidents Poisson Regression Analysis
-Question 1: US daily summary with weather
-Question 2: Poisson regression for one state
-"""
-
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,9 +11,6 @@ print("=" * 80)
 print("US ACCIDENTS POISSON REGRESSION ANALYSIS")
 print("=" * 80)
 
-# =============================================================================
-# DATA LOADING AND PREPROCESSING
-# =============================================================================
 
 print("\n1. LOADING DATA (2016-2021)...")
 
@@ -45,10 +36,6 @@ df['Date'] = df['Start_Time'].dt.date
 
 print(f"Total accidents (2016-2021): {len(df):,}")
 
-# =============================================================================
-# DATA IMPUTATION
-# =============================================================================
-
 print("\n2. IMPUTING MISSING VALUES...")
 
 weather_vars = ['Temperature(F)', 'Precipitation(in)', 'Wind_Speed(mph)', 'Humidity(%)']
@@ -62,10 +49,6 @@ for var in weather_vars:
     df[var].fillna(df[var].median(), inplace=True)
 
 print("Imputation complete using state-level medians with global fallback")
-
-# =============================================================================
-# QUESTION 1: US DAILY SUMMARY WITH WEATHER
-# =============================================================================
 
 print("\n3. CREATING US DAILY SUMMARY...")
 
@@ -122,9 +105,6 @@ us_daily_display[daily_weather_cols] = us_daily_display[daily_weather_cols].roun
 print("\nUS Daily Aggregated Time Series (2016-2021):")
 print(us_daily_display.to_string(index=False))
 
-# =============================================================================
-# PLOT 1: US DAILY ACCIDENTS WITH WEATHER
-# =============================================================================
 
 print("\n4. GENERATING PLOT 1: US DAILY SUMMARY...")
 
@@ -171,10 +151,6 @@ plt.tight_layout()
 plt.savefig('us_daily_accidents_weather.png', dpi=150, bbox_inches='tight')
 plt.show()
 
-# =============================================================================
-# QUESTION 2: STATE-LEVEL POISSON REGRESSION
-# =============================================================================
-
 print("\n5. FITTING POISSON REGRESSION FOR CALIFORNIA...")
 
 # Select California as it has the most data
@@ -192,10 +168,6 @@ state_daily = state_df.groupby('Date').agg({
 state_counts = state_df.groupby('Date').size().reset_index(name='accident_count')
 state_daily = state_daily.merge(state_counts, on='Date')
 state_daily['Date'] = pd.to_datetime(state_daily['Date'])
-
-# =============================================================================
-# FEATURE ENGINEERING FOR BETTER PREDICTIONS
-# =============================================================================
 
 print("\n6. FEATURE ENGINEERING...")
 
@@ -231,10 +203,6 @@ print(f"\n{STATE} Statistics:")
 print(f"  Total days: {len(state_daily)}")
 print(f"  Mean daily accidents: {state_daily['accident_count'].mean():.1f}")
 print(f"  Std dev: {state_daily['accident_count'].std():.1f}")
-
-# =============================================================================
-# POISSON REGRESSION MODEL
-# =============================================================================
 
 print(f"\n7. FITTING POISSON MODEL...")
 
@@ -339,10 +307,6 @@ predictions_summary_frame = poisson_predictions.summary_frame()
 print("\nPrediction summary frame:")
 print(predictions_summary_frame)
 
-# =============================================================================
-# PLOT 2: PREDICTED VS ACTUAL (FOLLOWING BROOKLYN BRIDGE STYLE)
-# =============================================================================
-
 print("\n8. GENERATING PLOT 2: PREDICTED VS ACTUAL...")
 
 # Extract predictions and actual values
@@ -397,60 +361,3 @@ plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.savefig(f'{STATE}_poisson_predictions.png', dpi=150, bbox_inches='tight')
 plt.show()
-
-# =============================================================================
-# RESULTS SUMMARY
-# =============================================================================
-
-print("\n" + "="*80)
-print("ANALYSIS COMPLETE")
-print("="*80)
-
-print(f"\nKey Findings:")
-print(f"1. US DAILY SUMMARY:")
-print(f"   • Analyzed {len(us_daily)} days from 2016-2021")
-print(f"   • Mean daily accidents: {mean_accidents:.0f}")
-print(f"   • Clear weekend effect visible (gray bands)")
-print(f"   • Weather severity correlates with accident frequency")
-
-print(f"\n2. {STATE} POISSON REGRESSION:")
-print(f"   • Model R²: {r2:.3f}")
-print(f"   • RMSE: {rmse:.1f} accidents/day")
-print(f"   • MAE: {mae:.1f} accidents/day")
-
-# Report feature importance
-coef_df = pd.DataFrame({
-    'Feature': X_train.columns,
-    'Coefficient': poisson_training_results.params
-})
-
-# Get top 5 features by absolute coefficient (excluding const and month dummies)
-top_features = coef_df[
-    (~coef_df['Feature'].str.startswith('Month')) & 
-    (coef_df['Feature'] != 'const')
-].copy()
-top_features['Abs_Coef'] = np.abs(top_features['Coefficient'])
-top_features = top_features.nlargest(5, 'Abs_Coef')
-
-print(f"\nTop 5 Most Important Features:")
-for _, row in top_features.iterrows():
-    try:
-        effect = (np.exp(row['Coefficient']) - 1) * 100
-        # Clean up feature names for display
-        feature_name = str(row['Feature']).replace('_norm', '').replace('_', ' ')
-        print(f"   • {feature_name:20s}: {effect:+.1f}% effect on accident rate")
-    except Exception as e:
-        print(f"   • {row['Feature']:20s}: coefficient = {row['Coefficient']:.4f}")
-
-print(f"\nTransformations Applied:")
-print(f"   ✓ Log-transformed precipitation to handle skewness")
-print(f"   ✓ Square root of wind speed for better linearity") 
-print(f"   ✓ Temperature deviation from ideal (65°F)")
-print(f"   ✓ Humidity-precipitation interaction for visibility effect")
-print(f"   ✓ Standardized features to prevent numerical issues")
-
-print("\nOutput files:")
-print("   • us_daily_accidents_weather.png")
-print(f"   • {STATE}_poisson_predictions.png")
-
-print("\n" + "="*80)
