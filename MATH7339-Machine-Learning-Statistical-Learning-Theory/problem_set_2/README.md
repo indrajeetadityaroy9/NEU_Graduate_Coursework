@@ -1,4 +1,4 @@
-# Problem Set 2 Highlights
+# Notes
 
 ## Probit Regression
 - Specifies the Bernoulli likelihood with success probability given by
