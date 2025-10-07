@@ -1,9 +1,3 @@
-"""
-FEV Spline Analysis - CSAPS Implementation
-Analysis of forced expiratory volume (FEV) using various spline regression techniques
-Uses csaps library for spline implementations
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

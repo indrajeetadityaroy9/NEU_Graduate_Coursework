@@ -1,8 +1,3 @@
-"""
-FEV Spline Analysis
-Analysis of forced expiratory volume (FEV) using various spline regression techniques
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

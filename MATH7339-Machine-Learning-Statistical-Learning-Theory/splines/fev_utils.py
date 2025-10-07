@@ -1,8 +1,3 @@
-"""
-Common utility functions for FEV spline analysis
-Shared across all implementation files (scipy, statsmodels, pyGAM, csaps)
-"""
-
 import pandas as pd
 import matplotlib.pyplot as plt
 
