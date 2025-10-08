@@ -2,10 +2,10 @@
 Spline-based regression methods
 
 ## Overview
-- **Truncated power basis** for splines
-- **Regression splines** (manual knot placement)
-- **Natural cubic splines** (reduced boundary variance)
-- **Smoothing splines** (automatic knot selection via regularization)
+- Truncated power basis for splines
+- Regression splines (manual knot placement)
+- Natural cubic splines (reduced boundary variance)
+- Smoothing splines (automatic knot selection via regularization)
 
 ### 1. Truncated Power Basis
 
