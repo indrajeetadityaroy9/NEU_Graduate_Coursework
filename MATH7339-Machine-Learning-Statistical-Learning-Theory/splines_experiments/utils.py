@@ -1,13 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Callable, Optional, Tuple
+from sklearn.metrics import roc_curve, auc, precision_recall_curve, confusion_matrix
+import seaborn as sns
 
 
 def generate_sinusoidal_data(n_samples: int = 100,
                             noise_std: float = 0.3,
-                            x_range: Tuple[float, float] = (0, 10),
+                            x_range=(0, 10),
                             frequency: float = 1.0,
-                            random_state: Optional[int] = None) -> Tuple[np.ndarray, np.ndarray]:
+                            random_state=None):
     if random_state is not None:
         np.random.seed(random_state)
 
@@ -22,9 +23,9 @@ def generate_sinusoidal_data(n_samples: int = 100,
 def generate_polynomial_data(n_samples: int = 100,
                             degree: int = 3,
                             noise_std: float = 0.3,
-                            x_range: Tuple[float, float] = (-1, 1),
-                            coefficients: Optional[np.ndarray] = None,
-                            random_state: Optional[int] = None) -> Tuple[np.ndarray, np.ndarray]:
+                            x_range=(-1, 1),
+                            coefficients=None,
+                            random_state=None):
     if random_state is not None:
         np.random.seed(random_state)
 
@@ -43,8 +44,8 @@ def generate_polynomial_data(n_samples: int = 100,
 def generate_step_data(n_samples: int = 100,
                       n_steps: int = 4,
                       noise_std: float = 0.2,
-                      x_range: Tuple[float, float] = (0, 1),
-                      random_state: Optional[int] = None) -> Tuple[np.ndarray, np.ndarray]:
+                      x_range=(0, 1),
+                      random_state=None):
     if random_state is not None:
         np.random.seed(random_state)
 
@@ -65,7 +66,7 @@ def generate_step_data(n_samples: int = 100,
 
 def generate_discontinuous_data(n_samples: int = 100,
                                noise_std: float = 0.2,
-                               random_state: Optional[int] = None) -> Tuple[np.ndarray, np.ndarray]:
+                               random_state=None):
     if random_state is not None:
         np.random.seed(random_state)
 
@@ -94,15 +95,19 @@ def root_mean_squared_error(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 def effective_degrees_of_freedom(smoother_matrix: np.ndarray) -> float:
     return np.trace(smoother_matrix)
+
+
+
+
 def plot_spline_fit(x_train: np.ndarray,
                    y_train: np.ndarray,
                    x_test: np.ndarray,
                    y_pred: np.ndarray,
-                   knots: Optional[np.ndarray] = None,
-                   y_true_func: Optional[Callable] = None,
+                   knots=None,
+                   y_true_func=None,
                    title: str = "Spline Fit",
-                   figsize: Tuple[int, int] = (10, 6),
-                   show_knots: bool = True) -> plt.Figure:
+                   figsize=(10, 6),
+                   show_knots: bool = True):
     fig, ax = plt.subplots(figsize=figsize)
 
     ax.scatter(x_train, y_train, alpha=0.5, s=30, label='Training data', color='gray')
@@ -129,10 +134,10 @@ def plot_spline_fit(x_train: np.ndarray,
 
 def plot_basis_functions(x: np.ndarray,
                         basis_matrix: np.ndarray,
-                        knots: Optional[np.ndarray] = None,
+                        knots=None,
                         title: str = "Basis Functions",
-                        figsize: Tuple[int, int] = (12, 6),
-                        max_functions: int = 10) -> plt.Figure:
+                        figsize=(12, 6),
+                        max_functions: int = 10):
     n_basis = basis_matrix.shape[1]
     n_to_plot = min(n_basis, max_functions)
 
@@ -159,9 +164,9 @@ def plot_smoothing_comparison(x_train: np.ndarray,
                              y_train: np.ndarray,
                              x_test: np.ndarray,
                              predictions_dict: dict,
-                             y_true_func: Optional[Callable] = None,
+                             y_true_func=None,
                              title: str = "Smoothing Parameter Comparison",
-                             figsize: Tuple[int, int] = (12, 6)) -> plt.Figure:
+                             figsize=(12, 6)):
     fig, ax = plt.subplots(figsize=figsize)
 
     ax.scatter(x_train, y_train, alpha=0.4, s=20, label='Training data', color='gray')
@@ -187,7 +192,7 @@ def plot_residuals(x: np.ndarray,
                   y_true: np.ndarray,
                   y_pred: np.ndarray,
                   title: str = "Residual Plot",
-                  figsize: Tuple[int, int] = (10, 4)) -> plt.Figure:
+                  figsize=(10, 4)):
     residuals = y_true - y_pred
 
     fig, ax = plt.subplots(figsize=figsize)
@@ -205,9 +210,9 @@ def plot_residuals(x: np.ndarray,
 
 def plot_cv_curve(lambdas: np.ndarray,
                  cv_errors: np.ndarray,
-                 best_lambda: Optional[float] = None,
+                 best_lambda=None,
                  title: str = "Cross-Validation Curve",
-                 figsize: Tuple[int, int] = (10, 6)) -> plt.Figure:
+                 figsize=(10, 6)):
     fig, ax = plt.subplots(figsize=figsize)
 
     ax.plot(lambdas, cv_errors, 'o-', linewidth=2, markersize=8)
@@ -221,6 +226,176 @@ def plot_cv_curve(lambdas: np.ndarray,
     ax.set_ylabel('Cross-validation error (MSE)', fontsize=12)
     ax.set_title(title, fontsize=14)
     ax.set_xscale('log')
+    ax.grid(True, alpha=0.3)
+
+    return fig
+
+
+
+
+def classification_metrics(y_true: np.ndarray, y_pred_proba: np.ndarray,
+                          threshold: float = 0.5):
+    y_pred = (y_pred_proba >= threshold).astype(int)
+
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+
+    accuracy = (tp + tn) / (tp + tn + fp + fn)
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+    f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+    fpr, tpr, _ = roc_curve(y_true, y_pred_proba)
+    roc_auc = auc(fpr, tpr)
+
+    return {
+        'accuracy': accuracy,
+        'precision': precision,
+        'recall': recall,
+        'f1_score': f1,
+        'auc_roc': roc_auc,
+        'true_positives': int(tp),
+        'true_negatives': int(tn),
+        'false_positives': int(fp),
+        'false_negatives': int(fn)
+    }
+
+
+def plot_roc_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
+                  label: str = 'Model', title: str = 'ROC Curve',
+                  figsize=(8, 6)):
+    fpr, tpr, _ = roc_curve(y_true, y_pred_proba)
+    roc_auc = auc(fpr, tpr)
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    ax.plot(fpr, tpr, linewidth=2, label=f'{label} (AUC = {roc_auc:.3f})')
+    ax.plot([0, 1], [0, 1], 'k--', linewidth=1, label='Random')
+
+    ax.set_xlabel('False Positive Rate', fontsize=12)
+    ax.set_ylabel('True Positive Rate', fontsize=12)
+    ax.set_title(title, fontsize=14)
+    ax.legend(fontsize=11)
+    ax.grid(True, alpha=0.3)
+
+    return fig
+
+
+def plot_precision_recall_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
+                                label: str = 'Model',
+                                title: str = 'Precision-Recall Curve',
+                                figsize=(8, 6)):
+    precision, recall, _ = precision_recall_curve(y_true, y_pred_proba)
+    pr_auc = auc(recall, precision)
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    ax.plot(recall, precision, linewidth=2, label=f'{label} (AUC = {pr_auc:.3f})')
+
+    prevalence = np.mean(y_true)
+    ax.axhline(prevalence, color='k', linestyle='--', linewidth=1,
+              label=f'Baseline (prevalence = {prevalence:.3f})')
+
+    ax.set_xlabel('Recall', fontsize=12)
+    ax.set_ylabel('Precision', fontsize=12)
+    ax.set_title(title, fontsize=14)
+    ax.legend(fontsize=11)
+    ax.grid(True, alpha=0.3)
+
+    return fig
+
+
+def plot_calibration_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
+                          n_bins: int = 10, title: str = 'Calibration Curve',
+                          figsize=(8, 6)):
+    bins = np.linspace(0, 1, n_bins + 1)
+    bin_centers = (bins[:-1] + bins[1:]) / 2
+    bin_indices = np.digitize(y_pred_proba, bins) - 1
+    bin_indices = np.clip(bin_indices, 0, n_bins - 1)
+
+    bin_sums = np.bincount(bin_indices, weights=y_true, minlength=n_bins)
+    bin_counts = np.bincount(bin_indices, minlength=n_bins)
+
+    bin_freq = np.divide(bin_sums, bin_counts, where=bin_counts > 0)
+    bin_freq[bin_counts == 0] = np.nan
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    ax.plot(bin_centers, bin_freq, 'o-', linewidth=2, markersize=8,
+           label='Model calibration')
+
+    ax.plot([0, 1], [0, 1], 'k--', linewidth=1, label='Perfect calibration')
+
+    ax.set_xlabel('Predicted Probability', fontsize=12)
+    ax.set_ylabel('Observed Frequency', fontsize=12)
+    ax.set_title(title, fontsize=14)
+    ax.legend(fontsize=11)
+    ax.grid(True, alpha=0.3)
+    ax.set_xlim([0, 1])
+    ax.set_ylim([0, 1])
+
+    return fig
+
+
+def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray,
+                         labels=None,
+                         title: str = 'Confusion Matrix',
+                         figsize=(8, 6)):
+    cm = confusion_matrix(y_true, y_pred)
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax,
+               xticklabels=labels, yticklabels=labels)
+
+    ax.set_xlabel('Predicted Label', fontsize=12)
+    ax.set_ylabel('True Label', fontsize=12)
+    ax.set_title(title, fontsize=14)
+
+    return fig
+
+
+def plot_partial_dependence(model, x_train: np.ndarray, feature_idx: int,
+                           feature_name: str = 'Feature',
+                           n_points: int = 100,
+                           figsize=(10, 6)):
+    feature_values = x_train[:, feature_idx]
+    grid = np.linspace(feature_values.min(), feature_values.max(), n_points)
+
+    pd_values = []
+
+    for val in grid:
+        x_partial = x_train.copy()
+        x_partial[:, feature_idx] = val
+
+        preds = model.predict(x_partial)
+        pd_values.append(np.mean(preds))
+
+    pd_values = np.array(pd_values)
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    ax.plot(grid, pd_values, linewidth=2.5, color='steelblue')
+
+    ax.plot(feature_values, np.zeros_like(feature_values), '|', color='gray',
+           alpha=0.3, markersize=10)
+
+    ax.set_xlabel(feature_name, fontsize=12)
+    ax.set_ylabel('Partial Dependence', fontsize=12)
+    ax.set_title(f'Partial Dependence: {feature_name}', fontsize=14)
+    ax.grid(True, alpha=0.3)
+
+    return fig
+
+
+def plot_qq_plot(residuals: np.ndarray, title: str = 'Q-Q Plot',
+                figsize=(8, 6)):
+    from scipy import stats
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    stats.probplot(residuals, dist="norm", plot=ax)
+
+    ax.set_title(title, fontsize=14)
     ax.grid(True, alpha=0.3)
 
     return fig
