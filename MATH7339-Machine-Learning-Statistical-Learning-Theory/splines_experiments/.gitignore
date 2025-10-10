@@ -1,14 +1,9 @@
-# LaTeX files
 *.tex
-
-# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-
-# Distribution / packaging
 build/
 develop-eggs/
 dist/
@@ -24,21 +19,13 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Testing
 .pytest_cache/
 .coverage
 htmlcov/
-
-# Jupyter Notebook
 .ipynb_checkpoints
-
-# macOS
 .DS_Store
 .AppleDouble
 .LSOverride
-
-# Virtual environments
 venv/
 env/
 ENV/
