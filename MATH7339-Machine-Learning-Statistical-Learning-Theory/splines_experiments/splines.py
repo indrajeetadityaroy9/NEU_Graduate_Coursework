@@ -4,12 +4,12 @@ from scipy.linalg import solve
 from scipy.interpolate import BSpline as ScipyBSpline
 
 
-def truncated_power(x: np.ndarray, knot: float, degree: int) -> np.ndarray:
+def truncated_power(x, knot, degree):
     return np.maximum(x - knot, 0) ** degree
 
 
-def bspline_basis(x: np.ndarray, knots: np.ndarray, degree: int = 3,
-                  derivatives: int = 0) -> np.ndarray:
+def bspline_basis(x, knots, degree=3,
+                  derivatives=0):
     x = np.asarray(x).ravel()
     knots = np.asarray(knots).ravel()
 
@@ -39,7 +39,7 @@ def bspline_basis(x: np.ndarray, knots: np.ndarray, degree: int = 3,
     return B
 
 
-def truncated_power_basis_matrix(x: np.ndarray, knots: np.ndarray, degree: int) -> np.ndarray:
+def truncated_power_basis_matrix(x, knots, degree):
     x = np.asarray(x).ravel()
     knots = np.asarray(knots).ravel()
     n = len(x)
@@ -59,14 +59,14 @@ def truncated_power_basis_matrix(x: np.ndarray, knots: np.ndarray, degree: int) 
 
 class RegressionSpline:
 
-    def __init__(self, degree: int = 3):
+    def __init__(self, degree=3):
         self.degree = degree
         self.knots = None
         self.coefficients = None
         self.x_train = None
         self.y_train = None
 
-    def fit(self, x: np.ndarray, y: np.ndarray, knots: np.ndarray) -> 'RegressionSpline':
+    def fit(self, x, y, knots):
         x = np.asarray(x).ravel()
         y = np.asarray(y).ravel()
         self.knots = np.asarray(knots).ravel()
@@ -80,7 +80,7 @@ class RegressionSpline:
 
         return self
 
-    def predict(self, x: np.ndarray) -> np.ndarray:
+    def predict(self, x):
         if self.coefficients is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
@@ -88,14 +88,14 @@ class RegressionSpline:
         G = truncated_power_basis_matrix(x, self.knots, self.degree)
         return G @ self.coefficients
 
-    def get_basis_matrix(self, x: np.ndarray) -> np.ndarray:
+    def get_basis_matrix(self, x):
         if self.knots is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
         return truncated_power_basis_matrix(x, self.knots, self.degree)
 
 
-def natural_cubic_spline_basis_matrix(x: np.ndarray, knots: np.ndarray) -> np.ndarray:
+def natural_cubic_spline_basis_matrix(x, knots):
     x = np.asarray(x).ravel()
     knots = np.asarray(knots).ravel()
     knots = np.sort(knots)
@@ -142,7 +142,7 @@ class NaturalCubicSpline:
         self.x_train = None
         self.y_train = None
 
-    def fit(self, x: np.ndarray, y: np.ndarray, knots: np.ndarray) -> 'NaturalCubicSpline':
+    def fit(self, x, y, knots):
         x = np.asarray(x).ravel()
         y = np.asarray(y).ravel()
         self.knots = np.asarray(knots).ravel()
@@ -156,7 +156,7 @@ class NaturalCubicSpline:
 
         return self
 
-    def predict(self, x: np.ndarray) -> np.ndarray:
+    def predict(self, x):
         if self.coefficients is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
@@ -167,7 +167,7 @@ class NaturalCubicSpline:
 
 class SmoothingSpline:
 
-    def __init__(self, lambda_: float = 1.0):
+    def __init__(self, lambda_=1.0):
         self.lambda_ = lambda_
         self.x_train = None
         self.y_train = None
@@ -175,7 +175,7 @@ class SmoothingSpline:
         self.basis_matrix = None
         self.penalty_matrix = None
 
-    def _compute_penalty_matrix(self, x: np.ndarray) -> np.ndarray:
+    def _compute_penalty_matrix(self, x):
         n = len(x)
         x = np.sort(x)
 
@@ -200,7 +200,7 @@ class SmoothingSpline:
 
         return Omega
 
-    def fit(self, x: np.ndarray, y: np.ndarray) -> 'SmoothingSpline':
+    def fit(self, x, y):
         x = np.asarray(x).ravel()
         y = np.asarray(y).ravel()
 
@@ -227,7 +227,7 @@ class SmoothingSpline:
 
         return self
 
-    def predict(self, x: np.ndarray) -> np.ndarray:
+    def predict(self, x):
         if self.coefficients is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
@@ -237,8 +237,8 @@ class SmoothingSpline:
 
         return N @ self.coefficients
 
-    def cross_validate(self, x: np.ndarray, y: np.ndarray,
-                      lambdas: np.ndarray, cv_folds: int = 5):
+    def cross_validate(self, x, y,
+                      lambdas, cv_folds=5):
         x = np.asarray(x).ravel()
         y = np.asarray(y).ravel()
         n = len(x)
@@ -276,8 +276,8 @@ class SmoothingSpline:
 
 class PenalizedSpline:
 
-    def __init__(self, n_knots: int = 20, degree: int = 3, lambda_: float = 1.0,
-                 diff_order: int = 2):
+    def __init__(self, n_knots=20, degree=3, lambda_=1.0,
+                 diff_order=2):
         self.n_knots = n_knots
         self.degree = degree
         self.lambda_ = lambda_
@@ -287,12 +287,12 @@ class PenalizedSpline:
         self.x_train = None
         self.y_train = None
 
-    def _difference_penalty_matrix(self, n_basis: int) -> np.ndarray:
+    def _difference_penalty_matrix(self, n_basis):
         D = np.diff(np.eye(n_basis), n=self.diff_order, axis=0)
         P = D.T @ D
         return P
 
-    def fit(self, x: np.ndarray, y: np.ndarray) -> 'PenalizedSpline':
+    def fit(self, x, y):
         x = np.asarray(x).ravel()
         y = np.asarray(y).ravel()
 
@@ -314,7 +314,7 @@ class PenalizedSpline:
 
         return self
 
-    def predict(self, x: np.ndarray) -> np.ndarray:
+    def predict(self, x):
         if self.coefficients is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
@@ -322,7 +322,7 @@ class PenalizedSpline:
         B = bspline_basis(x, self.knots, self.degree)
         return B @ self.coefficients
 
-    def effective_df(self) -> float:
+    def effective_df(self):
         if self.x_train is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
@@ -335,7 +335,7 @@ class PenalizedSpline:
 
         return np.trace(H)
 
-    def gcv_score(self) -> float:
+    def gcv_score(self):
         if self.y_train is None:
             raise ValueError("Model not fitted. Call fit() first.")
 
@@ -347,8 +347,8 @@ class PenalizedSpline:
         gcv = (n * rss) / (n - df) ** 2
         return gcv
 
-    def cross_validate(self, x: np.ndarray, y: np.ndarray,
-                      lambdas: np.ndarray, cv_folds: int = 5):
+    def cross_validate(self, x, y,
+                      lambdas, cv_folds=5):
         x = np.asarray(x).ravel()
         y = np.asarray(y).ravel()
         n = len(x)

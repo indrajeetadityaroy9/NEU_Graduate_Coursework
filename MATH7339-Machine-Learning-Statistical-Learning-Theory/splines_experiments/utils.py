@@ -4,10 +4,10 @@ from sklearn.metrics import roc_curve, auc, precision_recall_curve, confusion_ma
 import seaborn as sns
 
 
-def generate_sinusoidal_data(n_samples: int = 100,
-                            noise_std: float = 0.3,
+def generate_sinusoidal_data(n_samples=100,
+                            noise_std=0.3,
                             x_range=(0, 10),
-                            frequency: float = 1.0,
+                            frequency=1.0,
                             random_state=None):
     if random_state is not None:
         np.random.seed(random_state)
@@ -20,9 +20,9 @@ def generate_sinusoidal_data(n_samples: int = 100,
     return x, y
 
 
-def generate_polynomial_data(n_samples: int = 100,
-                            degree: int = 3,
-                            noise_std: float = 0.3,
+def generate_polynomial_data(n_samples=100,
+                            degree=3,
+                            noise_std=0.3,
                             x_range=(-1, 1),
                             coefficients=None,
                             random_state=None):
@@ -41,9 +41,9 @@ def generate_polynomial_data(n_samples: int = 100,
     return x, y
 
 
-def generate_step_data(n_samples: int = 100,
-                      n_steps: int = 4,
-                      noise_std: float = 0.2,
+def generate_step_data(n_samples=100,
+                      n_steps=4,
+                      noise_std=0.2,
                       x_range=(0, 1),
                       random_state=None):
     if random_state is not None:
@@ -64,8 +64,8 @@ def generate_step_data(n_samples: int = 100,
     return x, y
 
 
-def generate_discontinuous_data(n_samples: int = 100,
-                               noise_std: float = 0.2,
+def generate_discontinuous_data(n_samples=100,
+                               noise_std=0.2,
                                random_state=None):
     if random_state is not None:
         np.random.seed(random_state)
@@ -75,11 +75,11 @@ def generate_discontinuous_data(n_samples: int = 100,
     y += np.random.normal(0, noise_std, n_samples)
 
     return x, y
-def mean_squared_error(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+def mean_squared_error(y_true, y_pred):
     return np.mean((y_true - y_pred) ** 2)
 
 
-def r_squared(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+def r_squared(y_true, y_pred):
     ss_res = np.sum((y_true - y_pred) ** 2)
     ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
 
@@ -89,25 +89,25 @@ def r_squared(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return 1 - (ss_res / ss_tot)
 
 
-def root_mean_squared_error(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+def root_mean_squared_error(y_true, y_pred):
     return np.sqrt(mean_squared_error(y_true, y_pred))
 
 
-def effective_degrees_of_freedom(smoother_matrix: np.ndarray) -> float:
+def effective_degrees_of_freedom(smoother_matrix):
     return np.trace(smoother_matrix)
 
 
 
 
-def plot_spline_fit(x_train: np.ndarray,
-                   y_train: np.ndarray,
-                   x_test: np.ndarray,
-                   y_pred: np.ndarray,
+def plot_spline_fit(x_train,
+                   y_train,
+                   x_test,
+                   y_pred,
                    knots=None,
                    y_true_func=None,
-                   title: str = "Spline Fit",
+                   title="Spline Fit",
                    figsize=(10, 6),
-                   show_knots: bool = True):
+                   show_knots=True):
     fig, ax = plt.subplots(figsize=figsize)
 
     ax.scatter(x_train, y_train, alpha=0.5, s=30, label='Training data', color='gray')
@@ -132,12 +132,12 @@ def plot_spline_fit(x_train: np.ndarray,
     return fig
 
 
-def plot_basis_functions(x: np.ndarray,
-                        basis_matrix: np.ndarray,
+def plot_basis_functions(x,
+                        basis_matrix,
                         knots=None,
-                        title: str = "Basis Functions",
+                        title="Basis Functions",
                         figsize=(12, 6),
-                        max_functions: int = 10):
+                        max_functions=10):
     n_basis = basis_matrix.shape[1]
     n_to_plot = min(n_basis, max_functions)
 
@@ -160,12 +160,12 @@ def plot_basis_functions(x: np.ndarray,
     return fig
 
 
-def plot_smoothing_comparison(x_train: np.ndarray,
-                             y_train: np.ndarray,
-                             x_test: np.ndarray,
-                             predictions_dict: dict,
+def plot_smoothing_comparison(x_train,
+                             y_train,
+                             x_test,
+                             predictions_dict,
                              y_true_func=None,
-                             title: str = "Smoothing Parameter Comparison",
+                             title="Smoothing Parameter Comparison",
                              figsize=(12, 6)):
     fig, ax = plt.subplots(figsize=figsize)
 
@@ -188,10 +188,10 @@ def plot_smoothing_comparison(x_train: np.ndarray,
     return fig
 
 
-def plot_residuals(x: np.ndarray,
-                  y_true: np.ndarray,
-                  y_pred: np.ndarray,
-                  title: str = "Residual Plot",
+def plot_residuals(x,
+                  y_true,
+                  y_pred,
+                  title="Residual Plot",
                   figsize=(10, 4)):
     residuals = y_true - y_pred
 
@@ -208,10 +208,10 @@ def plot_residuals(x: np.ndarray,
     return fig
 
 
-def plot_cv_curve(lambdas: np.ndarray,
-                 cv_errors: np.ndarray,
+def plot_cv_curve(lambdas,
+                 cv_errors,
                  best_lambda=None,
-                 title: str = "Cross-Validation Curve",
+                 title="Cross-Validation Curve",
                  figsize=(10, 6)):
     fig, ax = plt.subplots(figsize=figsize)
 
@@ -233,8 +233,8 @@ def plot_cv_curve(lambdas: np.ndarray,
 
 
 
-def classification_metrics(y_true: np.ndarray, y_pred_proba: np.ndarray,
-                          threshold: float = 0.5):
+def classification_metrics(y_true, y_pred_proba,
+                          threshold=0.5):
     y_pred = (y_pred_proba >= threshold).astype(int)
 
     tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
@@ -260,8 +260,8 @@ def classification_metrics(y_true: np.ndarray, y_pred_proba: np.ndarray,
     }
 
 
-def plot_roc_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
-                  label: str = 'Model', title: str = 'ROC Curve',
+def plot_roc_curve(y_true, y_pred_proba,
+                  label='Model', title='ROC Curve',
                   figsize=(8, 6)):
     fpr, tpr, _ = roc_curve(y_true, y_pred_proba)
     roc_auc = auc(fpr, tpr)
@@ -280,9 +280,9 @@ def plot_roc_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
     return fig
 
 
-def plot_precision_recall_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
-                                label: str = 'Model',
-                                title: str = 'Precision-Recall Curve',
+def plot_precision_recall_curve(y_true, y_pred_proba,
+                                label='Model',
+                                title='Precision-Recall Curve',
                                 figsize=(8, 6)):
     precision, recall, _ = precision_recall_curve(y_true, y_pred_proba)
     pr_auc = auc(recall, precision)
@@ -304,8 +304,8 @@ def plot_precision_recall_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
     return fig
 
 
-def plot_calibration_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
-                          n_bins: int = 10, title: str = 'Calibration Curve',
+def plot_calibration_curve(y_true, y_pred_proba,
+                          n_bins=10, title='Calibration Curve',
                           figsize=(8, 6)):
     bins = np.linspace(0, 1, n_bins + 1)
     bin_centers = (bins[:-1] + bins[1:]) / 2
@@ -336,9 +336,9 @@ def plot_calibration_curve(y_true: np.ndarray, y_pred_proba: np.ndarray,
     return fig
 
 
-def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray,
+def plot_confusion_matrix(y_true, y_pred,
                          labels=None,
-                         title: str = 'Confusion Matrix',
+                         title='Confusion Matrix',
                          figsize=(8, 6)):
     cm = confusion_matrix(y_true, y_pred)
 
@@ -354,9 +354,9 @@ def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray,
     return fig
 
 
-def plot_partial_dependence(model, x_train: np.ndarray, feature_idx: int,
-                           feature_name: str = 'Feature',
-                           n_points: int = 100,
+def plot_partial_dependence(model, x_train, feature_idx,
+                           feature_name='Feature',
+                           n_points=100,
                            figsize=(10, 6)):
     feature_values = x_train[:, feature_idx]
     grid = np.linspace(feature_values.min(), feature_values.max(), n_points)
@@ -387,7 +387,7 @@ def plot_partial_dependence(model, x_train: np.ndarray, feature_idx: int,
     return fig
 
 
-def plot_qq_plot(residuals: np.ndarray, title: str = 'Q-Q Plot',
+def plot_qq_plot(residuals, title='Q-Q Plot',
                 figsize=(8, 6)):
     from scipy import stats
 

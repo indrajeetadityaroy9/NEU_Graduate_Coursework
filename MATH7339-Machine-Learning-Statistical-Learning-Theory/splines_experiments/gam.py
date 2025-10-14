@@ -1,18 +1,15 @@
-
 import numpy as np
-from typing import List, Optional, Dict, Union
 from splines import PenalizedSpline
 
 
 class GAM:
-
-    def __init__(self, smooth_features: List[int],
-                 linear_features: Optional[List[int]] = None,
-                 n_knots: Union[int, List[int]] = 10,
-                 lambda_: Union[float, List[float]] = 1.0,
-                 degree: int = 3,
-                 max_iter: int = 100,
-                 tol: float = 1e-4):
+    def __init__(self, smooth_features,
+                 linear_features=None,
+                 n_knots=10,
+                 lambda_=1.0,
+                 degree=3,
+                 max_iter=100,
+                 tol=1e-4):
 
         self.smooth_features = smooth_features
         self.linear_features = linear_features if linear_features is not None else []
@@ -35,7 +32,7 @@ class GAM:
         self.intercept_ = 0.0
         self.fitted_ = False
 
-    def fit(self, X: np.ndarray, y: np.ndarray, verbose: bool = False) -> 'GAM':
+    def fit(self, X, y, verbose=False):
         X = np.asarray(X)
         y = np.asarray(y).ravel()
         n, p = X.shape
@@ -94,8 +91,7 @@ class GAM:
         self.fitted_ = True
         return self
 
-    def _get_smooth_contribution(self, X: np.ndarray, feat_idx: int) -> np.ndarray:
-        """Get current smooth function contribution for a feature."""
+    def _get_smooth_contribution(self, X, feat_idx):
         if feat_idx not in self.smooth_models_:
             return np.zeros(X.shape[0])
 
@@ -108,7 +104,7 @@ class GAM:
         pred = pred - np.mean(pred)
         return pred
 
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict(self, X):
         if not self.fitted_:
             raise ValueError("Model not fitted. Call fit() first.")
 
@@ -129,7 +125,7 @@ class GAM:
 
         return y_pred
 
-    def get_smooth_function(self, feat_idx: int, n_points: int = 100) -> tuple:
+    def get_smooth_function(self, feat_idx, n_points=100):
         if feat_idx not in self.smooth_models_:
             raise ValueError(f"Feature {feat_idx} is not a smooth term")
 
@@ -144,7 +140,7 @@ class GAM:
 
         return x_vals, y_vals
 
-    def summary(self) -> Dict:
+    def summary(self):
         if not self.fitted_:
             raise ValueError("Model not fitted")
 
@@ -179,13 +175,13 @@ class GAM:
 
 class LogisticGAM:
 
-    def __init__(self, smooth_features: List[int],
-                 linear_features: Optional[List[int]] = None,
-                 n_knots: Union[int, List[int]] = 10,
-                 lambda_: Union[float, List[float]] = 1.0,
-                 degree: int = 3,
-                 max_iter: int = 25,
-                 tol: float = 1e-4):
+    def __init__(self, smooth_features,
+                 linear_features=None,
+                 n_knots=10,
+                 lambda_=1.0,
+                 degree=3,
+                 max_iter=25,
+                 tol=1e-4):
 
         self.smooth_features = smooth_features
         self.linear_features = linear_features if linear_features is not None else []
@@ -208,12 +204,11 @@ class LogisticGAM:
         self.intercept_ = 0.0
         self.fitted_ = False
 
-    def _logistic(self, eta: np.ndarray) -> np.ndarray:
-        """Logistic function: p = 1 / (1 + exp(-η))"""
+    def _logistic(self, eta):
         eta = np.clip(eta, -500, 500)
         return 1.0 / (1.0 + np.exp(-eta))
 
-    def _compute_deviance(self, y: np.ndarray, p: np.ndarray) -> float:
+    def _compute_deviance(self, y, p):
         eps = 1e-10
         p = np.clip(p, eps, 1 - eps)
 
@@ -222,7 +217,7 @@ class LogisticGAM:
         )
         return deviance
 
-    def fit(self, X: np.ndarray, y: np.ndarray, verbose: bool = False) -> 'LogisticGAM':
+    def fit(self, X, y, verbose=False):
         X = np.asarray(X)
         y = np.asarray(y).ravel()
         n, p = X.shape
@@ -310,14 +305,12 @@ class LogisticGAM:
         self.fitted_ = True
         return self
 
-    def _fit_weighted_pspline(self, feat_idx: int, x: np.ndarray,
-                              z: np.ndarray, w: np.ndarray):
-        """Fit weighted P-spline (approximation)."""
+    def _fit_weighted_pspline(self, feat_idx, x,
+                              z, w):
         model = self.smooth_models_[feat_idx]
         model.fit(x, z)
 
-    def _get_smooth_contribution(self, X: np.ndarray, feat_idx: int) -> np.ndarray:
-        """Get current smooth function contribution for a feature."""
+    def _get_smooth_contribution(self, X, feat_idx):
         if feat_idx not in self.smooth_models_:
             return np.zeros(X.shape[0])
 
@@ -330,14 +323,14 @@ class LogisticGAM:
         pred = pred - np.mean(pred)
         return pred
 
-    def predict_proba(self, X: np.ndarray) -> np.ndarray:
+    def predict_proba(self, X):
         if not self.fitted_:
             raise ValueError("Model not fitted. Call fit() first.")
 
         eta = self.predict_linear(X)
         return self._logistic(eta)
 
-    def predict_linear(self, X: np.ndarray) -> np.ndarray:
+    def predict_linear(self, X):
         if not self.fitted_:
             raise ValueError("Model not fitted. Call fit() first.")
 
@@ -358,11 +351,11 @@ class LogisticGAM:
 
         return eta
 
-    def predict(self, X: np.ndarray, threshold: float = 0.5) -> np.ndarray:
+    def predict(self, X, threshold=0.5):
         proba = self.predict_proba(X)
         return (proba >= threshold).astype(int)
 
-    def get_smooth_function(self, feat_idx: int, n_points: int = 100) -> tuple:
+    def get_smooth_function(self, feat_idx, n_points=100):
         if feat_idx not in self.smooth_models_:
             raise ValueError(f"Feature {feat_idx} is not a smooth term")
 
@@ -377,7 +370,7 @@ class LogisticGAM:
 
         return x_vals, y_vals
 
-    def summary(self) -> Dict:
+    def summary(self):
         if not self.fitted_:
             raise ValueError("Model not fitted")
 

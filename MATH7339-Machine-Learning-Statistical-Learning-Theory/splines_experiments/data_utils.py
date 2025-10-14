@@ -1,16 +1,13 @@
 import numpy as np
 import pandas as pd
-from typing import Tuple, Optional
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 
-def load_heart_data(filepath: str = 'Heart.csv',
-                   standardize: bool = True,
-                   test_size: float = 0.2,
-                   random_state: Optional[int] = 42) -> Tuple[np.ndarray, np.ndarray,
-                                                                np.ndarray, np.ndarray,
-                                                                pd.DataFrame]:
+def load_heart_data(filepath='Heart.csv',
+                   standardize=True,
+                   test_size=0.2,
+                   random_state=42):
     df = pd.read_csv(filepath)
 
     if 'id' in df.columns:
@@ -53,12 +50,10 @@ def load_heart_data(filepath: str = 'Heart.csv',
     return X_train, X_test, y_train, y_test, feature_info
 
 
-def load_fev_data(filepath: str = 'fev.csv',
-                 standardize: bool = True,
-                 test_size: float = 0.2,
-                 random_state: Optional[int] = 42) -> Tuple[np.ndarray, np.ndarray,
-                                                              np.ndarray, np.ndarray,
-                                                              pd.DataFrame]:
+def load_fev_data(filepath='fev.csv',
+                 standardize=True,
+                 test_size=0.2,
+                 random_state=42):
     df = pd.read_csv(filepath)
 
     if 'id' in df.columns:
@@ -105,7 +100,7 @@ def load_fev_data(filepath: str = 'fev.csv',
     return X_train, X_test, y_train, y_test, feature_info
 
 
-def get_heart_data_summary(filepath: str = 'Heart.csv') -> pd.DataFrame:
+def get_heart_data_summary(filepath='Heart.csv'):
     df = pd.read_csv(filepath)
     if 'id' in df.columns:
         df = df.drop('id', axis=1)
@@ -120,7 +115,7 @@ def get_heart_data_summary(filepath: str = 'Heart.csv') -> pd.DataFrame:
     return summary
 
 
-def get_fev_data_summary(filepath: str = 'fev.csv') -> pd.DataFrame:
+def get_fev_data_summary(filepath='fev.csv'):
     df = pd.read_csv(filepath)
     if 'id' in df.columns:
         df = df.drop('id', axis=1)
