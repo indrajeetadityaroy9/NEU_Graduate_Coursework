@@ -1,0 +1,6 @@
+# OS/editor metadata
+.DS_Store
+
+# Derived artifacts
+extracted/
+
