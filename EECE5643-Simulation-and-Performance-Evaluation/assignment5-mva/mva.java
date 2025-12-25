@@ -1,4 +1,4 @@
-package hw5;
+package assignment5mva;
 
 public class mva {
     private static final int K = 7;
