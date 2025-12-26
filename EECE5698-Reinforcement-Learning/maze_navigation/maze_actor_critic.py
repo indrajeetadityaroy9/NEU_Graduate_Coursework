@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
 
-class Maze:
+class MazeAC:
     def __init__(self, rows, cols, actions, p, start_position, goal_position, oil_positions, bump_positions, wall_positions, oil_reward, bump_reward, goal_reward, action_reward):
         # Set the number of rows and columns for the grid environment
         self.rows, self.cols = rows, cols

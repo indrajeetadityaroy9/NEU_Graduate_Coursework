@@ -1,7 +1,7 @@
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from project2.maze import Maze
+from maze_navigation.maze_dp import Maze
 
 # Maze Setup
 # Define maze dimensions, actions, and rewards

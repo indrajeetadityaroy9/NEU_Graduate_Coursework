@@ -1,8 +1,8 @@
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from project3.ac_maze import Maze
-from project3.maze import Maze2
+from maze_navigation.maze_actor_critic import MazeAC as Maze
+from maze_navigation.maze_qlearning import Maze2
 
 # Maze Setup
 nrows, ncols = 20, 20
