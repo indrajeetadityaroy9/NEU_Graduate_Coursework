@@ -1,0 +1,69 @@
+# Experiment 2: Gradual Drift Study
+# Question: Do algorithms that excel at abrupt changes also handle drift?
+
+name: drift_study
+description: >
+  Compare algorithm performance under gradual drift.
+  Tests whether adaptation strategies generalize across change types.
+
+horizon: 10000
+n_runs: 50
+n_arms: 5
+seed: 42
+
+# Environment configuration
+# Options: drift (random_walk), linear_drift, abrupt, stationary
+environment:
+  type: drift
+  kwargs:
+    drift_type: random_walk
+    drift_rate: 0.05
+    mean_bounds: [0.0, 10.0]
+
+algorithms:
+  # Stationary baselines
+  - type: epsilon_greedy
+    name: "ε-Greedy (sample avg)"
+    kwargs:
+      epsilon: 0.1
+
+  - type: ucb1
+    name: "UCB1"
+    kwargs: {}
+
+  - type: thompson_sampling
+    name: "Thompson Sampling"
+    kwargs: {}
+
+  # Non-stationary variants
+  - type: epsilon_greedy_constant
+    name: "ε-Greedy (α=0.1)"
+    kwargs:
+      epsilon: 0.1
+      alpha: 0.1
+
+  - type: epsilon_greedy_constant
+    name: "ε-Greedy (α=0.2)"
+    kwargs:
+      epsilon: 0.1
+      alpha: 0.2
+
+  - type: discounted_ucb
+    name: "D-UCB (γ=0.99)"
+    kwargs:
+      gamma: 0.99
+
+  - type: discounted_ucb
+    name: "D-UCB (γ=0.95)"
+    kwargs:
+      gamma: 0.95
+
+  - type: sliding_window_ucb
+    name: "SW-UCB (τ=200)"
+    kwargs:
+      window_size: 200
+
+  - type: discounted_ts
+    name: "Discounted-TS"
+    kwargs:
+      gamma: 0.99

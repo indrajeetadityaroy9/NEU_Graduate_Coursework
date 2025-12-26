@@ -1,0 +1,14 @@
+Algorithm,Stationary,Abrupt (100),Abrupt (500),Gradual Drift,Avg Rank
+UCB1,2,5,5,1,3.25
+D-UCB(0.99),9,1,1,4,3.75
+SW-UCB(100),10,4,3,5,5.50
+EntropyGradient,4,8,8,2,5.50
+EpsGreedy-Const,7,6,2,9,6.00
+D-UCB(0.95),12,2,6,7,6.75
+ThompsonSampling,1,9,9,11,7.50
+GradientBandit,3,13,13,3,8.00
+EpsilonGreedy,6,10,10,8,8.50
+D-TS(0.99),11,7,4,12,8.50
+DecayingEpsilon,5,12,12,6,8.75
+Rexp3(100),13,3,7,13,9.00
+EXP3,8,11,11,10,10.00

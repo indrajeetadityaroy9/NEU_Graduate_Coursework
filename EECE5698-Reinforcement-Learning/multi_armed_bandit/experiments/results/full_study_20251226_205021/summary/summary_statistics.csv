@@ -1,0 +1,53 @@
+Algorithm,Environment,Mean Regret,Std Regret,Mean Optimal %,Mean Adapt Regret,Mean Detection Delay
+EpsilonGreedy,Stationary,810.57,126.14,91.7,nan,nan
+DecayingEpsilon,Stationary,354.67,109.05,96.3,nan,nan
+UCB1,Stationary,52.33,106.92,99.3,nan,nan
+ThompsonSampling,Stationary,31.05,109.38,99.5,nan,nan
+GradientBandit,Stationary,87.45,108.01,98.9,nan,nan
+EpsGreedy-Const,Stationary,816.29,113.67,91.6,nan,nan
+D-UCB(0.99),Stationary,978.81,120.87,90.0,nan,nan
+D-UCB(0.95),Stationary,3010.33,112.90,69.7,nan,nan
+SW-UCB(100),Stationary,1139.01,116.33,88.4,nan,nan
+D-TS(0.99),Stationary,1236.99,117.86,87.4,nan,nan
+EXP3,Stationary,827.77,121.48,91.5,nan,nan
+Rexp3(100),Stationary,3688.49,181.30,62.9,nan,nan
+EntropyGradient,Stationary,130.71,105.80,98.5,nan,nan
+EpsilonGreedy,Abrupt (100),7571.61,300.01,24.1,39.11,33.4
+DecayingEpsilon,Abrupt (100),7741.51,297.83,22.4,39.48,59.2
+UCB1,Abrupt (100),4648.65,563.51,53.3,36.54,41.6
+ThompsonSampling,Abrupt (100),7532.09,188.94,24.5,39.80,30.2
+GradientBandit,Abrupt (100),7826.13,230.23,21.5,40.00,50.7
+EpsGreedy-Const,Abrupt (100),5136.83,294.23,48.4,35.63,30.9
+D-UCB(0.99),Abrupt (100),2978.71,169.96,70.0,24.69,16.4
+D-UCB(0.95),Abrupt (100),3639.27,117.04,63.4,21.31,7.9
+SW-UCB(100),Abrupt (100),4012.09,233.37,59.7,33.27,30.4
+D-TS(0.99),Abrupt (100),5200.65,159.38,47.8,38.00,18.2
+EXP3,Abrupt (100),7621.57,221.69,23.6,39.43,34.5
+Rexp3(100),Abrupt (100),3696.09,258.35,62.8,24.03,5.7
+EntropyGradient,Abrupt (100),7248.05,213.14,27.3,39.79,18.8
+EpsilonGreedy,Abrupt (500),7065.91,550.33,29.2,41.36,38.3
+DecayingEpsilon,Abrupt (500),7414.05,585.31,25.7,40.94,62.8
+UCB1,Abrupt (500),2617.87,782.36,73.6,46.89,79.7
+ThompsonSampling,Abrupt (500),6382.51,417.83,36.0,44.73,63.6
+GradientBandit,Abrupt (500),7493.55,610.75,24.9,41.61,66.9
+EpsGreedy-Const,Abrupt (500),1632.73,218.82,83.5,33.24,30.1
+D-UCB(0.99),Abrupt (500),1498.35,142.60,84.8,29.34,22.6
+D-UCB(0.95),Abrupt (500),3145.81,122.71,68.4,22.04,12.0
+SW-UCB(100),Abrupt (500),1760.99,140.33,82.2,33.43,33.0
+D-TS(0.99),Abrupt (500),2171.55,136.49,78.1,40.75,24.0
+EXP3,Abrupt (500),7095.25,449.75,28.9,42.06,39.7
+Rexp3(100),Abrupt (500),3680.33,216.08,63.0,24.09,9.4
+EntropyGradient,Abrupt (500),6007.07,287.50,39.7,46.11,51.1
+EpsilonGreedy,Gradual Drift,3256.45,854.29,79.1,12.51,6.6
+DecayingEpsilon,Gradual Drift,1769.94,824.59,82.6,6.76,11.0
+UCB1,Gradual Drift,328.15,411.84,87.8,2.31,11.4
+ThompsonSampling,Gradual Drift,11065.78,11355.90,32.3,19.51,26.9
+GradientBandit,Gradual Drift,637.20,905.41,84.8,2.56,11.7
+EpsGreedy-Const,Gradual Drift,3582.34,1066.69,81.5,12.96,7.3
+D-UCB(0.99),Gradual Drift,884.22,126.18,89.4,4.85,4.3
+D-UCB(0.95),Gradual Drift,3154.93,290.19,78.7,12.59,2.7
+SW-UCB(100),Gradual Drift,1681.72,309.38,86.5,7.67,5.4
+D-TS(0.99),Gradual Drift,12517.85,12738.54,34.8,37.44,44.2
+EXP3,Gradual Drift,4481.83,2025.55,68.8,14.43,8.4
+Rexp3(100),Gradual Drift,14366.93,4066.47,37.4,41.93,15.7
+EntropyGradient,Gradual Drift,569.08,832.58,86.2,2.55,8.9
