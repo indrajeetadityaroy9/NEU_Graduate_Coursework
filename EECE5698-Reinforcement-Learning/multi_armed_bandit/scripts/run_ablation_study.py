@@ -16,16 +16,15 @@ from pathlib import Path
 from datetime import datetime
 import json
 import numpy as np
-import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+from multi_armed_bandit.config import N_ARMS, GAP, SEED, create_algorithm
 from multi_armed_bandit.algorithms import (
     UCB1,
     ThompsonSampling,
     SlidingWindowUCB,
     DiscountedUCB,
-    EXP3,
     Rexp3,
 )
 from multi_armed_bandit.benchmarks.supervised_to_bandit import SyntheticDriftBandit
@@ -67,7 +66,7 @@ def run_regret_dynamics_study(
     horizon: int = 5000,
     drift_interval: int = 500,
     n_runs: int = 10,
-    seed: int = 42,
+    seed: int = SEED,
 ):
     """
     Generate regret-over-time plots showing dynamics at change points.
@@ -76,7 +75,7 @@ def run_regret_dynamics_study(
     print("STUDY 1: Regret Dynamics at Change Points")
     print("=" * 60)
 
-    n_arms = 5
+    n_arms = N_ARMS
     algorithms = {
         'ThompsonSampling': lambda s: ThompsonSampling(n_arms=n_arms, seed=s),
         'UCB1': lambda s: UCB1(n_arms=n_arms, c=np.sqrt(2), seed=s),
@@ -96,7 +95,7 @@ def run_regret_dynamics_study(
             # Sudden drift environment
             env = SyntheticDriftBandit(
                 n_arms=n_arms,
-                gap=1.0,
+                gap=GAP,
                 drift_type='sudden',
                 drift_interval=drift_interval,
                 noise_std=1.0,
@@ -132,7 +131,7 @@ def run_window_ablation(
     horizon: int = 10000,
     drift_interval: int = 500,
     n_runs: int = 20,
-    seed: int = 42,
+    seed: int = SEED,
 ):
     """
     Window size ablation for SW-UCB: [50, 100, 200, 500]
@@ -141,7 +140,7 @@ def run_window_ablation(
     print("STUDY 2: Window Size Ablation (SW-UCB)")
     print("=" * 60)
 
-    n_arms = 5
+    n_arms = N_ARMS
     window_sizes = [50, 100, 200, 500]
 
     results = {
@@ -161,7 +160,7 @@ def run_window_ablation(
                 algo = SlidingWindowUCB(n_arms=n_arms, window_size=ws, seed=run_seed)
                 env = SyntheticDriftBandit(
                     n_arms=n_arms,
-                    gap=1.0,
+                    gap=GAP,
                     drift_type=drift_type,
                     drift_interval=drift_interval,
                     noise_std=1.0,
@@ -183,7 +182,7 @@ def run_discount_ablation(
     horizon: int = 10000,
     drift_interval: int = 500,
     n_runs: int = 20,
-    seed: int = 42,
+    seed: int = SEED,
 ):
     """
     Discount factor ablation for D-UCB: [0.9, 0.95, 0.99, 0.999]
@@ -192,7 +191,7 @@ def run_discount_ablation(
     print("STUDY 3: Discount Factor Ablation (D-UCB)")
     print("=" * 60)
 
-    n_arms = 5
+    n_arms = N_ARMS
     gammas = [0.9, 0.95, 0.99, 0.999]
 
     # Compute effective memory for each gamma
@@ -217,7 +216,7 @@ def run_discount_ablation(
                 algo = DiscountedUCB(n_arms=n_arms, gamma=gamma, seed=run_seed)
                 env = SyntheticDriftBandit(
                     n_arms=n_arms,
-                    gap=1.0,
+                    gap=GAP,
                     drift_type=drift_type,
                     drift_interval=drift_interval,
                     noise_std=1.0,
@@ -236,126 +235,6 @@ def run_discount_ablation(
     return results
 
 
-def plot_regret_dynamics(results: dict, drift_interval: int, save_path: Path):
-    """Create regret-over-time plot."""
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-
-    colors = {
-        'ThompsonSampling': '#e41a1c',
-        'UCB1': '#377eb8',
-        'SW-UCB(100)': '#4daf4a',
-        'D-UCB(0.99)': '#984ea3',
-        'Rexp3(100)': '#ff7f00',
-    }
-
-    # Plot 1: Cumulative Regret
-    ax1 = axes[0]
-    for name, data in results.items():
-        mean = data['mean_regret']
-        std = data['std_regret']
-        x = np.arange(len(mean))
-
-        ax1.plot(x, mean, label=name, color=colors[name], linewidth=2)
-        ax1.fill_between(x, mean - std, mean + std, alpha=0.2, color=colors[name])
-
-    # Add vertical lines for change points
-    for cp in range(drift_interval, len(mean), drift_interval):
-        ax1.axvline(x=cp, color='gray', linestyle='--', alpha=0.5, linewidth=1)
-
-    ax1.set_xlabel('Time Step', fontsize=12)
-    ax1.set_ylabel('Cumulative Regret', fontsize=12)
-    ax1.set_title('Regret Dynamics Under Sudden Drift', fontsize=14)
-    ax1.legend(loc='upper left', fontsize=10)
-    ax1.grid(True, alpha=0.3)
-
-    # Plot 2: Rolling Optimal Rate
-    ax2 = axes[1]
-    for name, data in results.items():
-        mean = data['mean_optimal']
-        x = np.arange(len(mean))
-        ax2.plot(x, mean, label=name, color=colors[name], linewidth=2)
-
-    # Add vertical lines for change points
-    for cp in range(drift_interval, len(mean), drift_interval):
-        ax2.axvline(x=cp, color='gray', linestyle='--', alpha=0.5, linewidth=1)
-
-    ax2.set_xlabel('Time Step', fontsize=12)
-    ax2.set_ylabel('Optimal Action Rate (rolling avg)', fontsize=12)
-    ax2.set_title('Adaptation Speed After Change Points', fontsize=14)
-    ax2.legend(loc='lower right', fontsize=10)
-    ax2.set_ylim(0, 1)
-    ax2.grid(True, alpha=0.3)
-
-    plt.tight_layout()
-    plt.savefig(save_path / 'regret_dynamics.png', dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"\n  Saved: {save_path / 'regret_dynamics.png'}")
-
-
-def plot_ablation_heatmap(window_results: dict, discount_results: dict, save_path: Path):
-    """Create ablation study visualization."""
-    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
-
-    # Window size ablation
-    ax1 = axes[0]
-    window_sizes = list(window_results['gradual'].keys())
-    gradual_means = [window_results['gradual'][ws]['mean'] for ws in window_sizes]
-    sudden_means = [window_results['sudden'][ws]['mean'] for ws in window_sizes]
-    gradual_stds = [window_results['gradual'][ws]['std'] for ws in window_sizes]
-    sudden_stds = [window_results['sudden'][ws]['std'] for ws in window_sizes]
-
-    x = np.arange(len(window_sizes))
-    width = 0.35
-
-    bars1 = ax1.bar(x - width/2, gradual_means, width, yerr=gradual_stds,
-                    label='Gradual Drift', color='#2ecc71', capsize=3)
-    bars2 = ax1.bar(x + width/2, sudden_means, width, yerr=sudden_stds,
-                    label='Sudden Drift', color='#e74c3c', capsize=3)
-
-    ax1.set_xlabel('Window Size (τ)', fontsize=12)
-    ax1.set_ylabel('Optimal Action Rate', fontsize=12)
-    ax1.set_title('SW-UCB: Window Size Sensitivity', fontsize=14)
-    ax1.set_xticks(x)
-    ax1.set_xticklabels(window_sizes)
-    ax1.legend()
-    ax1.set_ylim(0, 1)
-    ax1.grid(True, alpha=0.3, axis='y')
-
-    # Discount factor ablation
-    ax2 = axes[1]
-    gammas = list(discount_results['gradual'].keys())
-    gradual_means = [discount_results['gradual'][g]['mean'] for g in gammas]
-    sudden_means = [discount_results['sudden'][g]['mean'] for g in gammas]
-    gradual_stds = [discount_results['gradual'][g]['std'] for g in gammas]
-    sudden_stds = [discount_results['sudden'][g]['std'] for g in gammas]
-
-    x = np.arange(len(gammas))
-
-    bars1 = ax2.bar(x - width/2, gradual_means, width, yerr=gradual_stds,
-                    label='Gradual Drift', color='#2ecc71', capsize=3)
-    bars2 = ax2.bar(x + width/2, sudden_means, width, yerr=sudden_stds,
-                    label='Sudden Drift', color='#e74c3c', capsize=3)
-
-    ax2.set_xlabel('Discount Factor (γ)', fontsize=12)
-    ax2.set_ylabel('Optimal Action Rate', fontsize=12)
-    ax2.set_title('D-UCB: Discount Factor Sensitivity', fontsize=14)
-    ax2.set_xticks(x)
-    ax2.set_xticklabels([str(g) for g in gammas])
-    ax2.legend()
-    ax2.set_ylim(0, 1)
-    ax2.grid(True, alpha=0.3, axis='y')
-
-    # Add effective memory annotations
-    for i, g in enumerate(gammas):
-        eff_mem = int(1 / (1 - g))
-        ax2.annotate(f'mem≈{eff_mem}', xy=(i, 0.02), ha='center', fontsize=8, color='gray')
-
-    plt.tight_layout()
-    plt.savefig(save_path / 'ablation_study.png', dpi=150, bbox_inches='tight')
-    plt.close()
-    print(f"  Saved: {save_path / 'ablation_study.png'}")
-
-
 def main():
     print("=" * 60)
     print("Ablation Study: Hyperparameter Sensitivity Analysis")
@@ -372,7 +251,6 @@ def main():
         drift_interval=500,
         n_runs=10,
     )
-    plot_regret_dynamics(regret_results, drift_interval, results_dir)
 
     # Study 2: Window Size Ablation
     window_results = run_window_ablation(
@@ -387,9 +265,6 @@ def main():
         drift_interval=500,
         n_runs=20,
     )
-
-    # Plot ablation results
-    plot_ablation_heatmap(window_results, discount_results, results_dir)
 
     # Summary
     print("\n" + "=" * 60)

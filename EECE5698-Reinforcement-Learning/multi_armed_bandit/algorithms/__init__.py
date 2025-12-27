@@ -52,18 +52,31 @@ ALGORITHMS = {
 }
 
 # Group algorithms by category
-STATIONARY_ALGORITHMS = ['epsilon_greedy', 'ucb1', 'thompson_sampling', 'gradient_bandit']
-NONSTATIONARY_ALGORITHMS = [
-    'epsilon_greedy_constant', 'discounted_ucb', 'sliding_window_ucb',
-    'discounted_ts', 'exp3', 'rexp3'
+STATIONARY_ALGORITHMS = [
+    'epsilon_greedy', 'epsilon_greedy_decaying', 'ucb1',
+    'thompson_sampling', 'beta_ts', 'gradient_bandit',
 ]
 
+NONSTATIONARY_ALGORITHMS = [
+    'epsilon_greedy_constant', 'discounted_ucb', 'sliding_window_ucb',
+    'discounted_ts', 'entropy_gradient',
+]
+
+ADVERSARIAL_ALGORITHMS = ['exp3', 'rexp3', 'exp3ix']
+
 __all__ = [
+    # Base class
     'BanditAlgorithm',
+    # Epsilon-Greedy variants
     'EpsilonGreedy', 'EpsilonGreedyConstant', 'DecayingEpsilonGreedy',
+    # UCB variants
     'UCB1', 'DiscountedUCB', 'SlidingWindowUCB',
+    # Thompson Sampling variants
     'ThompsonSampling', 'DiscountedThompsonSampling', 'BetaThompsonSampling',
+    # Gradient-based
     'GradientBandit', 'EntropyRegularizedGradient',
+    # Adversarial
     'EXP3', 'Rexp3', 'EXP3IX',
-    'ALGORITHMS', 'STATIONARY_ALGORITHMS', 'NONSTATIONARY_ALGORITHMS',
+    # Registries
+    'ALGORITHMS', 'STATIONARY_ALGORITHMS', 'NONSTATIONARY_ALGORITHMS', 'ADVERSARIAL_ALGORITHMS',
 ]

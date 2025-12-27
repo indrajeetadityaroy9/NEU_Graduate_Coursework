@@ -1,13 +1,12 @@
 """
 Analysis Tools for Bandit Experiments
 
-This package provides metrics, statistical tests, and visualization
-tools for analyzing bandit algorithm performance.
+This package provides metrics and statistical tests
+for analyzing bandit algorithm performance.
 
 Modules:
     - metrics: Regret computation, adaptation metrics
     - statistics: Confidence intervals, significance tests
-    - visualizations: Publication-quality plotting functions
 """
 
 from .metrics import (
@@ -27,14 +26,6 @@ from .statistics import (
     aggregate_runs,
 )
 
-from .visualizations import (
-    plot_regret_curves,
-    plot_cumulative_regret,
-    plot_arm_selection,
-    plot_algorithm_comparison,
-    plot_change_point_analysis,
-)
-
 __all__ = [
     # Metrics
     'compute_regret',
@@ -49,10 +40,4 @@ __all__ = [
     'paired_ttest',
     'cohens_d',
     'aggregate_runs',
-    # Visualizations
-    'plot_regret_curves',
-    'plot_cumulative_regret',
-    'plot_arm_selection',
-    'plot_algorithm_comparison',
-    'plot_change_point_analysis',
 ]

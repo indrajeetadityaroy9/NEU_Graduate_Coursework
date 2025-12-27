@@ -8,46 +8,40 @@ stochastic gradient ascent on expected reward.
 from typing import Optional
 import numpy as np
 from .base import BanditAlgorithm
-
-
-def _softmax(preferences: np.ndarray) -> np.ndarray:
-    """
-    Compute softmax probabilities with numerical stability.
-
-    Parameters
-    ----------
-    preferences : np.ndarray
-        Preference values H(a) for each action
-
-    Returns
-    -------
-    np.ndarray
-        Probability distribution over actions
-    """
-    exp_prefs = np.exp(preferences - np.max(preferences))
-    return exp_prefs / np.sum(exp_prefs)
+from .utils import softmax, validate_positive, validate_non_negative
 
 
 class GradientBandit(BanditAlgorithm):
     """
-    Gradient bandit with softmax policy.
+    Gradient bandit with softmax policy (policy gradient approach).
 
-    Maintains preference values H(a) for each action and uses
-    softmax to convert to probabilities: π(a) = exp(H(a)) / Σ exp(H(a')).
+    Maintains preference values H(a) and uses softmax to define action
+    probabilities. Updates preferences via stochastic gradient ascent.
 
-    Updates preferences using gradient ascent on expected reward:
-        H(a) ← H(a) + α * (r - r̄) * (𝟙[a=A_t] - π(a))
+    Mathematical Formulation
+    ------------------------
+    Policy (softmax): π(a) = exp(H(a)) / Σ_b exp(H(b))
+
+    Gradient ascent update:
+        H(a) ← H(a) + α · (r - r̄) · (𝟙[a=A_t] - π(a))
+
+    where:
+        H(a) = preference for action a
+        α = step size (learning rate)
+        r̄ = baseline (average reward, reduces variance)
+        𝟙[a=A_t] = 1 if a was selected, 0 otherwise
 
     Parameters
     ----------
     n_arms : int
-        Number of arms
+        Number of arms (K in literature)
     alpha : float
-        Step size for preference updates
+        Step size α > 0 for preference updates
     use_baseline : bool
-        Whether to use reward baseline (average reward)
-    seed : Optional[int]
-        Random seed
+        If True, uses average reward r̄ as baseline (recommended for
+        variance reduction)
+    seed : int, optional
+        Random seed for reproducibility
 
     References
     ----------
@@ -63,8 +57,7 @@ class GradientBandit(BanditAlgorithm):
         use_baseline: bool = True,
         seed: Optional[int] = None
     ):
-        if alpha <= 0:
-            raise ValueError(f"alpha must be positive, got {alpha}")
+        validate_positive(alpha, "alpha")
         self.alpha = alpha
         self.use_baseline = use_baseline
         super().__init__(n_arms=n_arms, seed=seed)
@@ -77,7 +70,7 @@ class GradientBandit(BanditAlgorithm):
 
     def _softmax(self) -> np.ndarray:
         """Compute softmax probabilities from preferences."""
-        return _softmax(self._preferences)
+        return softmax(self._preferences)
 
     def select_action(self) -> int:
         """Select action according to softmax policy."""
@@ -160,10 +153,8 @@ class EntropyRegularizedGradient(BanditAlgorithm):
         use_baseline: bool = True,
         seed: Optional[int] = None
     ):
-        if alpha <= 0:
-            raise ValueError(f"alpha must be positive, got {alpha}")
-        if tau < 0:
-            raise ValueError(f"tau must be non-negative, got {tau}")
+        validate_positive(alpha, "alpha")
+        validate_non_negative(tau, "tau")
         self.alpha = alpha
         self.tau = tau
         self.use_baseline = use_baseline
@@ -177,7 +168,7 @@ class EntropyRegularizedGradient(BanditAlgorithm):
 
     def _softmax(self) -> np.ndarray:
         """Compute softmax probabilities."""
-        return _softmax(self._preferences)
+        return softmax(self._preferences)
 
     def _entropy(self, probs: np.ndarray) -> float:
         """Compute entropy of distribution."""

@@ -12,36 +12,44 @@ Includes:
 from typing import Optional
 import numpy as np
 from .base import BanditAlgorithm
+from .utils import validate_positive, validate_discount_factor
 
 
 class ThompsonSampling(BanditAlgorithm):
     """
     Thompson Sampling with Gaussian reward model.
 
-    Maintains a Gaussian posterior over each arm's mean reward.
-    At each timestep, samples from posteriors and selects the
-    arm with highest sampled value.
+    Maintains a Gaussian posterior over each arm's mean reward and
+    selects arms by sampling from these posteriors (probability matching).
 
-    Assumes known reward variance σ² and uses conjugate Gaussian prior.
-    Posterior after n observations: N(μ_n, σ²/n) where μ_n is sample mean.
+    Mathematical Formulation
+    ------------------------
+    Prior: μ(a) ~ N(μ₀, σ₀²)
+    Likelihood: r | μ(a) ~ N(μ(a), σ²)  (known variance)
+    Posterior: μ(a) | data ~ N(μ_n, σ_n²)
+
+    Posterior update (conjugate):
+        Precision: τ_n = τ₀ + n·τ_r  where τ = 1/σ²
+        Mean: μ_n = (τ₀·μ₀ + n·τ_r·x̄) / τ_n
+
+    Action selection: A_t = argmax_a θ̃(a), where θ̃(a) ~ N(μ_n(a), σ_n²(a))
 
     Parameters
     ----------
     n_arms : int
-        Number of arms
+        Number of arms (K in literature)
     prior_mean : float
-        Prior mean for each arm. Use higher values for optimistic exploration.
+        Prior mean μ₀ for each arm. Higher = more optimistic exploration.
     prior_std : float
-        Prior standard deviation (uncertainty before any observations).
+        Prior standard deviation σ₀ (uncertainty before observations).
         Higher values encourage more exploration.
     reward_std : float
-        Known/assumed standard deviation of rewards
+        Known/assumed reward standard deviation σ
     optimistic : bool
-        If True, uses optimistic prior (prior_mean=5.0, prior_std=3.0)
-        which encourages exploration and works better when reward
-        range is unknown. Overrides prior_mean/prior_std if set.
-    seed : Optional[int]
-        Random seed
+        If True, uses optimistic prior (μ₀=5.0, σ₀=3.0) for better
+        exploration when reward range is unknown.
+    seed : int, optional
+        Random seed for reproducibility
 
     References
     ----------
@@ -60,10 +68,8 @@ class ThompsonSampling(BanditAlgorithm):
         optimistic: bool = False,
         seed: Optional[int] = None
     ):
-        if prior_std <= 0:
-            raise ValueError(f"prior_std must be positive, got {prior_std}")
-        if reward_std <= 0:
-            raise ValueError(f"reward_std must be positive, got {reward_std}")
+        validate_positive(prior_std, "prior_std")
+        validate_positive(reward_std, "reward_std")
 
         # Optimistic initialization for better exploration
         if optimistic:
@@ -222,12 +228,9 @@ class DiscountedThompsonSampling(BanditAlgorithm):
         optimistic: bool = False,
         seed: Optional[int] = None
     ):
-        if not 0 < gamma < 1:
-            raise ValueError(f"gamma must be in (0, 1), got {gamma}")
-        if prior_std <= 0:
-            raise ValueError(f"prior_std must be positive, got {prior_std}")
-        if reward_std <= 0:
-            raise ValueError(f"reward_std must be positive, got {reward_std}")
+        validate_discount_factor(gamma)
+        validate_positive(prior_std, "prior_std")
+        validate_positive(reward_std, "reward_std")
 
         self.gamma = gamma
         self.optimistic = optimistic
@@ -369,10 +372,8 @@ class BetaThompsonSampling(BanditAlgorithm):
         beta_prior: float = 1.0,
         seed: Optional[int] = None
     ):
-        if alpha_prior <= 0:
-            raise ValueError(f"alpha_prior must be positive, got {alpha_prior}")
-        if beta_prior <= 0:
-            raise ValueError(f"beta_prior must be positive, got {beta_prior}")
+        validate_positive(alpha_prior, "alpha_prior")
+        validate_positive(beta_prior, "beta_prior")
         self.alpha_prior = alpha_prior
         self.beta_prior = beta_prior
         super().__init__(n_arms=n_arms, seed=seed)

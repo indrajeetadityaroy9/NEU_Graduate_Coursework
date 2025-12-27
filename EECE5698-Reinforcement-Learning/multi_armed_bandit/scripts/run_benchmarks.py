@@ -22,17 +22,9 @@ import pandas as pd
 # Add parent to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from multi_armed_bandit.algorithms import (
-    EpsilonGreedy,
-    DecayingEpsilonGreedy,
-    UCB1,
-    DiscountedUCB,
-    SlidingWindowUCB,
-    ThompsonSampling,
-    DiscountedThompsonSampling,
-    GradientBandit,
-    EXP3,
-    Rexp3,
+from multi_armed_bandit.config import (
+    N_ARMS, HORIZON, SEED,
+    create_algorithm_suite,
 )
 from multi_armed_bandit.benchmarks.obp_integration import (
     OBPEvaluator,
@@ -47,25 +39,6 @@ from multi_armed_bandit.benchmarks.replay_evaluation import (
     SyntheticReplayEvaluator,
     run_replay_benchmark,
 )
-
-
-def create_algorithm_suite(n_arms: int, seed: int = 42) -> dict:
-    """Create full suite of algorithms for benchmarking."""
-    return {
-        # Stationary algorithms
-        'EpsilonGreedy': EpsilonGreedy(n_arms=n_arms, epsilon=0.1, seed=seed),
-        'DecayingEpsilon': DecayingEpsilonGreedy(n_arms=n_arms, seed=seed),
-        'UCB1': UCB1(n_arms=n_arms, c=np.sqrt(2), seed=seed),
-        'ThompsonSampling': ThompsonSampling(n_arms=n_arms, seed=seed),
-        'GradientBandit': GradientBandit(n_arms=n_arms, alpha=0.1, seed=seed),
-        # Non-stationary algorithms
-        'D-UCB(0.99)': DiscountedUCB(n_arms=n_arms, gamma=0.99, seed=seed),
-        'D-UCB(0.95)': DiscountedUCB(n_arms=n_arms, gamma=0.95, seed=seed),
-        'SW-UCB(100)': SlidingWindowUCB(n_arms=n_arms, window_size=100, seed=seed),
-        'D-TS(0.99)': DiscountedThompsonSampling(n_arms=n_arms, gamma=0.99, seed=seed),
-        'EXP3': EXP3(n_arms=n_arms, gamma=0.1, seed=seed),
-        'Rexp3(100)': Rexp3(n_arms=n_arms, restart_interval=100, seed=seed),
-    }
 
 
 def run_supervised_to_bandit_benchmark(
@@ -196,10 +169,7 @@ def main():
     print("=" * 60)
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # Configuration
-    N_ARMS = 5
-    HORIZON = 10000
-    SEED = 42
+    # Using shared config: N_ARMS, HORIZON, SEED imported from config module
 
     # Create results directory
     results_dir = Path(__file__).parent.parent / 'experiments' / 'results' / 'benchmarks'

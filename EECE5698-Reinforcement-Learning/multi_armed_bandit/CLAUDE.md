@@ -5,7 +5,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Running Experiments
 
 ```bash
-# From repository root
+# Full GPU study (13 algorithms × 4 environments × 50 runs) - recommended
+python -m multi_armed_bandit.scripts.run_gpu_study
+
+# Sequential CPU experiments
 python -m multi_armed_bandit.scripts.run_all_experiments
 
 # Quick test (10 runs instead of 50)
@@ -15,15 +18,25 @@ python -m multi_armed_bandit.scripts.run_all_experiments --quick
 python -m multi_armed_bandit.scripts.run_all_experiments --experiment abrupt_200
 
 # Available experiments: stationary, abrupt_100, abrupt_200, abrupt_500, drift
+
+# Benchmarks (OBP, replay, supervised-to-bandit)
+python -m multi_armed_bandit.scripts.run_benchmarks
+
+# Ablation study (hyperparameter sensitivity)
+python -m multi_armed_bandit.scripts.run_ablation_study
 ```
 
 ## Dependencies
 
 ```bash
-pip install numpy matplotlib pandas scipy pyyaml tqdm
+pip install numpy pandas scipy pyyaml tqdm
 
 # For GPU acceleration (optional)
 pip install cupy-cuda12x
+
+# Backend control via environment variables
+MAB_FORCE_CPU=1      # Force CPU even if GPU available
+MAB_GPU_DEVICE=0     # Select GPU device
 ```
 
 ## Architecture
@@ -49,10 +62,9 @@ The codebase uses a registry pattern. Algorithms and environments are registered
 - `gpu_runner.py`: GPUBatchRunner for GPU-accelerated batch execution
 - `configs/`: YAML experiment configurations
 
-**analysis/**: Metrics and visualization
+**analysis/**: Metrics and statistics
 - `metrics.py`: MetricsTracker (pre-allocated arrays), regret computation
 - `statistics.py`: Confidence intervals, statistical tests
-- `visualizations.py`: plot_cumulative_regret(), plot_algorithm_comparison()
 
 **backends/**: GPU/CPU backend abstraction
 - `__init__.py`: Provides unified `xp` interface (CuPy or NumPy)

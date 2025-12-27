@@ -8,6 +8,7 @@ stationary and non-stationary environments respectively.
 from typing import Optional
 import numpy as np
 from .base import BanditAlgorithm
+from .utils import validate_epsilon, validate_step_size, validate_non_negative
 
 
 def _epsilon_greedy_select(rng: np.random.Generator, q_values: np.ndarray,
@@ -47,18 +48,26 @@ class EpsilonGreedy(BanditAlgorithm):
 
     Standard ε-greedy algorithm suitable for stationary environments.
     Explores with probability ε, exploits with probability 1-ε.
-    Uses sample averages for value estimation.
+
+    Mathematical Formulation
+    ------------------------
+    Action selection:
+        A_t = random arm with prob ε (explore)
+        A_t = argmax_a Q̂(a) with prob 1-ε (exploit)
+
+    Value update (sample average):
+        Q̂(a) ← Q̂(a) + (1/N(a)) · (r - Q̂(a))
 
     Parameters
     ----------
     n_arms : int
-        Number of arms
+        Number of arms (K in literature)
     epsilon : float
-        Exploration probability (default: 0.1)
+        Exploration probability ε ∈ [0, 1]. Default 0.1.
     initial_value : float
-        Initial action value estimate (optimistic initialization)
-    seed : Optional[int]
-        Random seed
+        Initial Q̂(a) for all arms. Use high values for optimistic initialization.
+    seed : int, optional
+        Random seed for reproducibility
 
     Examples
     --------
@@ -76,8 +85,7 @@ class EpsilonGreedy(BanditAlgorithm):
         initial_value: float = 0.0,
         seed: Optional[int] = None
     ):
-        if not 0 <= epsilon <= 1:
-            raise ValueError(f"epsilon must be in [0, 1], got {epsilon}")
+        validate_epsilon(epsilon)
         self.epsilon = epsilon
         self.initial_value = initial_value
         super().__init__(n_arms=n_arms, seed=seed)
@@ -147,10 +155,8 @@ class EpsilonGreedyConstant(BanditAlgorithm):
         initial_value: float = 0.0,
         seed: Optional[int] = None
     ):
-        if not 0 <= epsilon <= 1:
-            raise ValueError(f"epsilon must be in [0, 1], got {epsilon}")
-        if not 0 < alpha <= 1:
-            raise ValueError(f"alpha must be in (0, 1], got {alpha}")
+        validate_epsilon(epsilon)
+        validate_step_size(alpha)
         self.epsilon = epsilon
         self.alpha = alpha
         self.initial_value = initial_value
@@ -216,14 +222,11 @@ class DecayingEpsilonGreedy(BanditAlgorithm):
         alpha: Optional[float] = None,
         seed: Optional[int] = None
     ):
-        if not 0 <= epsilon_init <= 1:
-            raise ValueError(f"epsilon_init must be in [0, 1], got {epsilon_init}")
-        if decay_rate < 0:
-            raise ValueError(f"decay_rate must be non-negative, got {decay_rate}")
-        if not 0 <= epsilon_min <= 1:
-            raise ValueError(f"epsilon_min must be in [0, 1], got {epsilon_min}")
-        if alpha is not None and not 0 < alpha <= 1:
-            raise ValueError(f"alpha must be in (0, 1], got {alpha}")
+        validate_epsilon(epsilon_init, "epsilon_init")
+        validate_non_negative(decay_rate, "decay_rate")
+        validate_epsilon(epsilon_min, "epsilon_min")
+        if alpha is not None:
+            validate_step_size(alpha)
         self.epsilon_init = epsilon_init
         self.decay_rate = decay_rate
         self.epsilon_min = epsilon_min

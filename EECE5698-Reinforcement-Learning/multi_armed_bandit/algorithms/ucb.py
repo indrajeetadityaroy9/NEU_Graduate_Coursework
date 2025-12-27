@@ -10,25 +10,35 @@ from typing import Optional, Deque
 from collections import deque
 import numpy as np
 from .base import BanditAlgorithm
+from .utils import validate_positive, validate_discount_factor, validate_positive_int
 
 
 class UCB1(BanditAlgorithm):
     """
     UCB1 algorithm for stationary bandits.
 
-    Selects actions by: a = argmax_a [Q(a) + c * sqrt(ln(t) / N(a))]
+    Selects the arm with highest Upper Confidence Bound, balancing
+    exploitation (high mean) with exploration (high uncertainty).
 
-    The exploration bonus naturally decreases as actions are sampled more,
-    while increasing for actions that haven't been tried recently.
+    Mathematical Formulation
+    ------------------------
+    Action selection: A_t = argmax_a [Q̂(a) + c√(ln(t)/N(a))]
+    Value update: Q̂(a) = (1/N(a)) Σ r_s  (sample average)
+
+    where:
+        Q̂(a) = estimated mean reward for arm a
+        N(a) = number of times arm a has been pulled
+        c = exploration parameter (√2 is theoretically optimal)
+        t = current timestep
 
     Parameters
     ----------
     n_arms : int
-        Number of arms
+        Number of arms (K in literature)
     c : float
-        Exploration parameter (default: sqrt(2) is theoretically optimal)
-    seed : Optional[int]
-        Random seed
+        Exploration parameter c > 0. Default √2 achieves O(√(KT ln T)) regret.
+    seed : int, optional
+        Random seed for reproducibility
 
     References
     ----------
@@ -43,8 +53,7 @@ class UCB1(BanditAlgorithm):
         c: float = np.sqrt(2),
         seed: Optional[int] = None
     ):
-        if c <= 0:
-            raise ValueError(f"c must be positive, got {c}")
+        validate_positive(c, "c")
         self.c = c
         super().__init__(n_arms=n_arms, seed=seed)
 
@@ -107,27 +116,38 @@ class UCB1(BanditAlgorithm):
 
 class DiscountedUCB(BanditAlgorithm):
     """
-    Discounted UCB for non-stationary bandits.
+    Discounted UCB (D-UCB) for non-stationary bandits.
 
-    Uses exponential discounting: recent observations have more weight.
-    Effective for tracking slowly drifting distributions.
+    Uses exponential discounting to give more weight to recent observations.
+    Effective for tracking slowly drifting reward distributions.
 
-    The discounted estimates are computed as:
-        N_γ(a) = Σ_{s: a_s=a} γ^(t-s)  (discounted count)
-        Q_γ(a) = [Σ_{s: a_s=a} γ^(t-s) r_s] / N_γ(a)  (discounted mean)
+    Mathematical Formulation
+    ------------------------
+    Discounted count: N_γ(a) = Σ_{s: a_s=a} γ^(t-s)
+    Discounted mean: Q̂_γ(a) = [Σ_{s: a_s=a} γ^(t-s) r_s] / N_γ(a)
+    Action selection: A_t = argmax_a [Q̂_γ(a) + c√(ξ·ln(N_γ)/N_γ(a))]
+
+    where:
+        γ = discount factor ∈ (0, 1), effective memory ≈ 1/(1-γ)
+        N_γ = Σ_a N_γ(a) = total discounted count
+        c, ξ = exploration parameters
+
+    Note: The parameter `gamma` here is a discount factor, distinct from
+    `exploration_rate` in EXP3 which controls uniform mixing.
 
     Parameters
     ----------
     n_arms : int
-        Number of arms
+        Number of arms (K in literature)
     gamma : float
-        Discount factor (0 < γ < 1). Smaller values adapt faster.
+        Discount factor γ ∈ (0, 1). Effective memory ≈ 1/(1-γ) steps.
+        γ=0.99 → ~100 steps memory. Smaller γ adapts faster but has higher variance.
     c : float
-        Exploration parameter
+        Exploration bonus coefficient c > 0
     xi : float
-        Additional exploration parameter for non-stationarity
-    seed : Optional[int]
-        Random seed
+        Additional exploration parameter ξ > 0 for non-stationarity
+    seed : int, optional
+        Random seed for reproducibility
 
     References
     ----------
@@ -144,12 +164,9 @@ class DiscountedUCB(BanditAlgorithm):
         xi: float = 0.5,
         seed: Optional[int] = None
     ):
-        if not 0 < gamma < 1:
-            raise ValueError(f"gamma must be in (0, 1), got {gamma}")
-        if c <= 0:
-            raise ValueError(f"c must be positive, got {c}")
-        if xi <= 0:
-            raise ValueError(f"xi must be positive, got {xi}")
+        validate_discount_factor(gamma)
+        validate_positive(c, "c")
+        validate_positive(xi, "xi")
         self.gamma = gamma
         self.c = c
         self.xi = xi
@@ -245,12 +262,9 @@ class SlidingWindowUCB(BanditAlgorithm):
         xi: float = 0.5,
         seed: Optional[int] = None
     ):
-        if window_size < 1:
-            raise ValueError(f"window_size must be positive, got {window_size}")
-        if c <= 0:
-            raise ValueError(f"c must be positive, got {c}")
-        if xi <= 0:
-            raise ValueError(f"xi must be positive, got {xi}")
+        validate_positive_int(window_size, "window_size")
+        validate_positive(c, "c")
+        validate_positive(xi, "xi")
         self.window_size = window_size
         self.c = c
         self.xi = xi

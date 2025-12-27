@@ -35,8 +35,12 @@ multi_armed_bandit/
 │
 ├── analysis/                   # Statistical analysis tools
 │   ├── metrics.py             # Regret, adaptation metrics
-│   ├── statistics.py          # Confidence intervals, significance tests
-│   └── visualizations.py      # Publication-quality plotting
+│   └── statistics.py          # Confidence intervals, significance tests
+│
+├── config/                     # Shared configuration module
+│   ├── defaults.py            # N_RUNS, HORIZON, N_ARMS, etc.
+│   ├── algorithms.py          # Algorithm configs and factories
+│   └── environments.py        # Environment configs and factories
 │
 ├── experiments/                # Reproducible experiments
 │   ├── runner.py              # Experiment execution (sequential & parallel)
@@ -130,7 +134,6 @@ python -m multi_armed_bandit.scripts.run_gpu_study
 
 Results saved to `experiments/results/full_study_YYYYMMDD_HHMMSS/` containing:
 - `raw/` — JSON results per environment
-- `plots/` — Visualization PNG files
 - `summary/` — CSV summaries and statistical tests
 - `README.md` — Auto-generated summary
 
@@ -327,7 +330,7 @@ Rexp3 is designed for **adversarial** settings. Its mediocre performance confirm
 python -m multi_armed_bandit.scripts.run_ablation_study
 ```
 
-Generates `regret_dynamics.png` and `ablation_study.png` in `experiments/results/ablation/`.
+Results saved to `experiments/results/ablation/ablation_results.json`.
 
 ---
 
@@ -411,15 +414,12 @@ python -m multi_armed_bandit.scripts.run_ablation_study # ~5 minutes
 experiments/results/
 ├── full_study_YYYYMMDD_HHMMSS/
 │   ├── raw/                    # JSON results per environment
-│   ├── plots/                  # Regret curves, comparisons
 │   ├── summary/                # CSV statistics, rankings
 │   └── README.md               # Auto-generated summary
 ├── benchmarks/
 │   └── benchmark_results_*.json
 └── ablation/
-    ├── regret_dynamics.png     # Cumulative regret over time
-    ├── ablation_study.png      # Hyperparameter sensitivity bars
-    └── ablation_results.json
+    └── ablation_results.json   # Hyperparameter sensitivity data
 ```
 
 ---
