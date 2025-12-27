@@ -2,20 +2,6 @@ import java.io.*;
 import java.lang.*;
 import java.text.*;
 
-class Ssq2Sum {                                  
-  double delay;                                  
-  double wait;                                   
-  double service;                                
-  double interarrival;                           
-
-  void initSumParas() {
-    delay = 0.0;
-    wait = 0.0;
-    service = 0.0;
-    interarrival = 0.0;
-  }
-}
-
 class ex_1 {
 
   static long LAST = 100000;                    
@@ -38,10 +24,13 @@ class ex_1 {
     ex_1 s = new ex_1();  
     Rng r  = new Rng();
     r.putSeed(123456789);        
+    double lastArrival = START;
 
     while (index < LAST) {
       index++;
       arrival = getArrival(r);    
+      sum.interarrival += (arrival - lastArrival);
+      lastArrival = arrival;
       if (arrival < departure) 
         delay = departure - arrival;  
       else 
@@ -55,8 +44,6 @@ class ex_1 {
       sum.wait    += wait;
       sum.service += service;
     }
-
-    sum.interarrival = arrival - START;
 
     DecimalFormat f = new DecimalFormat("###0.00");
 

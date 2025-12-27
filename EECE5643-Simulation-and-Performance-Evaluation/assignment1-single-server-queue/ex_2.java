@@ -4,20 +4,6 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 
-class Ssq1Sum {                                 /* sum of ...           */
-  double delay;                                 /*   delay times        */
-  double wait;                                  /*   wait times         */
-  double service;                               /*   service times      */
-  double interarrival;                          /*   interarrival times */
-
-  void initSumParas() {
-    delay = 0.0;
-    wait = 0.0;
-    service = 0.0;
-    interarrival = 0.0;
-  }
-}
-
 class ex_2 {
   static String FILENAME = "ac.dat";          /* input data file */
   static double START = 0.0;
@@ -45,11 +31,15 @@ class ex_2 {
       double departure = START;                 /* departure time       */
       Ssq1Sum sum = new Ssq1Sum();
       sum.initSumParas();
+      double interarrivalSum = 0.0;
+      double lastArrival = START;
 
       while ( (line = in.readLine()) != null ) {
         index++;
         st = new StringTokenizer(line);
         arrival = Double.parseDouble(st.nextToken());
+        interarrivalSum += (arrival - lastArrival);
+        lastArrival = arrival;
         if (arrival < departure)
           delay    = departure - arrival;       /* delay in queue    */
         else
@@ -62,7 +52,7 @@ class ex_2 {
         sum.wait    += wait;
         sum.service += service;
       }
-      sum.interarrival = arrival - START;
+      sum.interarrival = interarrivalSum;
 
       DecimalFormat f = new DecimalFormat("###0.00");
 

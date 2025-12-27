@@ -4,20 +4,6 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 
-class Ssq1Sum {                                 /* sum of ...           */
-  double delay;                                 /*   delay times        */
-  double wait;                                  /*   wait times         */
-  double service;                               /*   service times      */
-  double interarrival;                          /*   interarrival times */
-
-  void initSumParas() {
-    delay = 0.0;
-    wait = 0.0;
-    service = 0.0;
-    interarrival = 0.0;
-  }
-}
-
 class ex_1 {
   static String FILENAME = "Ssq1.dat";          /* input data file */
   static double START = 0.0;
@@ -47,6 +33,8 @@ class ex_1 {
       double delayed_job_count = 0;
       Ssq1Sum sum = new Ssq1Sum();
       sum.initSumParas();
+      double interarrivalSum = 0.0;
+      double lastArrival = START;
 
       ArrayList<Double> arrival_times   = new ArrayList<Double>();
       ArrayList<Double> departure_times = new ArrayList<Double>();
@@ -55,6 +43,8 @@ class ex_1 {
         index++;
         st = new StringTokenizer(line);
         arrival = Double.parseDouble(st.nextToken());
+        interarrivalSum += (arrival - lastArrival);
+        lastArrival = arrival;
         if (arrival < departure)
           delay    = departure - arrival;       /* delay in queue    */
         else
@@ -74,7 +64,7 @@ class ex_1 {
         arrival_times.add(arrival);
         departure_times.add(departure);
       }
-      sum.interarrival = arrival - START;
+      sum.interarrival = interarrivalSum;
 
       DecimalFormat f = new DecimalFormat("###0.00");
 
@@ -94,7 +84,7 @@ class ex_1 {
       System.out.println("   average delay ........... =  " + f.format(sum.delay / index));
       System.out.println("   average wait ............ =  " + f.format(sum.wait / index));
       System.out.println("   maximum delay ........... = " + f.format(max_delay));
-      System.out.println("   number of jobs in the serivce node at t=400 = " + num_jobs_at_t);
+      System.out.println("   number of jobs in the service node at t=400 = " + num_jobs_at_t);
       System.out.println("   proportion of jobs delayed = " + f.format(delayed_jobs));
       System.out.println("   server utilization = " + f.format(utilization));
 
@@ -107,7 +97,8 @@ class ex_1 {
   public static int count_jobs(ArrayList<Double> list, double t) {
     int idx = Collections.binarySearch(list, t);
     if (idx < 0) {
-        idx = -idx - 1;
+        idx = -idx - 1; // insertion point: # elements < t
+        return idx;     // count of elements <= t is idx when t not present
     } else {
         while ((idx + 1) < list.size() && list.get(idx+1) <= t) {
             idx++;
