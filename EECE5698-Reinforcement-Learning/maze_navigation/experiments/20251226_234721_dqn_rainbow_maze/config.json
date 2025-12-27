@@ -1,0 +1,89 @@
+{
+  "algorithm": "dqn",
+  "seed": 42,
+  "device": "auto",
+  "experiment_name": "rainbow_maze",
+  "log_dir": "experiments",
+  "env": {
+    "rows": 20,
+    "cols": 20,
+    "stochasticity": 0.02,
+    "max_episode_steps": 1000
+  },
+  "rewards": {
+    "goal": 200.0,
+    "oil": -5.0,
+    "bump": -10.0,
+    "action": -1.0
+  },
+  "training": {
+    "total_timesteps": 200000,
+    "eval_freq": 10000,
+    "save_freq": 50000,
+    "log_freq": 100,
+    "n_eval_episodes": 20
+  },
+  "visualization": {
+    "enabled": true,
+    "save_only": true,
+    "save_path": "figures"
+  },
+  "hardware": {
+    "mixed_precision": true,
+    "compile_mode": "reduce-overhead",
+    "num_envs": 8,
+    "num_workers": 4
+  },
+  "distributed": {
+    "enabled": false,
+    "world_size": 2,
+    "backend": "nccl"
+  },
+  "per": {
+    "enabled": false,
+    "alpha": 0.6,
+    "beta_start": 0.4,
+    "beta_end": 1.0,
+    "beta_frames": 100000
+  },
+  "dqn": {
+    "hidden_dims": [
+      512,
+      512
+    ],
+    "learning_rate": 0.00025,
+    "gamma": 0.99,
+    "epsilon_start": 1.0,
+    "epsilon_end": 0.01,
+    "epsilon_decay_steps": 50000,
+    "target_update_freq": 2000,
+    "tau": 1.0,
+    "buffer_size": 500000,
+    "batch_size": 256,
+    "min_buffer_size": 10000,
+    "use_double": true,
+    "use_dueling": true,
+    "use_per": true,
+    "n_step": 3,
+    "per_alpha": 0.6,
+    "per_beta_start": 0.4,
+    "per_beta_end": 1.0,
+    "per_beta_frames": 100000
+  },
+  "ppo": {
+    "hidden_dims": [
+      256,
+      256
+    ],
+    "learning_rate": 0.0003,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_epsilon": 0.2,
+    "value_coef": 0.5,
+    "entropy_coef": 0.01,
+    "max_grad_norm": 0.5,
+    "n_steps": 2048,
+    "n_epochs": 10,
+    "batch_size": 64
+  }
+}

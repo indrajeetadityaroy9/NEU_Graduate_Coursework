@@ -1,0 +1,44 @@
+# Dueling DQN configuration for maze navigation
+
+algorithm: dueling_dqn
+seed: 42
+device: auto
+experiment_name: dueling_dqn_maze
+log_dir: experiments
+
+env:
+  rows: 20
+  cols: 20
+  stochasticity: 0.02
+  max_episode_steps: 1000
+
+rewards:
+  goal: 200.0
+  oil: -5.0
+  bump: -10.0
+  action: -1.0
+
+training:
+  total_timesteps: 50000
+  eval_freq: 2500
+  save_freq: 10000
+  log_freq: 100
+  n_eval_episodes: 10
+
+visualization:
+  enabled: true
+  save_only: true
+  save_path: figures
+
+dqn:
+  hidden_dims: [256, 256]
+  learning_rate: 0.0001
+  gamma: 0.99
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay_steps: 10000
+  target_update_freq: 1000
+  tau: 1.0
+  buffer_size: 100000
+  batch_size: 64
+  min_buffer_size: 1000

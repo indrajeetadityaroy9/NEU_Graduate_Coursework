@@ -1,0 +1,71 @@
+# Rainbow DQN configuration for maze navigation
+# Core Rainbow: Double DQN + Dueling + PER + N-step returns
+
+algorithm: dqn  # Uses DQNAgent with Rainbow flags enabled
+seed: 42
+device: auto
+experiment_name: rainbow_maze
+log_dir: experiments
+
+env:
+  rows: 20
+  cols: 20
+  stochasticity: 0.02
+  max_episode_steps: 1000
+
+rewards:
+  goal: 200.0
+  oil: -5.0
+  bump: -10.0
+  action: -1.0
+
+training:
+  total_timesteps: 200000
+  eval_freq: 10000
+  save_freq: 50000
+  log_freq: 100
+  n_eval_episodes: 20
+
+visualization:
+  enabled: true
+  save_only: true
+  save_path: figures
+
+hardware:
+  mixed_precision: true
+  compile_mode: "reduce-overhead"
+  num_envs: 8
+  num_workers: 4
+
+# Rainbow DQN hyperparameters
+dqn:
+  # Network architecture
+  hidden_dims: [512, 512]
+  learning_rate: 0.00025
+  gamma: 0.99
+
+  # Exploration schedule
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay_steps: 50000
+
+  # Target network
+  target_update_freq: 2000
+  tau: 1.0
+
+  # Replay buffer
+  buffer_size: 500000
+  batch_size: 256
+  min_buffer_size: 10000
+
+  # Rainbow feature flags (Core Rainbow)
+  use_double: true    # Double DQN: reduces overestimation
+  use_dueling: true   # Dueling architecture: separate V/A streams
+  use_per: true       # Prioritized Experience Replay
+  n_step: 3           # Multi-step returns
+
+  # PER parameters
+  per_alpha: 0.6      # Prioritization exponent (0=uniform, 1=full)
+  per_beta_start: 0.4 # Initial importance sampling correction
+  per_beta_end: 1.0   # Final importance sampling correction
+  per_beta_frames: 100000  # Frames to anneal beta
