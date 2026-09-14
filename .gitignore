@@ -1,0 +1,41 @@
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Packaging / build output
+build/
+dist/
+sdist/
+wheels/
+*.egg
+*.egg-info/
+.eggs/
+.installed.cfg
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+
+# Editor / IDE metadata
+.idea/
+.vscode/
+*.swp
+*~
+
+# OS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
