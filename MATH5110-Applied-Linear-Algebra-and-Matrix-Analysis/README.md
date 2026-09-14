@@ -1,0 +1,3 @@
+# MATH5110 Numerical Optimization and Matrix Analysis
+
+Graduate-level applied mathematics coursework on the theoretical and computational foundations of linear algebra used in numerical methods and optimization. Topics include matrix factorizations and flop-count analysis (LU/LDU, Gaussian elimination), vector spaces and linear maps, determinants and invertibility, inner product spaces and orthogonality, projections and least-squares methods, spectral theory, and Jordan canonical forms. The coursework also covers applied algebraic structures and discrete applications, including graph-theoretic matrix representations, coding theory, finite fields, and eigenstructure analysis.
