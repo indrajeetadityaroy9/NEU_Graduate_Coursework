@@ -1,0 +1,217 @@
+{
+  "gradual_drift": [
+    {
+      "Algorithm": "EpsilonGreedy",
+      "Cumulative Reward": 2091.9005274853084,
+      "Optimal Rate": 0.2087,
+      "Final Regret": 7908.099472514708
+    },
+    {
+      "Algorithm": "DecayingEpsilon",
+      "Cumulative Reward": 1983.5985274853167,
+      "Optimal Rate": 0.1993,
+      "Final Regret": 8016.401472514706
+    },
+    {
+      "Algorithm": "UCB1",
+      "Cumulative Reward": 4521.864527485309,
+      "Optimal Rate": 0.2109,
+      "Final Regret": 5478.135472514703
+    },
+    {
+      "Algorithm": "ThompsonSampling",
+      "Cumulative Reward": 2240.1945274853147,
+      "Optimal Rate": 0.2018,
+      "Final Regret": 7759.80547251471
+    },
+    {
+      "Algorithm": "GradientBandit",
+      "Cumulative Reward": 1908.5165274853098,
+      "Optimal Rate": 0.2042,
+      "Final Regret": 8091.483472514701
+    },
+    {
+      "Algorithm": "D-UCB(0.99)",
+      "Cumulative Reward": 6447.1045274853095,
+      "Optimal Rate": 0.201,
+      "Final Regret": 3552.8954725146973
+    },
+    {
+      "Algorithm": "D-UCB(0.95)",
+      "Cumulative Reward": 4705.99052748531,
+      "Optimal Rate": 0.1995,
+      "Final Regret": 5294.0094725146755
+    },
+    {
+      "Algorithm": "SW-UCB(100)",
+      "Cumulative Reward": 6208.09452748531,
+      "Optimal Rate": 0.1988,
+      "Final Regret": 3791.905472514692
+    },
+    {
+      "Algorithm": "D-TS(0.99)",
+      "Cumulative Reward": 5857.496527485311,
+      "Optimal Rate": 0.2015,
+      "Final Regret": 4142.503472514691
+    },
+    {
+      "Algorithm": "EXP3",
+      "Cumulative Reward": 2444.312527485311,
+      "Optimal Rate": 0.2001,
+      "Final Regret": 7555.687472514705
+    },
+    {
+      "Algorithm": "Rexp3(100)",
+      "Cumulative Reward": 4437.416527485311,
+      "Optimal Rate": 0.2011,
+      "Final Regret": 5562.583472514688
+    }
+  ],
+  "sudden_drift": [
+    {
+      "Algorithm": "EpsilonGreedy",
+      "Cumulative Reward": 3024.1762328535883,
+      "Optimal Rate": 0.2089,
+      "Final Regret": 6975.823767146416
+    },
+    {
+      "Algorithm": "DecayingEpsilon",
+      "Cumulative Reward": 1830.1762328535897,
+      "Optimal Rate": 0.1964,
+      "Final Regret": 8169.823767146423
+    },
+    {
+      "Algorithm": "UCB1",
+      "Cumulative Reward": 7945.176232853575,
+      "Optimal Rate": 0.2047,
+      "Final Regret": 2054.8237671464153
+    },
+    {
+      "Algorithm": "ThompsonSampling",
+      "Cumulative Reward": 2475.1762328535865,
+      "Optimal Rate": 0.2008,
+      "Final Regret": 7524.823767146425
+    },
+    {
+      "Algorithm": "GradientBandit",
+      "Cumulative Reward": 2242.1762328535874,
+      "Optimal Rate": 0.1975,
+      "Final Regret": 7757.823767146427
+    },
+    {
+      "Algorithm": "D-UCB(0.99)",
+      "Cumulative Reward": 8421.176232853568,
+      "Optimal Rate": 0.2051,
+      "Final Regret": 1578.8237671464158
+    },
+    {
+      "Algorithm": "D-UCB(0.95)",
+      "Cumulative Reward": 6709.176232853584,
+      "Optimal Rate": 0.1998,
+      "Final Regret": 3290.8237671464162
+    },
+    {
+      "Algorithm": "SW-UCB(100)",
+      "Cumulative Reward": 8161.17623285357,
+      "Optimal Rate": 0.204,
+      "Final Regret": 1838.8237671464149
+    },
+    {
+      "Algorithm": "D-TS(0.99)",
+      "Cumulative Reward": 7761.176232853577,
+      "Optimal Rate": 0.2048,
+      "Final Regret": 2238.823767146424
+    },
+    {
+      "Algorithm": "EXP3",
+      "Cumulative Reward": 2355.176232853579,
+      "Optimal Rate": 0.1983,
+      "Final Regret": 7644.8237671464285
+    },
+    {
+      "Algorithm": "Rexp3(100)",
+      "Cumulative Reward": 6433.176232853586,
+      "Optimal Rate": 0.2032,
+      "Final Regret": 3566.823767146419
+    }
+  ],
+  "replay": [
+    {
+      "Algorithm": "EpsilonGreedy",
+      "Mean Reward": 0.8592,
+      "Match Rate": 0.1992349378386994,
+      "Total Matches": 5000,
+      "Cumulative Reward": 4296.0
+    },
+    {
+      "Algorithm": "DecayingEpsilon",
+      "Mean Reward": 0.8696,
+      "Match Rate": 0.20047311655506997,
+      "Total Matches": 5000,
+      "Cumulative Reward": 4348.0
+    },
+    {
+      "Algorithm": "UCB1",
+      "Mean Reward": 0.8736,
+      "Match Rate": 0.20107777688409878,
+      "Total Matches": 5000,
+      "Cumulative Reward": 4368.0
+    },
+    {
+      "Algorithm": "ThompsonSampling",
+      "Mean Reward": 0.8848,
+      "Match Rate": 0.1997842330283294,
+      "Total Matches": 5000,
+      "Cumulative Reward": 4424.0
+    },
+    {
+      "Algorithm": "GradientBandit",
+      "Mean Reward": 0.8832,
+      "Match Rate": 0.20247833481817445,
+      "Total Matches": 5000,
+      "Cumulative Reward": 4416.0
+    },
+    {
+      "Algorithm": "D-UCB(0.99)",
+      "Mean Reward": 0.7878,
+      "Match Rate": 0.19815321206356756,
+      "Total Matches": 5000,
+      "Cumulative Reward": 3939.0
+    },
+    {
+      "Algorithm": "D-UCB(0.95)",
+      "Mean Reward": 0.6764,
+      "Match Rate": 0.19891788669637173,
+      "Total Matches": 5000,
+      "Cumulative Reward": 3382.0
+    },
+    {
+      "Algorithm": "SW-UCB(100)",
+      "Mean Reward": 0.7884,
+      "Match Rate": 0.20033656542992226,
+      "Total Matches": 5000,
+      "Cumulative Reward": 3942.0
+    },
+    {
+      "Algorithm": "D-TS(0.99)",
+      "Mean Reward": 0.771,
+      "Match Rate": 0.19577133907595928,
+      "Total Matches": 5000,
+      "Cumulative Reward": 3855.0
+    },
+    {
+      "Algorithm": "EXP3",
+      "Mean Reward": 0.8434,
+      "Match Rate": 0.1986886548778065,
+      "Total Matches": 5000,
+      "Cumulative Reward": 4217.0
+    },
+    {
+      "Algorithm": "Rexp3(100)",
+      "Mean Reward": 0.6864,
+      "Match Rate": 0.20401501550514117,
+      "Total Matches": 5000,
+      "Cumulative Reward": 3432.0
+    }
+  ]
+}

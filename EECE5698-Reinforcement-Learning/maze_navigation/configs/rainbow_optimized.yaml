@@ -1,0 +1,70 @@
+# Rainbow DQN - Optimized for H100 (no torch.compile for fast startup)
+# Hardware: 2x H100 80GB, 52 cores, 442GB RAM
+
+algorithm: dqn
+seed: 42
+device: auto
+experiment_name: rainbow_optimized
+log_dir: experiments
+
+env:
+  rows: 20
+  cols: 20
+  stochasticity: 0.02
+  max_episode_steps: 1000
+
+rewards:
+  goal: 200.0
+  oil: -5.0
+  bump: -10.0
+  action: -1.0
+
+training:
+  total_timesteps: 200000
+  eval_freq: 10000
+  save_freq: 50000
+  log_freq: 500
+  n_eval_episodes: 20
+
+visualization:
+  enabled: true
+  save_only: true
+  save_path: figures
+
+hardware:
+  mixed_precision: true  # Use AMP for H100 tensor cores
+  compile_mode: null     # Skip torch.compile for fast startup
+  num_envs: 1
+  num_workers: 4
+
+# Rainbow DQN - Large capacity for H100
+dqn:
+  hidden_dims: [512, 512]
+  learning_rate: 0.00025
+  gamma: 0.99
+
+  # Exploration
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay_steps: 50000
+
+  # Target network
+  target_update_freq: 2000
+  tau: 1.0
+
+  # Large buffer and batch for GPU memory
+  buffer_size: 500000
+  batch_size: 512      # Large batch for H100
+  min_buffer_size: 5000
+
+  # Rainbow features (all enabled)
+  use_double: true
+  use_dueling: true
+  use_per: true
+  n_step: 3
+
+  # PER parameters
+  per_alpha: 0.6
+  per_beta_start: 0.4
+  per_beta_end: 1.0
+  per_beta_frames: 100000

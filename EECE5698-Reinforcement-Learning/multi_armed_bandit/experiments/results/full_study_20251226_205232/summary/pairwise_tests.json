@@ -1,0 +1,1882 @@
+{
+  "Stationary": {
+    "EpsilonGreedy vs DecayingEpsilon": {
+      "t_statistic": 63.30159865650262,
+      "p_value": 1.1703707508400988e-48,
+      "p_corrected": 9.12889185655277e-47,
+      "significant": true
+    },
+    "EpsilonGreedy vs UCB1": {
+      "t_statistic": 112.84318121652151,
+      "p_value": 7.129759898288326e-61,
+      "p_corrected": 5.561212720664894e-59,
+      "significant": true
+    },
+    "EpsilonGreedy vs ThompsonSampling": {
+      "t_statistic": 120.14912980984207,
+      "p_value": 3.3325072816271214e-62,
+      "p_corrected": 2.5993556796691545e-60,
+      "significant": true
+    },
+    "EpsilonGreedy vs GradientBandit": {
+      "t_statistic": 109.28974731815698,
+      "p_value": 3.398847674414943e-60,
+      "p_corrected": 2.6511011860436556e-58,
+      "significant": true
+    },
+    "EpsilonGreedy vs EpsGreedy-Const": {
+      "t_statistic": -2.9778329522353966,
+      "p_value": 0.0045032714570974715,
+      "p_corrected": 0.35125517365360276,
+      "significant": false
+    },
+    "EpsilonGreedy vs D-UCB(0.99)": {
+      "t_statistic": -21.099478771920953,
+      "p_value": 3.060647689279271e-26,
+      "p_corrected": 2.3873051976378316e-24,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-UCB(0.95)": {
+      "t_statistic": -197.37054325451302,
+      "p_value": 9.604674577974993e-73,
+      "p_corrected": 7.491646170820494e-71,
+      "significant": true
+    },
+    "EpsilonGreedy vs SW-UCB(100)": {
+      "t_statistic": -38.743889757846325,
+      "p_value": 2.0295062619344975e-38,
+      "p_corrected": 1.5830148843089082e-36,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-TS(0.99)": {
+      "t_statistic": -38.44259225409038,
+      "p_value": 2.939947320546877e-38,
+      "p_corrected": 2.2931589100265643e-36,
+      "significant": true
+    },
+    "EpsilonGreedy vs EXP3": {
+      "t_statistic": -0.8148635491541115,
+      "p_value": 0.419093412211068,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsilonGreedy vs Rexp3(100)": {
+      "t_statistic": -105.74771191287527,
+      "p_value": 1.6964570502567628e-59,
+      "p_corrected": 1.323236499200275e-57,
+      "significant": true
+    },
+    "EpsilonGreedy vs EntropyGradient": {
+      "t_statistic": 94.93317379411829,
+      "p_value": 3.2687765032818294e-57,
+      "p_corrected": 2.549645672559827e-55,
+      "significant": true
+    },
+    "DecayingEpsilon vs UCB1": {
+      "t_statistic": 90.1946904057727,
+      "p_value": 3.9620371320205686e-56,
+      "p_corrected": 3.0903889629760436e-54,
+      "significant": true
+    },
+    "DecayingEpsilon vs ThompsonSampling": {
+      "t_statistic": 109.51462800442926,
+      "p_value": 3.0744238792426506e-60,
+      "p_corrected": 2.3980506258092675e-58,
+      "significant": true
+    },
+    "DecayingEpsilon vs GradientBandit": {
+      "t_statistic": 66.96828984690208,
+      "p_value": 7.646844492489465e-50,
+      "p_corrected": 5.964538704141783e-48,
+      "significant": true
+    },
+    "DecayingEpsilon vs EpsGreedy-Const": {
+      "t_statistic": -86.9881190664578,
+      "p_value": 2.3097273685280386e-55,
+      "p_corrected": 1.80158734745187e-53,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-UCB(0.99)": {
+      "t_statistic": -87.78228102767864,
+      "p_value": 1.4837834684742063e-55,
+      "p_corrected": 1.1573511054098808e-53,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-UCB(0.95)": {
+      "t_statistic": -235.41709509920994,
+      "p_value": 1.7185003799724432e-76,
+      "p_corrected": 1.3404302963785057e-74,
+      "significant": true
+    },
+    "DecayingEpsilon vs SW-UCB(100)": {
+      "t_statistic": -118.21361082333551,
+      "p_value": 7.365637411416429e-62,
+      "p_corrected": 5.745197180904815e-60,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-TS(0.99)": {
+      "t_statistic": -104.181168840411,
+      "p_value": 3.5137426863900678e-59,
+      "p_corrected": 2.740719295384253e-57,
+      "significant": true
+    },
+    "DecayingEpsilon vs EXP3": {
+      "t_statistic": -52.33946896267295,
+      "p_value": 1.1398619726391338e-44,
+      "p_corrected": 8.890923386585244e-43,
+      "significant": true
+    },
+    "DecayingEpsilon vs Rexp3(100)": {
+      "t_statistic": -119.74961007404936,
+      "p_value": 3.921162298468578e-62,
+      "p_corrected": 3.058506592805491e-60,
+      "significant": true
+    },
+    "DecayingEpsilon vs EntropyGradient": {
+      "t_statistic": 63.58533703331468,
+      "p_value": 9.424819165162503e-49,
+      "p_corrected": 7.351358948826752e-47,
+      "significant": true
+    },
+    "UCB1 vs ThompsonSampling": {
+      "t_statistic": 7.871404754600976,
+      "p_value": 3.005902117579557e-10,
+      "p_corrected": 2.3446036517120545e-08,
+      "significant": true
+    },
+    "UCB1 vs GradientBandit": {
+      "t_statistic": -13.077741029423619,
+      "p_value": 1.336754374149982e-17,
+      "p_corrected": 1.042668411836986e-15,
+      "significant": true
+    },
+    "UCB1 vs EpsGreedy-Const": {
+      "t_statistic": -123.45706388683253,
+      "p_value": 8.844363683256975e-63,
+      "p_corrected": 6.898603672940441e-61,
+      "significant": true
+    },
+    "UCB1 vs D-UCB(0.99)": {
+      "t_statistic": -151.23872361948756,
+      "p_value": 4.351309823903371e-67,
+      "p_corrected": 3.3940216626446293e-65,
+      "significant": true
+    },
+    "UCB1 vs D-UCB(0.95)": {
+      "t_statistic": -280.0361841347294,
+      "p_value": 3.50284499078999e-80,
+      "p_corrected": 2.732219092816192e-78,
+      "significant": true
+    },
+    "UCB1 vs SW-UCB(100)": {
+      "t_statistic": -162.6250877119606,
+      "p_value": 1.2500611815003853e-68,
+      "p_corrected": 9.750477215703006e-67,
+      "significant": true
+    },
+    "UCB1 vs D-TS(0.99)": {
+      "t_statistic": -144.22597471708087,
+      "p_value": 4.4335897563789716e-66,
+      "p_corrected": 3.458200009975598e-64,
+      "significant": true
+    },
+    "UCB1 vs EXP3": {
+      "t_statistic": -86.79761575817456,
+      "p_value": 2.5699275004629123e-55,
+      "p_corrected": 2.0045434503610717e-53,
+      "significant": true
+    },
+    "UCB1 vs Rexp3(100)": {
+      "t_statistic": -132.11724713818495,
+      "p_value": 3.222339342105764e-64,
+      "p_corrected": 2.513424686842496e-62,
+      "significant": true
+    },
+    "UCB1 vs EntropyGradient": {
+      "t_statistic": -24.70077935576253,
+      "p_value": 2.604690739285119e-29,
+      "p_corrected": 2.031658776642393e-27,
+      "significant": true
+    },
+    "ThompsonSampling vs GradientBandit": {
+      "t_statistic": -20.161132583011575,
+      "p_value": 2.268981520908005e-25,
+      "p_corrected": 1.7698055863082437e-23,
+      "significant": true
+    },
+    "ThompsonSampling vs EpsGreedy-Const": {
+      "t_statistic": -125.4730376484152,
+      "p_value": 4.009066732418474e-63,
+      "p_corrected": 3.12707205128641e-61,
+      "significant": true
+    },
+    "ThompsonSampling vs D-UCB(0.99)": {
+      "t_statistic": -142.53497990493005,
+      "p_value": 7.891318175052013e-66,
+      "p_corrected": 6.15522817654057e-64,
+      "significant": true
+    },
+    "ThompsonSampling vs D-UCB(0.95)": {
+      "t_statistic": -267.0649983257645,
+      "p_value": 3.573012602027629e-79,
+      "p_corrected": 2.7869498295815506e-77,
+      "significant": true
+    },
+    "ThompsonSampling vs SW-UCB(100)": {
+      "t_statistic": -178.43006868710845,
+      "p_value": 1.3379922367441327e-70,
+      "p_corrected": 1.0436339446604235e-68,
+      "significant": true
+    },
+    "ThompsonSampling vs D-TS(0.99)": {
+      "t_statistic": -150.15052453124056,
+      "p_value": 6.193939468891124e-67,
+      "p_corrected": 4.831272785735077e-65,
+      "significant": true
+    },
+    "ThompsonSampling vs EXP3": {
+      "t_statistic": -96.85480874752682,
+      "p_value": 1.2306809156059152e-57,
+      "p_corrected": 9.59931114172614e-56,
+      "significant": true
+    },
+    "ThompsonSampling vs Rexp3(100)": {
+      "t_statistic": -134.93518226392962,
+      "p_value": 1.1488405855095679e-64,
+      "p_corrected": 8.960956566974629e-63,
+      "significant": true
+    },
+    "ThompsonSampling vs EntropyGradient": {
+      "t_statistic": -27.15270389287135,
+      "p_value": 3.4382782683154203e-31,
+      "p_corrected": 2.681857049286028e-29,
+      "significant": true
+    },
+    "GradientBandit vs EpsGreedy-Const": {
+      "t_statistic": -117.71644489831894,
+      "p_value": 9.048752879084762e-62,
+      "p_corrected": 7.058027245686114e-60,
+      "significant": true
+    },
+    "GradientBandit vs D-UCB(0.99)": {
+      "t_statistic": -133.0433111294516,
+      "p_value": 2.2905167601214292e-64,
+      "p_corrected": 1.7866030728947148e-62,
+      "significant": true
+    },
+    "GradientBandit vs D-UCB(0.95)": {
+      "t_statistic": -272.65265279085037,
+      "p_value": 1.2962241380392024e-79,
+      "p_corrected": 1.011054827670578e-77,
+      "significant": true
+    },
+    "GradientBandit vs SW-UCB(100)": {
+      "t_statistic": -164.73501026189427,
+      "p_value": 6.654301548972849e-69,
+      "p_corrected": 5.1903552081988225e-67,
+      "significant": true
+    },
+    "GradientBandit vs D-TS(0.99)": {
+      "t_statistic": -145.81454153642449,
+      "p_value": 2.5952334225519683e-66,
+      "p_corrected": 2.0242820695905352e-64,
+      "significant": true
+    },
+    "GradientBandit vs EXP3": {
+      "t_statistic": -84.12778318908315,
+      "p_value": 1.1760466767628904e-54,
+      "p_corrected": 9.173164078750546e-53,
+      "significant": true
+    },
+    "GradientBandit vs Rexp3(100)": {
+      "t_statistic": -130.19636385274373,
+      "p_value": 6.591369352779168e-64,
+      "p_corrected": 5.141268095167751e-62,
+      "significant": true
+    },
+    "GradientBandit vs EntropyGradient": {
+      "t_statistic": -10.03174500335299,
+      "p_value": 1.81191770821937e-13,
+      "p_corrected": 1.4132958124111086e-11,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-UCB(0.99)": {
+      "t_statistic": -17.450237893947165,
+      "p_value": 1.1471081054302464e-22,
+      "p_corrected": 8.947443222355922e-21,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-UCB(0.95)": {
+      "t_statistic": -167.70648843667317,
+      "p_value": 2.7754212355113533e-69,
+      "p_corrected": 2.1648285636988556e-67,
+      "significant": true
+    },
+    "EpsGreedy-Const vs SW-UCB(100)": {
+      "t_statistic": -35.19451416937262,
+      "p_value": 1.9161970657155033e-36,
+      "p_corrected": 1.4946337112580926e-34,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-TS(0.99)": {
+      "t_statistic": -46.27485865441131,
+      "p_value": 4.2316183966991936e-42,
+      "p_corrected": 3.300662349425371e-40,
+      "significant": true
+    },
+    "EpsGreedy-Const vs EXP3": {
+      "t_statistic": 1.5130216893539303,
+      "p_value": 0.1366978532931657,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsGreedy-Const vs Rexp3(100)": {
+      "t_statistic": -102.28086614020715,
+      "p_value": 8.624986489366617e-59,
+      "p_corrected": 6.727489461705961e-57,
+      "significant": true
+    },
+    "EpsGreedy-Const vs EntropyGradient": {
+      "t_statistic": 104.44439529301107,
+      "p_value": 3.106749076211972e-59,
+      "p_corrected": 2.423264279445338e-57,
+      "significant": true
+    },
+    "D-UCB(0.99) vs D-UCB(0.95)": {
+      "t_statistic": -168.91883446299448,
+      "p_value": 1.951219238113343e-69,
+      "p_corrected": 1.5219510057284074e-67,
+      "significant": true
+    },
+    "D-UCB(0.99) vs SW-UCB(100)": {
+      "t_statistic": -19.096330293454614,
+      "p_value": 2.413520284865265e-24,
+      "p_corrected": 1.8825458221949068e-22,
+      "significant": true
+    },
+    "D-UCB(0.99) vs D-TS(0.99)": {
+      "t_statistic": -26.136431101969887,
+      "p_value": 1.98015866138693e-30,
+      "p_corrected": 1.5445237558818054e-28,
+      "significant": true
+    },
+    "D-UCB(0.99) vs EXP3": {
+      "t_statistic": 14.368898107615307,
+      "p_value": 3.3809954920212456e-19,
+      "p_corrected": 2.6371764837765717e-17,
+      "significant": true
+    },
+    "D-UCB(0.99) vs Rexp3(100)": {
+      "t_statistic": -100.40385387229229,
+      "p_value": 2.1285307818266013e-58,
+      "p_corrected": 1.660254009824749e-56,
+      "significant": true
+    },
+    "D-UCB(0.99) vs EntropyGradient": {
+      "t_statistic": 121.50597608082902,
+      "p_value": 1.9256680878914904e-62,
+      "p_corrected": 1.5020211085553625e-60,
+      "significant": true
+    },
+    "D-UCB(0.95) vs SW-UCB(100)": {
+      "t_statistic": 153.70143755565823,
+      "p_value": 1.9751383681424304e-67,
+      "p_corrected": 1.5406079271510958e-65,
+      "significant": true
+    },
+    "D-UCB(0.95) vs D-TS(0.99)": {
+      "t_statistic": 127.20130470090156,
+      "p_value": 2.054945637962786e-63,
+      "p_corrected": 1.602857597610973e-61,
+      "significant": true
+    },
+    "D-UCB(0.95) vs EXP3": {
+      "t_statistic": 153.81838388607378,
+      "p_value": 1.903026904316837e-67,
+      "p_corrected": 1.484360985367133e-65,
+      "significant": true
+    },
+    "D-UCB(0.95) vs Rexp3(100)": {
+      "t_statistic": -24.923158800660882,
+      "p_value": 1.7330621110217834e-29,
+      "p_corrected": 1.351788446596991e-27,
+      "significant": true
+    },
+    "D-UCB(0.95) vs EntropyGradient": {
+      "t_statistic": 259.114444852843,
+      "p_value": 1.5693882845096423e-78,
+      "p_corrected": 1.224122861917521e-76,
+      "significant": true
+    },
+    "SW-UCB(100) vs D-TS(0.99)": {
+      "t_statistic": -10.253933562501436,
+      "p_value": 8.699068101063381e-14,
+      "p_corrected": 6.785273118829437e-12,
+      "significant": true
+    },
+    "SW-UCB(100) vs EXP3": {
+      "t_statistic": 33.268346053625464,
+      "p_value": 2.7101480444038803e-35,
+      "p_corrected": 2.1139154746350265e-33,
+      "significant": true
+    },
+    "SW-UCB(100) vs Rexp3(100)": {
+      "t_statistic": -93.22982578219097,
+      "p_value": 7.899481562299159e-57,
+      "p_corrected": 6.161595618593344e-55,
+      "significant": true
+    },
+    "SW-UCB(100) vs EntropyGradient": {
+      "t_statistic": 144.2434440716108,
+      "p_value": 4.4074156485814365e-66,
+      "p_corrected": 3.437784205893521e-64,
+      "significant": true
+    },
+    "D-TS(0.99) vs EXP3": {
+      "t_statistic": 40.24398708129529,
+      "p_value": 3.335436354900251e-39,
+      "p_corrected": 2.601640356822196e-37,
+      "significant": true
+    },
+    "D-TS(0.99) vs Rexp3(100)": {
+      "t_statistic": -84.85090549371358,
+      "p_value": 7.753667592362516e-55,
+      "p_corrected": 6.047860722042762e-53,
+      "significant": true
+    },
+    "D-TS(0.99) vs EntropyGradient": {
+      "t_statistic": 123.6136965101114,
+      "p_value": 8.31322300970758e-63,
+      "p_corrected": 6.484313947571913e-61,
+      "significant": true
+    },
+    "EXP3 vs Rexp3(100)": {
+      "t_statistic": -95.0560359847218,
+      "p_value": 3.069076430335697e-57,
+      "p_corrected": 2.393879615661844e-55,
+      "significant": true
+    },
+    "EXP3 vs EntropyGradient": {
+      "t_statistic": 76.48596300242211,
+      "p_value": 1.2075764379652454e-52,
+      "p_corrected": 9.419096216128915e-51,
+      "significant": true
+    },
+    "Rexp3(100) vs EntropyGradient": {
+      "t_statistic": 129.73944006309776,
+      "p_value": 7.826695907522727e-64,
+      "p_corrected": 6.104822807867727e-62,
+      "significant": true
+    }
+  },
+  "Abrupt (100)": {
+    "EpsilonGreedy vs DecayingEpsilon": {
+      "t_statistic": -2.6589983716054966,
+      "p_value": 0.010558217659117833,
+      "p_corrected": 0.823540977411191,
+      "significant": false
+    },
+    "EpsilonGreedy vs UCB1": {
+      "t_statistic": 36.089315332105826,
+      "p_value": 5.8562500336626815e-37,
+      "p_corrected": 4.5678750262568916e-35,
+      "significant": true
+    },
+    "EpsilonGreedy vs ThompsonSampling": {
+      "t_statistic": 1.4256386409853161,
+      "p_value": 0.16031232670717463,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsilonGreedy vs GradientBandit": {
+      "t_statistic": -4.689248292800014,
+      "p_value": 2.2254966338068488e-05,
+      "p_corrected": 0.0017358873743693421,
+      "significant": true
+    },
+    "EpsilonGreedy vs EpsGreedy-Const": {
+      "t_statistic": 38.58788964484334,
+      "p_value": 2.457969609259389e-38,
+      "p_corrected": 1.9172162952223235e-36,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-UCB(0.99)": {
+      "t_statistic": 113.66313462477642,
+      "p_value": 5.0070126764567704e-61,
+      "p_corrected": 3.905469887636281e-59,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-UCB(0.95)": {
+      "t_statistic": 102.11630092898687,
+      "p_value": 9.329714569233808e-59,
+      "p_corrected": 7.27717736400237e-57,
+      "significant": true
+    },
+    "EpsilonGreedy vs SW-UCB(100)": {
+      "t_statistic": 80.82658863558409,
+      "p_value": 8.24749883484812e-54,
+      "p_corrected": 6.433049091181533e-52,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-TS(0.99)": {
+      "t_statistic": 61.73818317193347,
+      "p_value": 3.926837586887635e-48,
+      "p_corrected": 3.0629333177723555e-46,
+      "significant": true
+    },
+    "EpsilonGreedy vs EXP3": {
+      "t_statistic": 0.32227130673038046,
+      "p_value": 0.7486181682679471,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsilonGreedy vs Rexp3(100)": {
+      "t_statistic": 80.39825691700551,
+      "p_value": 1.0679866093942102e-53,
+      "p_corrected": 8.33029555327484e-52,
+      "significant": true
+    },
+    "EpsilonGreedy vs EntropyGradient": {
+      "t_statistic": 7.59795273773378,
+      "p_value": 7.906892459906994e-10,
+      "p_corrected": 6.167376118727454e-08,
+      "significant": true
+    },
+    "DecayingEpsilon vs UCB1": {
+      "t_statistic": 36.91053677478691,
+      "p_value": 2.0205153906276226e-37,
+      "p_corrected": 1.5760020046895456e-35,
+      "significant": true
+    },
+    "DecayingEpsilon vs ThompsonSampling": {
+      "t_statistic": 4.445254113392099,
+      "p_value": 5.027426078570271e-05,
+      "p_corrected": 0.003921392341284811,
+      "significant": true
+    },
+    "DecayingEpsilon vs GradientBandit": {
+      "t_statistic": -2.4816821831861247,
+      "p_value": 0.01655404349797135,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "DecayingEpsilon vs EpsGreedy-Const": {
+      "t_statistic": 38.81322617556104,
+      "p_value": 1.8643093442622285e-38,
+      "p_corrected": 1.4541612885245382e-36,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-UCB(0.99)": {
+      "t_statistic": 109.6187988257631,
+      "p_value": 2.935026026034706e-60,
+      "p_corrected": 2.2893203003070705e-58,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-UCB(0.95)": {
+      "t_statistic": 100.07375883906855,
+      "p_value": 2.49933725482981e-58,
+      "p_corrected": 1.9494830587672517e-56,
+      "significant": true
+    },
+    "DecayingEpsilon vs SW-UCB(100)": {
+      "t_statistic": 72.29558946911446,
+      "p_value": 1.8647081634876688e-51,
+      "p_corrected": 1.4544723675203817e-49,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-TS(0.99)": {
+      "t_statistic": 53.754394508423495,
+      "p_value": 3.1530547128940097e-45,
+      "p_corrected": 2.4593826760573276e-43,
+      "significant": true
+    },
+    "DecayingEpsilon vs EXP3": {
+      "t_statistic": 2.8006003435036373,
+      "p_value": 0.007280047934844152,
+      "p_corrected": 0.5678437389178439,
+      "significant": false
+    },
+    "DecayingEpsilon vs Rexp3(100)": {
+      "t_statistic": 85.23980138517632,
+      "p_value": 6.206370975484874e-55,
+      "p_corrected": 4.840969360878201e-53,
+      "significant": true
+    },
+    "DecayingEpsilon vs EntropyGradient": {
+      "t_statistic": 9.96837398761473,
+      "p_value": 2.2361464062064662e-13,
+      "p_corrected": 1.7441941968410438e-11,
+      "significant": true
+    },
+    "UCB1 vs ThompsonSampling": {
+      "t_statistic": -35.20458227627158,
+      "p_value": 1.8905160569232607e-36,
+      "p_corrected": 1.4746025244001433e-34,
+      "significant": true
+    },
+    "UCB1 vs GradientBandit": {
+      "t_statistic": -36.133616607112856,
+      "p_value": 5.526368906650174e-37,
+      "p_corrected": 4.310567747187136e-35,
+      "significant": true
+    },
+    "UCB1 vs EpsGreedy-Const": {
+      "t_statistic": -6.32440623370669,
+      "p_value": 7.385510408172035e-08,
+      "p_corrected": 5.760698118374188e-06,
+      "significant": true
+    },
+    "UCB1 vs D-UCB(0.99)": {
+      "t_statistic": 20.570488111675473,
+      "p_value": 9.384170270432935e-26,
+      "p_corrected": 7.31965281093769e-24,
+      "significant": true
+    },
+    "UCB1 vs D-UCB(0.95)": {
+      "t_statistic": 12.78103414437522,
+      "p_value": 3.205186623229257e-17,
+      "p_corrected": 2.5000455661188206e-15,
+      "significant": true
+    },
+    "UCB1 vs SW-UCB(100)": {
+      "t_statistic": 7.832544771613185,
+      "p_value": 3.447823224714373e-10,
+      "p_corrected": 2.6893021152772108e-08,
+      "significant": true
+    },
+    "UCB1 vs D-TS(0.99)": {
+      "t_statistic": -6.53166335498411,
+      "p_value": 3.5276823277336585e-08,
+      "p_corrected": 2.7515922156322536e-06,
+      "significant": true
+    },
+    "UCB1 vs EXP3": {
+      "t_statistic": -33.13115826798968,
+      "p_value": 3.290473639969277e-35,
+      "p_corrected": 2.566569439176036e-33,
+      "significant": true
+    },
+    "UCB1 vs Rexp3(100)": {
+      "t_statistic": 10.626684473315827,
+      "p_value": 2.575043181476779e-14,
+      "p_corrected": 2.008533681551888e-12,
+      "significant": true
+    },
+    "UCB1 vs EntropyGradient": {
+      "t_statistic": -31.524832825389808,
+      "p_value": 3.375851590082091e-34,
+      "p_corrected": 2.633164240264031e-32,
+      "significant": true
+    },
+    "ThompsonSampling vs GradientBandit": {
+      "t_statistic": -8.004415808703355,
+      "p_value": 1.881080354071521e-10,
+      "p_corrected": 1.4672426761757863e-08,
+      "significant": true
+    },
+    "ThompsonSampling vs EpsGreedy-Const": {
+      "t_statistic": 46.11218145879903,
+      "p_value": 5.009557455651304e-42,
+      "p_corrected": 3.907454815408017e-40,
+      "significant": true
+    },
+    "ThompsonSampling vs D-UCB(0.99)": {
+      "t_statistic": 181.97972044191008,
+      "p_value": 5.103643006214457e-71,
+      "p_corrected": 3.980841544847276e-69,
+      "significant": true
+    },
+    "ThompsonSampling vs D-UCB(0.95)": {
+      "t_statistic": 163.0853679283925,
+      "p_value": 1.0886662694643274e-68,
+      "p_corrected": 8.491596901821754e-67,
+      "significant": true
+    },
+    "ThompsonSampling vs SW-UCB(100)": {
+      "t_statistic": 96.23807659153248,
+      "p_value": 1.6803004052094545e-57,
+      "p_corrected": 1.3106343160633745e-55,
+      "significant": true
+    },
+    "ThompsonSampling vs D-TS(0.99)": {
+      "t_statistic": 89.77702275723219,
+      "p_value": 4.967169307262267e-56,
+      "p_corrected": 3.8743920596645685e-54,
+      "significant": true
+    },
+    "ThompsonSampling vs EXP3": {
+      "t_statistic": -0.9907565596051185,
+      "p_value": 0.3266718972521958,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "ThompsonSampling vs Rexp3(100)": {
+      "t_statistic": 118.12746891002975,
+      "p_value": 7.632552430832728e-62,
+      "p_corrected": 5.953390896049527e-60,
+      "significant": true
+    },
+    "ThompsonSampling vs EntropyGradient": {
+      "t_statistic": 8.892824602770824,
+      "p_value": 8.521543153277725e-12,
+      "p_corrected": 6.646803659556625e-10,
+      "significant": true
+    },
+    "GradientBandit vs EpsGreedy-Const": {
+      "t_statistic": 45.46364500970389,
+      "p_value": 9.873456423996569e-42,
+      "p_corrected": 7.701296010717324e-40,
+      "significant": true
+    },
+    "GradientBandit vs D-UCB(0.99)": {
+      "t_statistic": 118.23544270855568,
+      "p_value": 7.299515806562095e-62,
+      "p_corrected": 5.693622329118435e-60,
+      "significant": true
+    },
+    "GradientBandit vs D-UCB(0.95)": {
+      "t_statistic": 107.60061609183606,
+      "p_value": 7.268615779123082e-60,
+      "p_corrected": 5.669520307716004e-58,
+      "significant": true
+    },
+    "GradientBandit vs SW-UCB(100)": {
+      "t_statistic": 83.33770181534629,
+      "p_value": 1.8614722229292096e-54,
+      "p_corrected": 1.4519483338847834e-52,
+      "significant": true
+    },
+    "GradientBandit vs D-TS(0.99)": {
+      "t_statistic": 70.43347881619617,
+      "p_value": 6.61792595980822e-51,
+      "p_corrected": 5.161982248650411e-49,
+      "significant": true
+    },
+    "GradientBandit vs EXP3": {
+      "t_statistic": 6.240179668262808,
+      "p_value": 9.968527127057291e-08,
+      "p_corrected": 7.775451159104686e-06,
+      "significant": true
+    },
+    "GradientBandit vs Rexp3(100)": {
+      "t_statistic": 92.6133602008033,
+      "p_value": 1.0914349205152342e-56,
+      "p_corrected": 8.513192380018826e-55,
+      "significant": true
+    },
+    "GradientBandit vs EntropyGradient": {
+      "t_statistic": 15.311367031761257,
+      "p_value": 2.6221726888352244e-20,
+      "p_corrected": 2.0452946972914752e-18,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-UCB(0.99)": {
+      "t_statistic": 48.53010205148633,
+      "p_value": 4.315930968551795e-43,
+      "p_corrected": 3.3664261554704003e-41,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-UCB(0.95)": {
+      "t_statistic": 36.42711003452768,
+      "p_value": 3.770045921177732e-37,
+      "p_corrected": 2.940635818518631e-35,
+      "significant": true
+    },
+    "EpsGreedy-Const vs SW-UCB(100)": {
+      "t_statistic": 20.843740643821757,
+      "p_value": 5.245818849931274e-26,
+      "p_corrected": 4.0917387029463935e-24,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-TS(0.99)": {
+      "t_statistic": 0.4937033962560407,
+      "p_value": 0.6237214571027868,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsGreedy-Const vs EXP3": {
+      "t_statistic": -38.7127711251173,
+      "p_value": 2.1084296040582515e-38,
+      "p_corrected": 1.644575091165436e-36,
+      "significant": true
+    },
+    "EpsGreedy-Const vs Rexp3(100)": {
+      "t_statistic": 27.51901819810721,
+      "p_value": 1.8551339200947447e-31,
+      "p_corrected": 1.4470044576739007e-29,
+      "significant": true
+    },
+    "EpsGreedy-Const vs EntropyGradient": {
+      "t_statistic": -39.348156986825295,
+      "p_value": 9.729894794011025e-39,
+      "p_corrected": 7.5893179393286e-37,
+      "significant": true
+    },
+    "D-UCB(0.99) vs D-UCB(0.95)": {
+      "t_statistic": -30.236587787111212,
+      "p_value": 2.3642448724017604e-33,
+      "p_corrected": 1.844111000473373e-31,
+      "significant": true
+    },
+    "D-UCB(0.99) vs SW-UCB(100)": {
+      "t_statistic": -30.683608795858156,
+      "p_value": 1.1932851401288358e-33,
+      "p_corrected": 9.307624093004919e-32,
+      "significant": true
+    },
+    "D-UCB(0.99) vs D-TS(0.99)": {
+      "t_statistic": -86.03817627690908,
+      "p_value": 3.94220366509925e-55,
+      "p_corrected": 3.0749188587774152e-53,
+      "significant": true
+    },
+    "D-UCB(0.99) vs EXP3": {
+      "t_statistic": -126.24851415578037,
+      "p_value": 2.9670330910619766e-63,
+      "p_corrected": 2.3142858110283418e-61,
+      "significant": true
+    },
+    "D-UCB(0.99) vs Rexp3(100)": {
+      "t_statistic": -22.12791767423532,
+      "p_value": 3.693034905253749e-27,
+      "p_corrected": 2.880567226097924e-25,
+      "significant": true
+    },
+    "D-UCB(0.99) vs EntropyGradient": {
+      "t_statistic": -174.60280038782602,
+      "p_value": 3.8651664393480085e-70,
+      "p_corrected": 3.0148298226914467e-68,
+      "significant": true
+    },
+    "D-UCB(0.95) vs SW-UCB(100)": {
+      "t_statistic": -12.6845020221693,
+      "p_value": 4.2704170367131185e-17,
+      "p_corrected": 3.3309252886362326e-15,
+      "significant": true
+    },
+    "D-UCB(0.95) vs D-TS(0.99)": {
+      "t_statistic": -69.76651831372749,
+      "p_value": 1.0501089716794981e-50,
+      "p_corrected": 8.190849979100085e-49,
+      "significant": true
+    },
+    "D-UCB(0.95) vs EXP3": {
+      "t_statistic": -106.3682793594106,
+      "p_value": 1.2751338382639394e-59,
+      "p_corrected": 9.946043938458727e-58,
+      "significant": true
+    },
+    "D-UCB(0.95) vs Rexp3(100)": {
+      "t_statistic": -3.038498078987269,
+      "p_value": 0.003806495295480195,
+      "p_corrected": 0.29690663304745524,
+      "significant": false
+    },
+    "D-UCB(0.95) vs EntropyGradient": {
+      "t_statistic": -148.36813204325017,
+      "p_value": 1.1105680215710833e-66,
+      "p_corrected": 8.662430568254449e-65,
+      "significant": true
+    },
+    "SW-UCB(100) vs D-TS(0.99)": {
+      "t_statistic": -33.1296314908103,
+      "p_value": 3.2976002884565366e-35,
+      "p_corrected": 2.5721282249960985e-33,
+      "significant": true
+    },
+    "SW-UCB(100) vs EXP3": {
+      "t_statistic": -84.73949414658622,
+      "p_value": 8.265739769857637e-55,
+      "p_corrected": 6.4472770204889565e-53,
+      "significant": true
+    },
+    "SW-UCB(100) vs Rexp3(100)": {
+      "t_statistic": 6.48515803013781,
+      "p_value": 4.164172731491369e-08,
+      "p_corrected": 3.248054730563268e-06,
+      "significant": true
+    },
+    "SW-UCB(100) vs EntropyGradient": {
+      "t_statistic": -85.21748713179952,
+      "p_value": 6.285975668340466e-55,
+      "p_corrected": 4.903061021305564e-53,
+      "significant": true
+    },
+    "D-TS(0.99) vs EXP3": {
+      "t_statistic": -65.26417006547456,
+      "p_value": 2.667131505967175e-49,
+      "p_corrected": 2.0803625746543965e-47,
+      "significant": true
+    },
+    "D-TS(0.99) vs Rexp3(100)": {
+      "t_statistic": 37.884965731796086,
+      "p_value": 5.879751169452514e-38,
+      "p_corrected": 4.586205912172961e-36,
+      "significant": true
+    },
+    "D-TS(0.99) vs EntropyGradient": {
+      "t_statistic": -92.40945443660108,
+      "p_value": 1.2151799356797757e-56,
+      "p_corrected": 9.478403498302251e-55,
+      "significant": true
+    },
+    "EXP3 vs Rexp3(100)": {
+      "t_statistic": 98.74689533605947,
+      "p_value": 4.7917282658856715e-58,
+      "p_corrected": 3.7375480473908236e-56,
+      "significant": true
+    },
+    "EXP3 vs EntropyGradient": {
+      "t_statistic": 8.006414383466279,
+      "p_value": 1.8678958967664648e-10,
+      "p_corrected": 1.4569587994778426e-08,
+      "significant": true
+    },
+    "Rexp3(100) vs EntropyGradient": {
+      "t_statistic": -98.49433690034336,
+      "p_value": 5.429022356670173e-58,
+      "p_corrected": 4.2346374382027355e-56,
+      "significant": true
+    }
+  },
+  "Abrupt (500)": {
+    "EpsilonGreedy vs DecayingEpsilon": {
+      "t_statistic": -3.666614708215184,
+      "p_value": 0.000604542187175066,
+      "p_corrected": 0.04715429059965515,
+      "significant": true
+    },
+    "EpsilonGreedy vs UCB1": {
+      "t_statistic": 32.660765432781574,
+      "p_value": 6.436297731216932e-35,
+      "p_corrected": 5.020312230349207e-33,
+      "significant": true
+    },
+    "EpsilonGreedy vs ThompsonSampling": {
+      "t_statistic": 11.194751317806437,
+      "p_value": 4.165480970629884e-15,
+      "p_corrected": 3.2490751570913095e-13,
+      "significant": true
+    },
+    "EpsilonGreedy vs GradientBandit": {
+      "t_statistic": -4.494906511423515,
+      "p_value": 4.2641408557594725e-05,
+      "p_corrected": 0.0033260298674923886,
+      "significant": true
+    },
+    "EpsilonGreedy vs EpsGreedy-Const": {
+      "t_statistic": 81.68876481369686,
+      "p_value": 4.9221758285506336e-54,
+      "p_corrected": 3.8392971462694945e-52,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-UCB(0.99)": {
+      "t_statistic": 91.98086933258081,
+      "p_value": 1.5240899906061892e-56,
+      "p_corrected": 1.1887901926728276e-54,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-UCB(0.95)": {
+      "t_statistic": 66.48629282656437,
+      "p_value": 1.0853235183167906e-49,
+      "p_corrected": 8.465523442870967e-48,
+      "significant": true
+    },
+    "EpsilonGreedy vs SW-UCB(100)": {
+      "t_statistic": 92.11675819580392,
+      "p_value": 1.4183128847008825e-56,
+      "p_corrected": 1.1062840500666883e-54,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-TS(0.99)": {
+      "t_statistic": 84.12653478470575,
+      "p_value": 1.1768963638439964e-54,
+      "p_corrected": 9.17979163798317e-53,
+      "significant": true
+    },
+    "EpsilonGreedy vs EXP3": {
+      "t_statistic": 0.9727443233244424,
+      "p_value": 0.33545807888489054,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsilonGreedy vs Rexp3(100)": {
+      "t_statistic": 57.96799257964503,
+      "p_value": 8.263973946980704e-47,
+      "p_corrected": 6.445899678644949e-45,
+      "significant": true
+    },
+    "EpsilonGreedy vs EntropyGradient": {
+      "t_statistic": 19.774028060135688,
+      "p_value": 5.298114726116696e-25,
+      "p_corrected": 4.132529486371023e-23,
+      "significant": true
+    },
+    "DecayingEpsilon vs UCB1": {
+      "t_statistic": 32.67817505700782,
+      "p_value": 6.277457595482895e-35,
+      "p_corrected": 4.896416924476658e-33,
+      "significant": true
+    },
+    "DecayingEpsilon vs ThompsonSampling": {
+      "t_statistic": 12.093571563357791,
+      "p_value": 2.538881415581734e-16,
+      "p_corrected": 1.9803275041537526e-14,
+      "significant": true
+    },
+    "DecayingEpsilon vs GradientBandit": {
+      "t_statistic": -0.664184413222251,
+      "p_value": 0.5096857806254136,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "DecayingEpsilon vs EpsGreedy-Const": {
+      "t_statistic": 63.31455333151812,
+      "p_value": 1.158831865686624e-48,
+      "p_corrected": 9.038888552355667e-47,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-UCB(0.99)": {
+      "t_statistic": 63.919032010007,
+      "p_value": 7.314532165070946e-49,
+      "p_corrected": 5.705335088755338e-47,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-UCB(0.95)": {
+      "t_statistic": 49.12807518208548,
+      "p_value": 2.3966868238283894e-43,
+      "p_corrected": 1.8694157225861438e-41,
+      "significant": true
+    },
+    "DecayingEpsilon vs SW-UCB(100)": {
+      "t_statistic": 62.618842835387525,
+      "p_value": 1.978486610888495e-48,
+      "p_corrected": 1.543219556493026e-46,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-TS(0.99)": {
+      "t_statistic": 58.61621172570918,
+      "p_value": 4.828834893035118e-47,
+      "p_corrected": 3.766491216567392e-45,
+      "significant": true
+    },
+    "DecayingEpsilon vs EXP3": {
+      "t_statistic": 4.6580324184524295,
+      "p_value": 2.4719748562306127e-05,
+      "p_corrected": 0.001928140387859878,
+      "significant": true
+    },
+    "DecayingEpsilon vs Rexp3(100)": {
+      "t_statistic": 40.87016925487956,
+      "p_value": 1.5992108239812148e-39,
+      "p_corrected": 1.2473844427053475e-37,
+      "significant": true
+    },
+    "DecayingEpsilon vs EntropyGradient": {
+      "t_statistic": 15.464758722982369,
+      "p_value": 1.7466061852743484e-20,
+      "p_corrected": 1.3623528245139918e-18,
+      "significant": true
+    },
+    "UCB1 vs ThompsonSampling": {
+      "t_statistic": -29.72009660715918,
+      "p_value": 5.2692623192761574e-33,
+      "p_corrected": 4.110024609035403e-31,
+      "significant": true
+    },
+    "UCB1 vs GradientBandit": {
+      "t_statistic": -32.72238991459463,
+      "p_value": 5.891773867166265e-35,
+      "p_corrected": 4.5955836163896866e-33,
+      "significant": true
+    },
+    "UCB1 vs EpsGreedy-Const": {
+      "t_statistic": 8.590140460629275,
+      "p_value": 2.4265316933853822e-11,
+      "p_corrected": 1.8926947208405982e-09,
+      "significant": true
+    },
+    "UCB1 vs D-UCB(0.99)": {
+      "t_statistic": 10.009198534502268,
+      "p_value": 1.9526288177482135e-13,
+      "p_corrected": 1.5230504778436066e-11,
+      "significant": true
+    },
+    "UCB1 vs D-UCB(0.95)": {
+      "t_statistic": -4.726387456877982,
+      "p_value": 1.9635064623008e-05,
+      "p_corrected": 0.001531535040594624,
+      "significant": true
+    },
+    "UCB1 vs SW-UCB(100)": {
+      "t_statistic": 7.620501410531748,
+      "p_value": 7.299614553144466e-10,
+      "p_corrected": 5.693699351452684e-08,
+      "significant": true
+    },
+    "UCB1 vs D-TS(0.99)": {
+      "t_statistic": 3.821953369206944,
+      "p_value": 0.0003740496602529792,
+      "p_corrected": 0.029175873499732375,
+      "significant": true
+    },
+    "UCB1 vs EXP3": {
+      "t_statistic": -32.11984333213901,
+      "p_value": 1.407605062493125e-34,
+      "p_corrected": 1.0979319487446374e-32,
+      "significant": true
+    },
+    "UCB1 vs Rexp3(100)": {
+      "t_statistic": -9.091960383627594,
+      "p_value": 4.301990589849669e-12,
+      "p_corrected": 3.355552660082742e-10,
+      "significant": true
+    },
+    "UCB1 vs EntropyGradient": {
+      "t_statistic": -26.95362969423664,
+      "p_value": 4.822831704734703e-31,
+      "p_corrected": 3.761808729693068e-29,
+      "significant": true
+    },
+    "ThompsonSampling vs GradientBandit": {
+      "t_statistic": -12.983202384953044,
+      "p_value": 1.764163977859201e-17,
+      "p_corrected": 1.376047902730177e-15,
+      "significant": true
+    },
+    "ThompsonSampling vs EpsGreedy-Const": {
+      "t_statistic": 76.52894086069668,
+      "p_value": 1.175053663083319e-52,
+      "p_corrected": 9.165418572049888e-51,
+      "significant": true
+    },
+    "ThompsonSampling vs D-UCB(0.99)": {
+      "t_statistic": 86.9514449767653,
+      "p_value": 2.3576416164545388e-55,
+      "p_corrected": 1.8389604608345403e-53,
+      "significant": true
+    },
+    "ThompsonSampling vs D-UCB(0.95)": {
+      "t_statistic": 60.004900714549564,
+      "p_value": 1.5569524168488133e-47,
+      "p_corrected": 1.2144228851420745e-45,
+      "significant": true
+    },
+    "ThompsonSampling vs SW-UCB(100)": {
+      "t_statistic": 82.18540274631164,
+      "p_value": 3.665116946983055e-54,
+      "p_corrected": 2.858791218646783e-52,
+      "significant": true
+    },
+    "ThompsonSampling vs D-TS(0.99)": {
+      "t_statistic": 76.22436664843141,
+      "p_value": 1.426351939530019e-52,
+      "p_corrected": 1.1125545128334148e-50,
+      "significant": true
+    },
+    "ThompsonSampling vs EXP3": {
+      "t_statistic": -9.301071689740319,
+      "p_value": 2.108087496695837e-12,
+      "p_corrected": 1.6443082474227528e-10,
+      "significant": true
+    },
+    "ThompsonSampling vs Rexp3(100)": {
+      "t_statistic": 46.762268190140205,
+      "p_value": 2.560791224142287e-42,
+      "p_corrected": 1.9974171548309836e-40,
+      "significant": true
+    },
+    "ThompsonSampling vs EntropyGradient": {
+      "t_statistic": 4.770517524459485,
+      "p_value": 1.691341242961732e-05,
+      "p_corrected": 0.001319246169510151,
+      "significant": true
+    },
+    "GradientBandit vs EpsGreedy-Const": {
+      "t_statistic": 75.51213860225552,
+      "p_value": 2.2508628924681704e-52,
+      "p_corrected": 1.7556730561251729e-50,
+      "significant": true
+    },
+    "GradientBandit vs D-UCB(0.99)": {
+      "t_statistic": 71.77930570978592,
+      "p_value": 2.6407489912859237e-51,
+      "p_corrected": 2.0597842132030205e-49,
+      "significant": true
+    },
+    "GradientBandit vs D-UCB(0.95)": {
+      "t_statistic": 52.375785218867456,
+      "p_value": 1.1024169340619418e-44,
+      "p_corrected": 8.598852085683147e-43,
+      "significant": true
+    },
+    "GradientBandit vs SW-UCB(100)": {
+      "t_statistic": 68.67306419003911,
+      "p_value": 2.259790603042585e-50,
+      "p_corrected": 1.7626366703732164e-48,
+      "significant": true
+    },
+    "GradientBandit vs D-TS(0.99)": {
+      "t_statistic": 64.12844795795895,
+      "p_value": 6.242897997160213e-49,
+      "p_corrected": 4.869460437784966e-47,
+      "significant": true
+    },
+    "GradientBandit vs EXP3": {
+      "t_statistic": 5.3068206938885645,
+      "p_value": 2.679793086264513e-06,
+      "p_corrected": 0.00020902386072863203,
+      "significant": true
+    },
+    "GradientBandit vs Rexp3(100)": {
+      "t_statistic": 46.50529417652694,
+      "p_value": 3.335079880496987e-42,
+      "p_corrected": 2.6013623067876498e-40,
+      "significant": true
+    },
+    "GradientBandit vs EntropyGradient": {
+      "t_statistic": 19.44858530823264,
+      "p_value": 1.09178667766613e-24,
+      "p_corrected": 8.515936085795815e-23,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-UCB(0.99)": {
+      "t_statistic": 6.318316320749568,
+      "p_value": 7.547476605097071e-08,
+      "p_corrected": 5.887031751975716e-06,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-UCB(0.95)": {
+      "t_statistic": -44.20237602826937,
+      "p_value": 3.7949755891753634e-41,
+      "p_corrected": 2.9600809595567834e-39,
+      "significant": true
+    },
+    "EpsGreedy-Const vs SW-UCB(100)": {
+      "t_statistic": -2.009000098322494,
+      "p_value": 0.050063077845383254,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsGreedy-Const vs D-TS(0.99)": {
+      "t_statistic": -14.255199623923207,
+      "p_value": 4.635552733130586e-19,
+      "p_corrected": 3.615731131841857e-17,
+      "significant": true
+    },
+    "EpsGreedy-Const vs EXP3": {
+      "t_statistic": -72.6312467524879,
+      "p_value": 1.4891253578213562e-51,
+      "p_corrected": 1.1615177791006579e-49,
+      "significant": true
+    },
+    "EpsGreedy-Const vs Rexp3(100)": {
+      "t_statistic": -49.66997187384094,
+      "p_value": 1.4147269282161632e-43,
+      "p_corrected": 1.1034870040086074e-41,
+      "significant": true
+    },
+    "EpsGreedy-Const vs EntropyGradient": {
+      "t_statistic": -85.76320367998902,
+      "p_value": 4.607001164242142e-55,
+      "p_corrected": 3.5934609081088713e-53,
+      "significant": true
+    },
+    "D-UCB(0.99) vs D-UCB(0.95)": {
+      "t_statistic": -111.35816485971336,
+      "p_value": 1.3611652790764437e-60,
+      "p_corrected": 1.061708917679626e-58,
+      "significant": true
+    },
+    "D-UCB(0.99) vs SW-UCB(100)": {
+      "t_statistic": -15.06360062007493,
+      "p_value": 5.083752130084101e-20,
+      "p_corrected": 3.965326661465599e-18,
+      "significant": true
+    },
+    "D-UCB(0.99) vs D-TS(0.99)": {
+      "t_statistic": -36.000222305359245,
+      "p_value": 6.581803502012862e-37,
+      "p_corrected": 5.133806731570033e-35,
+      "significant": true
+    },
+    "D-UCB(0.99) vs EXP3": {
+      "t_statistic": -84.33260635076783,
+      "p_value": 1.044779762330023e-54,
+      "p_corrected": 8.14928214617418e-53,
+      "significant": true
+    },
+    "D-UCB(0.99) vs Rexp3(100)": {
+      "t_statistic": -85.05989401613274,
+      "p_value": 6.878659747396748e-55,
+      "p_corrected": 5.365354602969463e-53,
+      "significant": true
+    },
+    "D-UCB(0.99) vs EntropyGradient": {
+      "t_statistic": -103.72264179242606,
+      "p_value": 4.357342323820484e-59,
+      "p_corrected": 3.398727012579978e-57,
+      "significant": true
+    },
+    "D-UCB(0.95) vs SW-UCB(100)": {
+      "t_statistic": 74.90497300713939,
+      "p_value": 3.331978794761609e-52,
+      "p_corrected": 2.5989434599140553e-50,
+      "significant": true
+    },
+    "D-UCB(0.95) vs D-TS(0.99)": {
+      "t_statistic": 57.23335070726065,
+      "p_value": 1.5301406196979766e-46,
+      "p_corrected": 1.1935096833644219e-44,
+      "significant": true
+    },
+    "D-UCB(0.95) vs EXP3": {
+      "t_statistic": -62.00141839929692,
+      "p_value": 3.196124265347899e-48,
+      "p_corrected": 2.492976926971361e-46,
+      "significant": true
+    },
+    "D-UCB(0.95) vs Rexp3(100)": {
+      "t_statistic": -19.87772860367688,
+      "p_value": 4.2160871802000975e-25,
+      "p_corrected": 3.288548000556076e-23,
+      "significant": true
+    },
+    "D-UCB(0.95) vs EntropyGradient": {
+      "t_statistic": -70.37661457036307,
+      "p_value": 6.882474119036491e-51,
+      "p_corrected": 5.368329812848463e-49,
+      "significant": true
+    },
+    "SW-UCB(100) vs D-TS(0.99)": {
+      "t_statistic": -23.06478413363414,
+      "p_value": 5.764412170726007e-28,
+      "p_corrected": 4.496241493166285e-26,
+      "significant": true
+    },
+    "SW-UCB(100) vs EXP3": {
+      "t_statistic": -82.23805969541168,
+      "p_value": 3.552661394994702e-54,
+      "p_corrected": 2.7710758880958674e-52,
+      "significant": true
+    },
+    "SW-UCB(100) vs Rexp3(100)": {
+      "t_statistic": -66.39203464350764,
+      "p_value": 1.162586041103893e-49,
+      "p_corrected": 9.068171120610365e-48,
+      "significant": true
+    },
+    "SW-UCB(100) vs EntropyGradient": {
+      "t_statistic": -104.81294588002373,
+      "p_value": 2.6162187996559645e-59,
+      "p_corrected": 2.0406506637316522e-57,
+      "significant": true
+    },
+    "D-TS(0.99) vs EXP3": {
+      "t_statistic": -75.45545040424521,
+      "p_value": 2.334516846557897e-52,
+      "p_corrected": 1.8209231403151599e-50,
+      "significant": true
+    },
+    "D-TS(0.99) vs Rexp3(100)": {
+      "t_statistic": -52.08583591872205,
+      "p_value": 1.4402463292288218e-44,
+      "p_corrected": 1.123392136798481e-42,
+      "significant": true
+    },
+    "D-TS(0.99) vs EntropyGradient": {
+      "t_statistic": -96.01449003307327,
+      "p_value": 1.8820387159663303e-57,
+      "p_corrected": 1.4679901984537377e-55,
+      "significant": true
+    },
+    "EXP3 vs Rexp3(100)": {
+      "t_statistic": 46.90389951866774,
+      "p_value": 2.2151196974246755e-42,
+      "p_corrected": 1.7277933639912468e-40,
+      "significant": true
+    },
+    "EXP3 vs EntropyGradient": {
+      "t_statistic": 14.91807221427307,
+      "p_value": 7.525049094977856e-20,
+      "p_corrected": 5.869538294082727e-18,
+      "significant": true
+    },
+    "Rexp3(100) vs EntropyGradient": {
+      "t_statistic": -50.26064207079412,
+      "p_value": 8.013990404276535e-44,
+      "p_corrected": 6.250912515335697e-42,
+      "significant": true
+    }
+  },
+  "Gradual Drift": {
+    "EpsilonGreedy vs DecayingEpsilon": {
+      "t_statistic": 15.66445614951537,
+      "p_value": 1.033240313081479e-20,
+      "p_corrected": 8.059274442035537e-19,
+      "significant": true
+    },
+    "EpsilonGreedy vs UCB1": {
+      "t_statistic": 24.44045765047349,
+      "p_value": 4.2133283785060647e-29,
+      "p_corrected": 3.28639613523473e-27,
+      "significant": true
+    },
+    "EpsilonGreedy vs ThompsonSampling": {
+      "t_statistic": -5.787922668552524,
+      "p_value": 4.958032168195415e-07,
+      "p_corrected": 3.867265091192424e-05,
+      "significant": true
+    },
+    "EpsilonGreedy vs GradientBandit": {
+      "t_statistic": 15.512456320898206,
+      "p_value": 1.5401399543686322e-20,
+      "p_corrected": 1.2013091644075331e-18,
+      "significant": true
+    },
+    "EpsilonGreedy vs EpsGreedy-Const": {
+      "t_statistic": -4.245599504098907,
+      "p_value": 9.683796260528056e-05,
+      "p_corrected": 0.007553361083211883,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-UCB(0.99)": {
+      "t_statistic": 22.05468465844618,
+      "p_value": 4.2817114850509455e-27,
+      "p_corrected": 3.3397349583397374e-25,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-UCB(0.95)": {
+      "t_statistic": 0.8537334664826016,
+      "p_value": 0.39740713913736114,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsilonGreedy vs SW-UCB(100)": {
+      "t_statistic": 18.36426899653881,
+      "p_value": 1.3016125446893507e-23,
+      "p_corrected": 1.0152577848576935e-21,
+      "significant": true
+    },
+    "EpsilonGreedy vs D-TS(0.99)": {
+      "t_statistic": -5.108112944667657,
+      "p_value": 5.333720362121811e-06,
+      "p_corrected": 0.0004160301882455013,
+      "significant": true
+    },
+    "EpsilonGreedy vs EXP3": {
+      "t_statistic": -3.9030724164376935,
+      "p_value": 0.0002900967660534812,
+      "p_corrected": 0.022627547752171535,
+      "significant": true
+    },
+    "EpsilonGreedy vs Rexp3(100)": {
+      "t_statistic": -17.991503227718734,
+      "p_value": 3.1305449681824627e-23,
+      "p_corrected": 2.441825075182321e-21,
+      "significant": true
+    },
+    "EpsilonGreedy vs EntropyGradient": {
+      "t_statistic": 19.97632634193127,
+      "p_value": 3.3959039646686945e-25,
+      "p_corrected": 2.6488050924415816e-23,
+      "significant": true
+    },
+    "DecayingEpsilon vs UCB1": {
+      "t_statistic": 14.122696008593065,
+      "p_value": 6.70942694827601e-19,
+      "p_corrected": 5.2333530196552876e-17,
+      "significant": true
+    },
+    "DecayingEpsilon vs ThompsonSampling": {
+      "t_statistic": -6.4919797724793264,
+      "p_value": 4.064082649386222e-08,
+      "p_corrected": 3.169984466521253e-06,
+      "significant": true
+    },
+    "DecayingEpsilon vs GradientBandit": {
+      "t_statistic": 10.98666204984987,
+      "p_value": 8.079654588460141e-15,
+      "p_corrected": 6.30213057899891e-13,
+      "significant": true
+    },
+    "DecayingEpsilon vs EpsGreedy-Const": {
+      "t_statistic": -10.527791709394158,
+      "p_value": 3.5507271098135114e-14,
+      "p_corrected": 2.769567145654539e-12,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-UCB(0.99)": {
+      "t_statistic": 7.59717912555348,
+      "p_value": 7.928604389452239e-10,
+      "p_corrected": 6.184311423772747e-08,
+      "significant": true
+    },
+    "DecayingEpsilon vs D-UCB(0.95)": {
+      "t_statistic": -11.416585304043553,
+      "p_value": 2.0681742225592473e-15,
+      "p_corrected": 1.6131758935962128e-13,
+      "significant": true
+    },
+    "DecayingEpsilon vs SW-UCB(100)": {
+      "t_statistic": 0.4580097861062321,
+      "p_value": 0.6489701249483433,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "DecayingEpsilon vs D-TS(0.99)": {
+      "t_statistic": -5.802023578708012,
+      "p_value": 4.7171413692415456e-07,
+      "p_corrected": 3.679370268008405e-05,
+      "significant": true
+    },
+    "DecayingEpsilon vs EXP3": {
+      "t_statistic": -8.463109465656528,
+      "p_value": 3.7741757034651795e-11,
+      "p_corrected": 2.94385704870284e-09,
+      "significant": true
+    },
+    "DecayingEpsilon vs Rexp3(100)": {
+      "t_statistic": -18.465580783000597,
+      "p_value": 1.027774680699624e-23,
+      "p_corrected": 8.016642509457067e-22,
+      "significant": true
+    },
+    "DecayingEpsilon vs EntropyGradient": {
+      "t_statistic": 19.66288327381813,
+      "p_value": 6.774979047166438e-25,
+      "p_corrected": 5.284483656789822e-23,
+      "significant": true
+    },
+    "UCB1 vs ThompsonSampling": {
+      "t_statistic": -7.169147748683906,
+      "p_value": 3.6300670178775017e-09,
+      "p_corrected": 2.831452273944451e-07,
+      "significant": true
+    },
+    "UCB1 vs GradientBandit": {
+      "t_statistic": -2.7364631942552227,
+      "p_value": 0.008626851799118897,
+      "p_corrected": 0.672894440331274,
+      "significant": false
+    },
+    "UCB1 vs EpsGreedy-Const": {
+      "t_statistic": -18.761635791256047,
+      "p_value": 5.182549964458426e-24,
+      "p_corrected": 4.042388972277572e-22,
+      "significant": true
+    },
+    "UCB1 vs D-UCB(0.99)": {
+      "t_statistic": -10.104259504665482,
+      "p_value": 1.4251206093951307e-13,
+      "p_corrected": 1.1115940753282019e-11,
+      "significant": true
+    },
+    "UCB1 vs D-UCB(0.95)": {
+      "t_statistic": -33.468397186706035,
+      "p_value": 2.0449570079091556e-35,
+      "p_corrected": 1.5950664661691415e-33,
+      "significant": true
+    },
+    "UCB1 vs SW-UCB(100)": {
+      "t_statistic": -17.157479207685288,
+      "p_value": 2.3442176973122165e-22,
+      "p_corrected": 1.828489803903529e-20,
+      "significant": true
+    },
+    "UCB1 vs D-TS(0.99)": {
+      "t_statistic": -6.573833700461554,
+      "p_value": 3.0349578730680844e-08,
+      "p_corrected": 2.367267140993106e-06,
+      "significant": true
+    },
+    "UCB1 vs EXP3": {
+      "t_statistic": -12.83159317065744,
+      "p_value": 2.7592493789330256e-17,
+      "p_corrected": 2.15221451556776e-15,
+      "significant": true
+    },
+    "UCB1 vs Rexp3(100)": {
+      "t_statistic": -20.036356854123856,
+      "p_value": 2.9780392073709086e-25,
+      "p_corrected": 2.322870581749309e-23,
+      "significant": true
+    },
+    "UCB1 vs EntropyGradient": {
+      "t_statistic": -2.3882715504418495,
+      "p_value": 0.020825940363996782,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "ThompsonSampling vs GradientBandit": {
+      "t_statistic": 6.959698606436918,
+      "p_value": 7.659203135508655e-09,
+      "p_corrected": 5.974178445696751e-07,
+      "significant": true
+    },
+    "ThompsonSampling vs EpsGreedy-Const": {
+      "t_statistic": 5.612227524507395,
+      "p_value": 9.208185362107115e-07,
+      "p_corrected": 7.18238458244355e-05,
+      "significant": true
+    },
+    "ThompsonSampling vs D-UCB(0.99)": {
+      "t_statistic": 6.946165407560385,
+      "p_value": 8.038013276105645e-09,
+      "p_corrected": 6.269650355362404e-07,
+      "significant": true
+    },
+    "ThompsonSampling vs D-UCB(0.95)": {
+      "t_statistic": 5.793922474300921,
+      "p_value": 4.854077007418376e-07,
+      "p_corrected": 3.7861800657863335e-05,
+      "significant": true
+    },
+    "ThompsonSampling vs SW-UCB(100)": {
+      "t_statistic": 6.557254655447918,
+      "p_value": 3.2198878167198577e-08,
+      "p_corrected": 2.511512497041489e-06,
+      "significant": true
+    },
+    "ThompsonSampling vs D-TS(0.99)": {
+      "t_statistic": 1.0566858029319413,
+      "p_value": 0.29583702033622117,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "ThompsonSampling vs EXP3": {
+      "t_statistic": 4.919664096193846,
+      "p_value": 1.0184611356079397e-05,
+      "p_corrected": 0.000794399685774193,
+      "significant": true
+    },
+    "ThompsonSampling vs Rexp3(100)": {
+      "t_statistic": -0.2910357967775074,
+      "p_value": 0.7722523369974164,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "ThompsonSampling vs EntropyGradient": {
+      "t_statistic": 7.075172203744358,
+      "p_value": 5.074042041078755e-09,
+      "p_corrected": 3.957752792041429e-07,
+      "significant": true
+    },
+    "GradientBandit vs EpsGreedy-Const": {
+      "t_statistic": -12.212059919223066,
+      "p_value": 1.7694884116642172e-16,
+      "p_corrected": 1.3802009610980895e-14,
+      "significant": true
+    },
+    "GradientBandit vs D-UCB(0.99)": {
+      "t_statistic": -1.4041601779086863,
+      "p_value": 0.16657804228891013,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "GradientBandit vs D-UCB(0.95)": {
+      "t_statistic": -14.361188417423277,
+      "p_value": 3.4539555996916224e-19,
+      "p_corrected": 2.6940853677594655e-17,
+      "significant": true
+    },
+    "GradientBandit vs SW-UCB(100)": {
+      "t_statistic": -6.030609195121311,
+      "p_value": 2.0995776810919868e-07,
+      "p_corrected": 1.6376705912517497e-05,
+      "significant": true
+    },
+    "GradientBandit vs D-TS(0.99)": {
+      "t_statistic": -6.285556322107193,
+      "p_value": 8.481506901518098e-08,
+      "p_corrected": 6.615575383184117e-06,
+      "significant": true
+    },
+    "GradientBandit vs EXP3": {
+      "t_statistic": -10.72185584571612,
+      "p_value": 1.8923677571397687e-14,
+      "p_corrected": 1.4760468505690196e-12,
+      "significant": true
+    },
+    "GradientBandit vs Rexp3(100)": {
+      "t_statistic": -18.575231555796403,
+      "p_value": 7.967970471944251e-24,
+      "p_corrected": 6.215016968116516e-22,
+      "significant": true
+    },
+    "GradientBandit vs EntropyGradient": {
+      "t_statistic": 1.4114553105536527,
+      "p_value": 0.16442894862621166,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsGreedy-Const vs D-UCB(0.99)": {
+      "t_statistic": 18.86057469197768,
+      "p_value": 4.130142069692982e-24,
+      "p_corrected": 3.221510814360526e-22,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-UCB(0.95)": {
+      "t_statistic": 4.812073525456765,
+      "p_value": 1.4690891163467388e-05,
+      "p_corrected": 0.0011458895107504562,
+      "significant": true
+    },
+    "EpsGreedy-Const vs SW-UCB(100)": {
+      "t_statistic": 16.30110766560412,
+      "p_value": 1.9965016730590162e-21,
+      "p_corrected": 1.5572713049860326e-19,
+      "significant": true
+    },
+    "EpsGreedy-Const vs D-TS(0.99)": {
+      "t_statistic": -4.960609899462717,
+      "p_value": 8.85404003307932e-06,
+      "p_corrected": 0.0006906151225801869,
+      "significant": true
+    },
+    "EpsGreedy-Const vs EXP3": {
+      "t_statistic": -2.223134932812329,
+      "p_value": 0.030850738625014477,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "EpsGreedy-Const vs Rexp3(100)": {
+      "t_statistic": -18.581059976333496,
+      "p_value": 7.861136009044374e-24,
+      "p_corrected": 6.131686087054612e-22,
+      "significant": true
+    },
+    "EpsGreedy-Const vs EntropyGradient": {
+      "t_statistic": 14.762999750789012,
+      "p_value": 1.146021137603228e-19,
+      "p_corrected": 8.938964873305178e-18,
+      "significant": true
+    },
+    "D-UCB(0.99) vs D-UCB(0.95)": {
+      "t_statistic": -57.161350076478776,
+      "p_value": 1.6260422391661884e-46,
+      "p_corrected": 1.268312946549627e-44,
+      "significant": true
+    },
+    "D-UCB(0.99) vs SW-UCB(100)": {
+      "t_statistic": -20.898955467135806,
+      "p_value": 4.667640076443333e-26,
+      "p_corrected": 3.6407592596258e-24,
+      "significant": true
+    },
+    "D-UCB(0.99) vs D-TS(0.99)": {
+      "t_statistic": -6.338132520848683,
+      "p_value": 7.033049318146372e-08,
+      "p_corrected": 5.48577846815417e-06,
+      "significant": true
+    },
+    "D-UCB(0.99) vs EXP3": {
+      "t_statistic": -11.07745654880001,
+      "p_value": 6.047202654535332e-15,
+      "p_corrected": 4.716818070537559e-13,
+      "significant": true
+    },
+    "D-UCB(0.99) vs Rexp3(100)": {
+      "t_statistic": -20.080370002320983,
+      "p_value": 2.7052426814184453e-25,
+      "p_corrected": 2.1100892915063874e-23,
+      "significant": true
+    },
+    "D-UCB(0.99) vs EntropyGradient": {
+      "t_statistic": 2.873111501142897,
+      "p_value": 0.005992996012056541,
+      "p_corrected": 0.46745368894041023,
+      "significant": false
+    },
+    "D-UCB(0.95) vs SW-UCB(100)": {
+      "t_statistic": 65.12665373076283,
+      "p_value": 2.9541299950869666e-49,
+      "p_corrected": 2.304221396167834e-47,
+      "significant": true
+    },
+    "D-UCB(0.95) vs D-TS(0.99)": {
+      "t_statistic": -5.134456142111264,
+      "p_value": 4.8702583438623515e-06,
+      "p_corrected": 0.00037988015082126344,
+      "significant": true
+    },
+    "D-UCB(0.95) vs EXP3": {
+      "t_statistic": -4.187274540950324,
+      "p_value": 0.0001170300874291113,
+      "p_corrected": 0.009128346819470681,
+      "significant": true
+    },
+    "D-UCB(0.95) vs Rexp3(100)": {
+      "t_statistic": -17.48625987642508,
+      "p_value": 1.0511739430511212e-22,
+      "p_corrected": 8.199156755798744e-21,
+      "significant": true
+    },
+    "D-UCB(0.95) vs EntropyGradient": {
+      "t_statistic": 19.147044090949475,
+      "p_value": 2.1515496456891052e-24,
+      "p_corrected": 1.6782087236375021e-22,
+      "significant": true
+    },
+    "SW-UCB(100) vs D-TS(0.99)": {
+      "t_statistic": -5.941190734184527,
+      "p_value": 2.882962910838605e-07,
+      "p_corrected": 2.248711070454112e-05,
+      "significant": true
+    },
+    "SW-UCB(100) vs EXP3": {
+      "t_statistic": -8.666235738954386,
+      "p_value": 1.8636995750690536e-11,
+      "p_corrected": 1.4536856685538618e-09,
+      "significant": true
+    },
+    "SW-UCB(100) vs Rexp3(100)": {
+      "t_statistic": -19.485842027468202,
+      "p_value": 1.0045761406037474e-24,
+      "p_corrected": 7.835693896709229e-23,
+      "significant": true
+    },
+    "SW-UCB(100) vs EntropyGradient": {
+      "t_statistic": 8.535208373596298,
+      "p_value": 2.936734409525287e-11,
+      "p_corrected": 2.290652839429724e-09,
+      "significant": true
+    },
+    "D-TS(0.99) vs EXP3": {
+      "t_statistic": 4.21486120831436,
+      "p_value": 0.00010701577079157933,
+      "p_corrected": 0.008347230121743187,
+      "significant": true
+    },
+    "D-TS(0.99) vs Rexp3(100)": {
+      "t_statistic": -1.4750138591953812,
+      "p_value": 0.1466057198105157,
+      "p_corrected": 1.0,
+      "significant": false
+    },
+    "D-TS(0.99) vs EntropyGradient": {
+      "t_statistic": 6.401179435860764,
+      "p_value": 5.617822840441339e-08,
+      "p_corrected": 4.381901815544244e-06,
+      "significant": true
+    },
+    "EXP3 vs Rexp3(100)": {
+      "t_statistic": -14.116436512737764,
+      "p_value": 6.82801372631535e-19,
+      "p_corrected": 5.3258507065259734e-17,
+      "significant": true
+    },
+    "EXP3 vs EntropyGradient": {
+      "t_statistic": 11.704175894081127,
+      "p_value": 8.423056481165658e-16,
+      "p_corrected": 6.569984055309213e-14,
+      "significant": true
+    },
+    "Rexp3(100) vs EntropyGradient": {
+      "t_statistic": 19.45143718990741,
+      "p_value": 1.0848466413364747e-24,
+      "p_corrected": 8.461803802424502e-23,
+      "significant": true
+    }
+  }
+}

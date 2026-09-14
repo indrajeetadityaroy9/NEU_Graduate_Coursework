@@ -1,0 +1,84 @@
+# Rainbow DQN configuration optimized for 2x NVIDIA H100 80GB GPUs
+# Core Rainbow: Double DQN + Dueling + PER + N-step returns
+# Hardware optimizations: Large batches, wide networks, max-autotune compile
+
+algorithm: dqn  # Uses DQNAgent with Rainbow flags enabled
+seed: 42
+device: auto
+experiment_name: rainbow_h100
+log_dir: experiments
+
+env:
+  rows: 20
+  cols: 20
+  stochasticity: 0.02
+  max_episode_steps: 1000
+
+rewards:
+  goal: 200.0
+  oil: -5.0
+  bump: -10.0
+  action: -1.0
+
+training:
+  total_timesteps: 1000000
+  eval_freq: 25000
+  save_freq: 100000
+  log_freq: 100
+  n_eval_episodes: 20
+
+visualization:
+  enabled: true
+  save_only: true
+  save_path: figures
+
+# H100 Hardware Settings - Aggressive optimization
+hardware:
+  mixed_precision: true
+  compile_mode: "max-autotune"  # Aggressive optimization for H100
+  num_envs: 64                  # Many parallel environments
+  num_workers: 8
+
+# Enable DDP for 2x H100
+distributed:
+  enabled: true
+  world_size: 2
+  backend: "nccl"
+
+# Rainbow DQN - Optimized for H100 80GB VRAM
+dqn:
+  # Large networks to utilize tensor cores
+  hidden_dims: [1024, 1024]
+  learning_rate: 0.00025
+  gamma: 0.99
+
+  # Exploration schedule
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay_steps: 100000
+
+  # Target network
+  target_update_freq: 5000
+  tau: 1.0
+
+  # Large buffer and batch for H100 memory bandwidth
+  buffer_size: 2000000    # 2M buffer fits in 80GB HBM3
+  batch_size: 2048        # Large batch saturates memory bandwidth
+  min_buffer_size: 50000
+
+  # Rainbow feature flags (Core Rainbow)
+  use_double: true    # Double DQN: reduces overestimation
+  use_dueling: true   # Dueling architecture: separate V/A streams
+  use_per: true       # Prioritized Experience Replay
+  n_step: 3           # Multi-step returns
+
+  # PER parameters
+  per_alpha: 0.6      # Prioritization exponent
+  per_beta_start: 0.4 # Initial IS correction
+  per_beta_end: 1.0   # Final IS correction
+  per_beta_frames: 500000  # Extended annealing for longer training
+
+# Expected performance on H100:
+# - Throughput: ~30K-50K steps/sec with VecEnv(64) + AMP + compile
+# - GPU utilization: >80% with batch_size=2048
+# - Memory usage: ~40-50GB with 2M buffer + large networks

@@ -1,0 +1,79 @@
+# Experiment 3: Discount Factor Sensitivity
+# Question: What discount factor works best for different change frequencies?
+
+name: discount_sensitivity
+description: >
+  Analyze how discount factor γ affects adaptation performance.
+  Tests the trade-off between adaptability and stability.
+
+horizon: 10000
+n_runs: 50
+n_arms: 5
+seed: 42
+
+# Environment configuration
+# Change interval options: 100 (fast), 500 (slow)
+environment:
+  type: abrupt
+  kwargs:
+    change_interval: 500
+    gap: 1.0
+
+algorithms:
+  # D-UCB with different discount factors
+  - type: discounted_ucb
+    name: "D-UCB (γ=0.9)"
+    kwargs:
+      gamma: 0.9
+
+  - type: discounted_ucb
+    name: "D-UCB (γ=0.95)"
+    kwargs:
+      gamma: 0.95
+
+  - type: discounted_ucb
+    name: "D-UCB (γ=0.99)"
+    kwargs:
+      gamma: 0.99
+
+  - type: discounted_ucb
+    name: "D-UCB (γ=0.999)"
+    kwargs:
+      gamma: 0.999
+
+  # Discounted TS with different discount factors
+  - type: discounted_ts
+    name: "D-TS (γ=0.9)"
+    kwargs:
+      gamma: 0.9
+
+  - type: discounted_ts
+    name: "D-TS (γ=0.95)"
+    kwargs:
+      gamma: 0.95
+
+  - type: discounted_ts
+    name: "D-TS (γ=0.99)"
+    kwargs:
+      gamma: 0.99
+
+  - type: discounted_ts
+    name: "D-TS (γ=0.999)"
+    kwargs:
+      gamma: 0.999
+
+  # Sliding window with different sizes
+  - type: sliding_window_ucb
+    name: "SW-UCB (τ=50)"
+    kwargs:
+      window_size: 50
+
+  - type: sliding_window_ucb
+    name: "SW-UCB (τ=100)"
+    kwargs:
+      window_size: 100
+
+  - type: sliding_window_ucb
+    name: "SW-UCB (τ=200)"
+    kwargs:
+      window_size: 200

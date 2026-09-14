@@ -1,0 +1,73 @@
+# Experiment 1: Abrupt Change Frequency Study
+# Question: How does change frequency affect algorithm rankings?
+
+name: abrupt_change_study
+description: >
+  Compare algorithms under abrupt changes.
+  Tests how quickly algorithms adapt when optimal arm changes suddenly.
+
+horizon: 10000
+n_runs: 50
+n_arms: 5
+seed: 42
+
+# Environment configuration
+# Change interval options: 100 (frequent), 500 (moderate), 1000 (rare)
+environment:
+  type: abrupt
+  kwargs:
+    change_interval: 500
+    gap: 1.0
+
+algorithms:
+  # Stationary baselines (expect degradation)
+  - type: epsilon_greedy
+    name: "ε-Greedy (sample avg)"
+    kwargs:
+      epsilon: 0.1
+
+  - type: ucb1
+    name: "UCB1"
+    kwargs:
+      c: 1.0
+
+  - type: thompson_sampling
+    name: "Thompson Sampling"
+    kwargs: {}
+
+  # Non-stationary variants
+  - type: epsilon_greedy_constant
+    name: "ε-Greedy (α=0.1)"
+    kwargs:
+      epsilon: 0.1
+      alpha: 0.1
+
+  - type: discounted_ucb
+    name: "D-UCB (γ=0.99)"
+    kwargs:
+      gamma: 0.99
+
+  - type: discounted_ucb
+    name: "D-UCB (γ=0.95)"
+    kwargs:
+      gamma: 0.95
+
+  - type: sliding_window_ucb
+    name: "SW-UCB (τ=100)"
+    kwargs:
+      window_size: 100
+
+  - type: discounted_ts
+    name: "Discounted-TS (γ=0.99)"
+    kwargs:
+      gamma: 0.99
+
+  - type: exp3
+    name: "EXP3"
+    kwargs:
+      gamma: 0.1
+
+  - type: rexp3
+    name: "Rexp3 (interval=100)"
+    kwargs:
+      restart_interval: 100

@@ -1,0 +1,81 @@
+# H100 Optimized configuration for maze navigation
+# Designed for 2x NVIDIA H100 80GB GPUs with research-grade performance
+
+algorithm: dqn
+seed: 42
+device: auto
+experiment_name: h100_optimized_maze
+log_dir: experiments
+
+env:
+  rows: 20
+  cols: 20
+  stochasticity: 0.02
+  max_episode_steps: 1000
+
+rewards:
+  goal: 200.0
+  oil: -5.0
+  bump: -10.0
+  action: -1.0
+
+training:
+  total_timesteps: 500000
+  eval_freq: 10000
+  save_freq: 50000
+  log_freq: 100
+  n_eval_episodes: 20
+
+visualization:
+  enabled: true
+  save_only: true
+  save_path: figures
+
+# Hardware optimization for H100 GPUs
+hardware:
+  mixed_precision: true
+  compile_mode: "reduce-overhead"  # "reduce-overhead", "max-autotune", or null
+  num_envs: 16
+  num_workers: 8
+
+# Distributed training for multi-GPU
+distributed:
+  enabled: false  # Set to true for multi-GPU training
+  world_size: 2
+  backend: "nccl"
+
+# Prioritized Experience Replay
+per:
+  enabled: false  # Set to true to enable PER
+  alpha: 0.6
+  beta_start: 0.4
+  beta_end: 1.0
+  beta_frames: 100000
+
+# Optimized DQN hyperparameters for H100
+dqn:
+  hidden_dims: [512, 512]
+  learning_rate: 0.00025
+  gamma: 0.99
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay_steps: 50000
+  target_update_freq: 2000
+  tau: 1.0
+  buffer_size: 1000000
+  batch_size: 512
+  min_buffer_size: 10000
+
+# Optimized PPO hyperparameters for H100
+ppo:
+  hidden_dims: [512, 512]
+  learning_rate: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_epsilon: 0.2
+  value_coef: 0.5
+  entropy_coef: 0.01
+  max_grad_norm: 0.5
+  n_steps: 4096
+  n_epochs: 10
+  batch_size: 256
